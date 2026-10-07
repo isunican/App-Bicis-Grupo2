@@ -1,52 +1,56 @@
 {
-    "networks": [
-        {
-            "id": "bicing",
-            "name": "Bicing",
-            "location": {
-                "latitude": 41.3850639,
-                "longitude": 2.1734035,
-                "city": "Barcelona",
-                "country": "ES"
-            },
-            "href": "/v2/networks/bicing",
-            "company": [
-                "Barcelona de Serveis Municipals, S.A. (BSM)",
-                "CESPA",
-                "PBSC"
-            ],
-            "ebikes": true
-        },
-        {
-            "id": "bicimad",
-            "name": "BiciMAD",
-            "location": {
-                "latitude": 40.4168,
-                "longitude": -3.7038,
-                "city": "Madrid",
-                "country": "ES"
-            },
-            "href": "/v2/networks/bicimad",
-            "company": [
-                "Empresa Municipal de Transportes de Madrid, S.A."
-            ],
-            "system": "bicimad",
-            "source": "https://mobilitylabs.emtmadrid.es/"
-        },
-        {
-            "id": "tuebici",
-            "name": "TUeBICI",
-            "location": {
-                "latitude": 43.46230569999999,
-                "longitude": -3.8099803,
-                "city": "Santander",
-                "country": "ES"
-            },
-            "href": "/v2/networks/tuebici",
-            "company": [
-                "UTE BICIS SANTANDER"
-            ],
-            "system": "Nextbike"
-        }
-    ]
+  "networks": [
+    {
+      "id": "springbike",
+      "name": "SpringBike",
+      "href": "/v2/networks/springbike",
+      "company": ["Ballard Technologies"],
+      "ebikes": false,
+      "location": {
+        "city": "Springfield, Illinois",
+        "country": "US",
+        "latitude": 39.79297,
+        "longitude": -89.65067
+      }
+    },
+    {
+      "id": "northcycleuk",
+      "name": "NorthCycle",
+      "href": "/v2/networks/northcycleuk",
+      "company": ["Northampton Council Management Co. Ltd"],
+      "ebikes": null,
+      "location": {
+        "city": "Northampton",
+        "country": "UK",
+        "latitude": 52.2381,
+        "longitude": -0.8947
+      }
+    },
+    {
+      "id": "sthcycle",
+      "name": "SouthCycle",
+      "href": "/v2/networks/sthcycle",
+      "company": ["JCDecaux SE", "Grundon Waste Management Ltd"],
+      "ebikes": true,
+      "location": {
+        "city": "Southampton",
+        "country": "UK",
+        "latitude": 50.9160,
+        "longitude": -1.3925
+      }
+    },
+    {
+      "id": "bike4funly",
+      "name": "Bike4fun",
+      "href": null,
+      "company": null,
+      "ebikes": null,
+      "location": {
+        "city": "Tripoli",
+        "country": null,
+        "latitude": 0.0,
+        "longitude": 0.0
+      }
+    }
+  ]
 }
