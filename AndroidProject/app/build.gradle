@@ -102,6 +102,8 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.play.services.maps
+    implementation libs.preference
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -137,4 +139,7 @@ dependencies {
 
     // Roboelectric (to get a proper Context object in unit tests)
     testImplementation libs.roboelectric
+
+    // Dependencia de OSMDroid
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
 }

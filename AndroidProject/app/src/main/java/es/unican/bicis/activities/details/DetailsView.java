@@ -9,6 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.IntentCompat;
 
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.MapView;
 import org.parceler.Parcels;
 
 import es.unican.bicis.R;
@@ -24,6 +29,8 @@ public class DetailsView extends AppCompatActivity {
     /** Key for the intent that contains the network */
     public static final String INTENT_NETWORK = "INTENT_NETWORK";
 
+    private MapView map;
+
     /**
      * @see AppCompatActivity#onCreate(Bundle)
      * @param savedInstanceState
@@ -31,6 +38,9 @@ public class DetailsView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Configuration.getInstance().load(getApplicationContext(), androidx.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+
         setContentView(R.layout.activity_details_view);
 
         // The default theme does not include a toolbar.
@@ -45,6 +55,14 @@ public class DetailsView extends AppCompatActivity {
         // Link to view elements
         TextView tvName = findViewById(R.id.tvName);
         TextView tvCity = findViewById(R.id.tvCity);
+        TextView tvCountry = findViewById(R.id.tvCountry);
+        TextView tvCompany = findViewById(R.id.tvCompany);
+
+        map = findViewById(R.id.mapView);
+
+        // Configurar ajustes básicos del mapa OSMDroid
+        map.setTileSource(TileSourceFactory.MAPNIK); // Estilo de mapa estándar
+        map.setMultiTouchControls(true);             // Permitir hacer zoom con los dedos
 
         // Get Network from the intent that triggered this activity
         Parcelable wrapped = IntentCompat.getParcelableExtra(getIntent(), INTENT_NETWORK, Parcelable.class);
@@ -56,9 +74,32 @@ public class DetailsView extends AppCompatActivity {
         // Set Texts
         if (network != null) {
             tvName.setText(network.getName());
+
+            String[] companies = network.getCompany();
+            if (companies != null && companies.length > 0) {
+                tvCompany.setText(String.join(", ", companies));
+            } else {
+                tvCompany.setText("Desconocida");
+            }
+
             Location location = network.getLocation();
             if (location != null) {
                 tvCity.setText(location.getCity());
+                tvCountry.setText(location.getCountry());
+
+                double lat = location.getLatitude();
+                double lon = location.getLongitude();
+
+                // Centrar el mapa en las coordenadas de la red y poner un marcador
+                GeoPoint startPoint = new GeoPoint(lat, lon);
+                map.getController().setZoom(14.0);
+                map.getController().setCenter(startPoint);
+
+                Marker marker = new Marker(map);
+                marker.setPosition(startPoint);
+                marker.setTitle(network.getName());
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                map.getOverlays().add(marker);
             }
         }
     }
