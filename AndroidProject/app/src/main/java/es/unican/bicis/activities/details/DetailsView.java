@@ -32,8 +32,13 @@ public class DetailsView extends AppCompatActivity {
     private MapView map;
 
     /**
+     * Initializes the details screen of a bike sharing network.
+     * Reads the network from the intent, shows its name, city, country and company
+     * ("Desconocida" if the network has no company), and centers a map on its
+     * coordinates with a marker.
+     *
+     * @param savedInstanceState previously saved state of the activity, or null
      * @see AppCompatActivity#onCreate(Bundle)
-     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
