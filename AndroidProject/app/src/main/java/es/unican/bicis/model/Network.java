@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,5 +30,6 @@ public class Network {
     @SerializedName("company")              protected String[] company;
     @SerializedName("gbfs_href")            protected String gbfsHref;
     @SerializedName("ebikes")               protected boolean ebikes;
+    @SerializedName("stations")             protected List<Station> stations;
 
 }
