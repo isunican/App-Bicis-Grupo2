@@ -140,7 +140,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      * @param network the network
      */
     @Override
-    public void showNetworkDetails(Network network) {
+    public void showStations(Network network) {
         Intent intent = new Intent(this, StationsView.class);
         intent.putExtra(DetailsView.INTENT_NETWORK, Parcels.wrap(network));
         startActivity(intent);

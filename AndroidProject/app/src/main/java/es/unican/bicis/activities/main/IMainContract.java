@@ -86,11 +86,11 @@ public interface IMainContract {
         public void showLoadError();
 
         /**
-         * The view is requested to display the detailed view of the given network.
+         * The view is requested to display the list of stations of the network.
          * Only the Presenter should call this method
          * @param network the network
          */
-        public void showNetworkDetails(Network network);
+        public void showStations(Network network);
 
         /**
          * The view is requested to open the info activity.

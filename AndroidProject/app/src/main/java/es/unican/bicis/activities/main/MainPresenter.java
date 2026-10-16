@@ -31,7 +31,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onNetworkClicked(Network network) {
-        view.showNetworkDetails(network);
+        view.showStations(network);
     }
 
     /**
