@@ -42,11 +42,6 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     }
 
     @Override
-    public void showNoNetworkSelected() {
-
-    }
-
-    @Override
     public void showLoadError(String reason) {
 
     }

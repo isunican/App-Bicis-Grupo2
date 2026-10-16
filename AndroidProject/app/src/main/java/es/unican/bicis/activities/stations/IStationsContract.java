@@ -49,12 +49,6 @@ public interface IStationsContract {
          */
         public void showStations(List<Station> stations);
 
-        /**
-         * The view is requested to display a notification indicating that no
-         * network was selected.
-         * Only the Presenter should call this method.
-         */
-        public void showNoNetworkSelected();
 
         /**
          * The view is requested to display a notification indicating that the networks
