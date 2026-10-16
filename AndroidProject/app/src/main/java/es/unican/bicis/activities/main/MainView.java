@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.bicis.R;
 import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.activities.details.DetailsView;
+import es.unican.bicis.activities.stations.StationsView;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
 
@@ -140,7 +141,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void showNetworkDetails(Network network) {
-        Intent intent = new Intent(this, DetailsView.class);
+        Intent intent = new Intent(this, StationsView.class);
         intent.putExtra(DetailsView.INTENT_NETWORK, Parcels.wrap(network));
         startActivity(intent);
     }
