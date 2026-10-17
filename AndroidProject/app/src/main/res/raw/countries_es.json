@@ -1,0 +1,1255 @@
+{
+  "locale": "es",
+  "countries": [
+    {
+      "name": "Afganistán",
+      "idISO": "AF",
+      "idAPI": "AF"
+    },
+    {
+      "name": "Albania",
+      "idISO": "AL",
+      "idAPI": "AL"
+    },
+    {
+      "name": "Argelia",
+      "idISO": "DZ",
+      "idAPI": "DZ"
+    },
+    {
+      "name": "Samoa Americana",
+      "idISO": "AS",
+      "idAPI": "AS"
+    },
+    {
+      "name": "Andorra",
+      "idISO": "AD",
+      "idAPI": "AD"
+    },
+    {
+      "name": "Angola",
+      "idISO": "AO",
+      "idAPI": "AO"
+    },
+    {
+      "name": "Anguila",
+      "idISO": "AI",
+      "idAPI": "AI"
+    },
+    {
+      "name": "Antártida",
+      "idISO": "AQ",
+      "idAPI": "AQ"
+    },
+    {
+      "name": "Antigua y Barbuda",
+      "idISO": "AG",
+      "idAPI": "AG"
+    },
+    {
+      "name": "Argentina",
+      "idISO": "AR",
+      "idAPI": "AR"
+    },
+    {
+      "name": "Armenia",
+      "idISO": "AM",
+      "idAPI": "AM"
+    },
+    {
+      "name": "Aruba",
+      "idISO": "AW",
+      "idAPI": "AW"
+    },
+    {
+      "name": "Australia",
+      "idISO": "AU",
+      "idAPI": "AU"
+    },
+    {
+      "name": "Austria",
+      "idISO": "AT",
+      "idAPI": "AT"
+    },
+    {
+      "name": "Azerbaiyán",
+      "idISO": "AZ",
+      "idAPI": "AZ"
+    },
+    {
+      "name": "Bahamas",
+      "idISO": "BS",
+      "idAPI": "BS"
+    },
+    {
+      "name": "Bahrein",
+      "idISO": "BH",
+      "idAPI": "BH"
+    },
+    {
+      "name": "Bangladesh",
+      "idISO": "BD",
+      "idAPI": "BD"
+    },
+    {
+      "name": "Barbados",
+      "idISO": "BB",
+      "idAPI": "BB"
+    },
+    {
+      "name": "Bielorrusia",
+      "idISO": "BY",
+      "idAPI": "BY"
+    },
+    {
+      "name": "Bélgica",
+      "idISO": "BE",
+      "idAPI": "BE"
+    },
+    {
+      "name": "Belice",
+      "idISO": "BZ",
+      "idAPI": "BZ"
+    },
+    {
+      "name": "Benin",
+      "idISO": "BJ",
+      "idAPI": "BJ"
+    },
+    {
+      "name": "Bermudas",
+      "idISO": "BM",
+      "idAPI": "BM"
+    },
+    {
+      "name": "Bután",
+      "idISO": "BT",
+      "idAPI": "BT"
+    },
+    {
+      "name": "Bolivia",
+      "idISO": "BO",
+      "idAPI": "BO"
+    },
+    {
+      "name": "Bosnia y Herzegovina",
+      "idISO": "BA",
+      "idAPI": "BA"
+    },
+    {
+      "name": "Botswana",
+      "idISO": "BW",
+      "idAPI": "BW"
+    },
+    {
+      "name": "Isla Bouvet",
+      "idISO": "BV",
+      "idAPI": "BV"
+    },
+    {
+      "name": "Brasil",
+      "idISO": "BR",
+      "idAPI": "BR"
+    },
+    {
+      "name": "Territorio Británico del Océano Índico",
+      "idISO": "IO",
+      "idAPI": "IO"
+    },
+    {
+      "name": "Brunei Darussalam",
+      "idISO": "BN",
+      "idAPI": "BN"
+    },
+    {
+      "name": "Bulgaria",
+      "idISO": "BG",
+      "idAPI": "BG"
+    },
+    {
+      "name": "Burkina Faso",
+      "idISO": "BF",
+      "idAPI": "BF"
+    },
+    {
+      "name": "Burundi",
+      "idISO": "BI",
+      "idAPI": "BI"
+    },
+    {
+      "name": "Camboya",
+      "idISO": "KH",
+      "idAPI": "KH"
+    },
+    {
+      "name": "Camerún",
+      "idISO": "CM",
+      "idAPI": "CM"
+    },
+    {
+      "name": "Canadá",
+      "idISO": "CA",
+      "idAPI": "CA"
+    },
+    {
+      "name": "Cabo Verde",
+      "idISO": "CV",
+      "idAPI": "CV"
+    },
+    {
+      "name": "Islas Caimán",
+      "idISO": "KY",
+      "idAPI": "KY"
+    },
+    {
+      "name": "República Centroafricana",
+      "idISO": "CF",
+      "idAPI": "CF"
+    },
+    {
+      "name": "Chad",
+      "idISO": "TD",
+      "idAPI": "TD"
+    },
+    {
+      "name": "Chile",
+      "idISO": "CL",
+      "idAPI": "CL"
+    },
+    {
+      "name": "China",
+      "idISO": "CN",
+      "idAPI": "CN"
+    },
+    {
+      "name": "Isla de Navidad",
+      "idISO": "CX",
+      "idAPI": "CX"
+    },
+    {
+      "name": "Islas Cocos (Keeling)",
+      "idISO": "CC",
+      "idAPI": "CC"
+    },
+    {
+      "name": "Colombia",
+      "idISO": "CO",
+      "idAPI": "CO"
+    },
+    {
+      "name": "Comoras",
+      "idISO": "KM",
+      "idAPI": "KM"
+    },
+    {
+      "name": "Congo",
+      "idISO": "CG",
+      "idAPI": "CG"
+    },
+    {
+      "name": "Congo (República Democrática del)",
+      "idISO": "CD",
+      "idAPI": "CD"
+    },
+    {
+      "name": "Islas Cook",
+      "idISO": "CK",
+      "idAPI": "CK"
+    },
+    {
+      "name": "Costa Rica",
+      "idISO": "CR",
+      "idAPI": "CR"
+    },
+    {
+      "name": "Costa de Marfil",
+      "idISO": "CI",
+      "idAPI": "CI"
+    },
+    {
+      "name": "Croacia",
+      "idISO": "HR",
+      "idAPI": "HR"
+    },
+    {
+      "name": "Cuba",
+      "idISO": "CU",
+      "idAPI": "CU"
+    },
+    {
+      "name": "Chipre",
+      "idISO": "CY",
+      "idAPI": "CY"
+    },
+    {
+      "name": "República Checa",
+      "idISO": "CZ",
+      "idAPI": "CZ"
+    },
+    {
+      "name": "Dinamarca",
+      "idISO": "DK",
+      "idAPI": "DK"
+    },
+    {
+      "name": "Yibuti",
+      "idISO": "DJ",
+      "idAPI": "DJ"
+    },
+    {
+      "name": "Dominica",
+      "idISO": "DM",
+      "idAPI": "DM"
+    },
+    {
+      "name": "República Dominicana",
+      "idISO": "DO",
+      "idAPI": "DO"
+    },
+    {
+      "name": "Ecuador",
+      "idISO": "EC",
+      "idAPI": "EC"
+    },
+    {
+      "name": "Egipto",
+      "idISO": "EG",
+      "idAPI": "EG"
+    },
+    {
+      "name": "El Salvador",
+      "idISO": "SV",
+      "idAPI": "SV"
+    },
+    {
+      "name": "Guinea Ecuatorial",
+      "idISO": "GQ",
+      "idAPI": "GQ"
+    },
+    {
+      "name": "Eritrea",
+      "idISO": "ER",
+      "idAPI": "ER"
+    },
+    {
+      "name": "Estonia",
+      "idISO": "EE",
+      "idAPI": "EE"
+    },
+    {
+      "name": "Etiopía",
+      "idISO": "ET",
+      "idAPI": "ET"
+    },
+    {
+      "name": "Islas Malvinas",
+      "idISO": "FK",
+      "idAPI": "FK"
+    },
+    {
+      "name": "Islas Feroe",
+      "idISO": "FO",
+      "idAPI": "FO"
+    },
+    {
+      "name": "Fiji",
+      "idISO": "FJ",
+      "idAPI": "FJ"
+    },
+    {
+      "name": "Finlandia",
+      "idISO": "FI",
+      "idAPI": "FI"
+    },
+    {
+      "name": "Francia",
+      "idISO": "FR",
+      "idAPI": "FR"
+    },
+    {
+      "name": "Guayana Francesa",
+      "idISO": "GF",
+      "idAPI": "GF"
+    },
+    {
+      "name": "Polinesia Francesa",
+      "idISO": "PF",
+      "idAPI": "PF"
+    },
+    {
+      "name": "Tierras Australes Francesas",
+      "idISO": "TF",
+      "idAPI": "TF"
+    },
+    {
+      "name": "Gabón",
+      "idISO": "GA",
+      "idAPI": "GA"
+    },
+    {
+      "name": "Gambia",
+      "idISO": "GM",
+      "idAPI": "GM"
+    },
+    {
+      "name": "Georgia",
+      "idISO": "GE",
+      "idAPI": "GE"
+    },
+    {
+      "name": "Alemania",
+      "idISO": "DE",
+      "idAPI": "DE"
+    },
+    {
+      "name": "Ghana",
+      "idISO": "GH",
+      "idAPI": "GH"
+    },
+    {
+      "name": "Gibraltar",
+      "idISO": "GI",
+      "idAPI": "GI"
+    },
+    {
+      "name": "Grecia",
+      "idISO": "GR",
+      "idAPI": "GR"
+    },
+    {
+      "name": "Groenlandia",
+      "idISO": "GL",
+      "idAPI": "GL"
+    },
+    {
+      "name": "Granada",
+      "idISO": "GD",
+      "idAPI": "GD"
+    },
+    {
+      "name": "Guadalupe",
+      "idISO": "GP",
+      "idAPI": "GP"
+    },
+    {
+      "name": "Guam",
+      "idISO": "GU",
+      "idAPI": "GU"
+    },
+    {
+      "name": "Guatemala",
+      "idISO": "GT",
+      "idAPI": "GT"
+    },
+    {
+      "name": "Guinea",
+      "idISO": "GN",
+      "idAPI": "GN"
+    },
+    {
+      "name": "Guinea Bissau",
+      "idISO": "GW",
+      "idAPI": "GW"
+    },
+    {
+      "name": "Guyana",
+      "idISO": "GY",
+      "idAPI": "GY"
+    },
+    {
+      "name": "Haití",
+      "idISO": "HT",
+      "idAPI": "HT"
+    },
+    {
+      "name": "Heard e Islas McDonald",
+      "idISO": "HM",
+      "idAPI": "HM"
+    },
+    {
+      "name": "Santa Sede",
+      "idISO": "VA",
+      "idAPI": "VA"
+    },
+    {
+      "name": "Honduras",
+      "idISO": "HN",
+      "idAPI": "HN"
+    },
+    {
+      "name": "Hong Kong",
+      "idISO": "HK",
+      "idAPI": "HK"
+    },
+    {
+      "name": "Hungría",
+      "idISO": "HU",
+      "idAPI": "HU"
+    },
+    {
+      "name": "Islandia",
+      "idISO": "IS",
+      "idAPI": "IS"
+    },
+    {
+      "name": "India",
+      "idISO": "IN",
+      "idAPI": "IN"
+    },
+    {
+      "name": "Indonesia",
+      "idISO": "ID",
+      "idAPI": "ID"
+    },
+    {
+      "name": "Irán",
+      "idISO": "IR",
+      "idAPI": "IR"
+    },
+    {
+      "name": "Iraq",
+      "idISO": "IQ",
+      "idAPI": "IQ"
+    },
+    {
+      "name": "Irlanda",
+      "idISO": "IE",
+      "idAPI": "IE"
+    },
+    {
+      "name": "Israel",
+      "idISO": "IL",
+      "idAPI": "IL"
+    },
+    {
+      "name": "Italia",
+      "idISO": "IT",
+      "idAPI": "IT"
+    },
+    {
+      "name": "Jamaica",
+      "idISO": "JM",
+      "idAPI": "JM"
+    },
+    {
+      "name": "Japón",
+      "idISO": "JP",
+      "idAPI": "JP"
+    },
+    {
+      "name": "Jordania",
+      "idISO": "JO",
+      "idAPI": "JO"
+    },
+    {
+      "name": "Kazajistán",
+      "idISO": "KZ",
+      "idAPI": "KZ"
+    },
+    {
+      "name": "Kenia",
+      "idISO": "KE",
+      "idAPI": "KE"
+    },
+    {
+      "name": "Kiribati",
+      "idISO": "KI",
+      "idAPI": "KI"
+    },
+    {
+      "name": "República Popular Democrática de Corea",
+      "idISO": "KP",
+      "idAPI": "KP"
+    },
+    {
+      "name": "República de Corea",
+      "idISO": "KR",
+      "idAPI": "KR"
+    },
+    {
+      "name": "Kuwait",
+      "idISO": "KW",
+      "idAPI": "KW"
+    },
+    {
+      "name": "Kirguistán",
+      "idISO": "KG",
+      "idAPI": "KG"
+    },
+    {
+      "name": "República Democrática Popular de Lao",
+      "idISO": "LA",
+      "idAPI": "LA"
+    },
+    {
+      "name": "Letonia",
+      "idISO": "LV",
+      "idAPI": "LV"
+    },
+    {
+      "name": "Líbano",
+      "idISO": "LB",
+      "idAPI": "LB"
+    },
+    {
+      "name": "Lesoto",
+      "idISO": "LS",
+      "idAPI": "LS"
+    },
+    {
+      "name": "Liberia",
+      "idISO": "LR",
+      "idAPI": "LR"
+    },
+    {
+      "name": "Libia",
+      "idISO": "LY",
+      "idAPI": "LY"
+    },
+    {
+      "name": "Liechtenstein",
+      "idISO": "LI",
+      "idAPI": "LI"
+    },
+    {
+      "name": "Lituania",
+      "idISO": "LT",
+      "idAPI": "LT"
+    },
+    {
+      "name": "Luxemburgo",
+      "idISO": "LU",
+      "idAPI": "LU"
+    },
+    {
+      "name": "Macao",
+      "idISO": "MO",
+      "idAPI": "MO"
+    },
+    {
+      "name": "Macedonia del Norte",
+      "idISO": "MK",
+      "idAPI": "MK"
+    },
+    {
+      "name": "Madagascar",
+      "idISO": "MG",
+      "idAPI": "MG"
+    },
+    {
+      "name": "Malaui",
+      "idISO": "MW",
+      "idAPI": "MW"
+    },
+    {
+      "name": "Malasia",
+      "idISO": "MY",
+      "idAPI": "MY"
+    },
+    {
+      "name": "Maldivas",
+      "idISO": "MV",
+      "idAPI": "MV"
+    },
+    {
+      "name": "Malí",
+      "idISO": "ML",
+      "idAPI": "ML"
+    },
+    {
+      "name": "Malta",
+      "idISO": "MT",
+      "idAPI": "MT"
+    },
+    {
+      "name": "Islas Marshall",
+      "idISO": "MH",
+      "idAPI": "MH"
+    },
+    {
+      "name": "Martinica",
+      "idISO": "MQ",
+      "idAPI": "MQ"
+    },
+    {
+      "name": "Mauritania",
+      "idISO": "MR",
+      "idAPI": "MR"
+    },
+    {
+      "name": "Mauricio",
+      "idISO": "MU",
+      "idAPI": "MU"
+    },
+    {
+      "name": "Mayotte",
+      "idISO": "YT",
+      "idAPI": "YT"
+    },
+    {
+      "name": "México",
+      "idISO": "MX",
+      "idAPI": "MX"
+    },
+    {
+      "name": "Micronesia",
+      "idISO": "FM",
+      "idAPI": "FM"
+    },
+    {
+      "name": "Moldavia",
+      "idISO": "MD",
+      "idAPI": "MD"
+    },
+    {
+      "name": "Mónaco",
+      "idISO": "MC",
+      "idAPI": "MC"
+    },
+    {
+      "name": "Mongolia",
+      "idISO": "MN",
+      "idAPI": "MN"
+    },
+    {
+      "name": "Montserrat",
+      "idISO": "MS",
+      "idAPI": "MS"
+    },
+    {
+      "name": "Marruecos",
+      "idISO": "MA",
+      "idAPI": "MA"
+    },
+    {
+      "name": "Mozambique",
+      "idISO": "MZ",
+      "idAPI": "MZ"
+    },
+    {
+      "name": "Myanmar",
+      "idISO": "MM",
+      "idAPI": "MM"
+    },
+    {
+      "name": "Namibia",
+      "idISO": "NA",
+      "idAPI": "NA"
+    },
+    {
+      "name": "Nauru",
+      "idISO": "NR",
+      "idAPI": "NR"
+    },
+    {
+      "name": "Nepal",
+      "idISO": "NP",
+      "idAPI": "NP"
+    },
+    {
+      "name": "Países Bajos",
+      "idISO": "NL",
+      "idAPI": "NL"
+    },
+    {
+      "name": "Nueva Caledonia",
+      "idISO": "NC",
+      "idAPI": "NC"
+    },
+    {
+      "name": "Nueva Zelanda",
+      "idISO": "NZ",
+      "idAPI": "NZ"
+    },
+    {
+      "name": "Nicaragua",
+      "idISO": "NI",
+      "idAPI": "NI"
+    },
+    {
+      "name": "Níger",
+      "idISO": "NE",
+      "idAPI": "NE"
+    },
+    {
+      "name": "Nigeria",
+      "idISO": "NG",
+      "idAPI": "NG"
+    },
+    {
+      "name": "Niue",
+      "idISO": "NU",
+      "idAPI": "NU"
+    },
+    {
+      "name": "Isla Norfolk",
+      "idISO": "NF",
+      "idAPI": "NF"
+    },
+    {
+      "name": "Islas Marianas del Norte",
+      "idISO": "MP",
+      "idAPI": "MP"
+    },
+    {
+      "name": "Noruega",
+      "idISO": "NO",
+      "idAPI": "NO"
+    },
+    {
+      "name": "Omán",
+      "idISO": "OM",
+      "idAPI": "OM"
+    },
+    {
+      "name": "Pakistán",
+      "idISO": "PK",
+      "idAPI": "PK"
+    },
+    {
+      "name": "Palau",
+      "idISO": "PW",
+      "idAPI": "PW"
+    },
+    {
+      "name": "Palestina",
+      "idISO": "PS",
+      "idAPI": "PS"
+    },
+    {
+      "name": "Panamá",
+      "idISO": "PA",
+      "idAPI": "PA"
+    },
+    {
+      "name": "Papua Nueva Guinea",
+      "idISO": "PG",
+      "idAPI": "PG"
+    },
+    {
+      "name": "Paraguay",
+      "idISO": "PY",
+      "idAPI": "PY"
+    },
+    {
+      "name": "Perú",
+      "idISO": "PE",
+      "idAPI": "PE"
+    },
+    {
+      "name": "Filipinas",
+      "idISO": "PH",
+      "idAPI": "PH"
+    },
+    {
+      "name": "Pitcairn",
+      "idISO": "PN",
+      "idAPI": "PN"
+    },
+    {
+      "name": "Polonia",
+      "idISO": "PL",
+      "idAPI": "PL"
+    },
+    {
+      "name": "Portugal",
+      "idISO": "PT",
+      "idAPI": "PT"
+    },
+    {
+      "name": "Puerto Rico",
+      "idISO": "PR",
+      "idAPI": "PR"
+    },
+    {
+      "name": "Catar",
+      "idISO": "QA",
+      "idAPI": "QA"
+    },
+    {
+      "name": "Reunión",
+      "idISO": "RE",
+      "idAPI": "RE"
+    },
+    {
+      "name": "Rumanía",
+      "idISO": "RO",
+      "idAPI": "RO"
+    },
+    {
+      "name": "Rusia",
+      "idISO": "RU",
+      "idAPI": "RU"
+    },
+    {
+      "name": "Ruanda",
+      "idISO": "RW",
+      "idAPI": "RW"
+    },
+    {
+      "name": "Santa Helena, Ascensión y Tristán de Acuña",
+      "idISO": "SH",
+      "idAPI": "SH"
+    },
+    {
+      "name": "Saint Kitts y Nevis",
+      "idISO": "KN",
+      "idAPI": "KN"
+    },
+    {
+      "name": "Santa Lucía",
+      "idISO": "LC",
+      "idAPI": "LC"
+    },
+    {
+      "name": "San Pedro y Miquelón",
+      "idISO": "PM",
+      "idAPI": "PM"
+    },
+    {
+      "name": "San Vicente y las Granadinas",
+      "idISO": "VC",
+      "idAPI": "VC"
+    },
+    {
+      "name": "Samoa",
+      "idISO": "WS",
+      "idAPI": "WS"
+    },
+    {
+      "name": "San Marino",
+      "idISO": "SM",
+      "idAPI": "SM"
+    },
+    {
+      "name": "Santo Tomé y Príncipe",
+      "idISO": "ST",
+      "idAPI": "ST"
+    },
+    {
+      "name": "Arabia Saudita",
+      "idISO": "SA",
+      "idAPI": "SA"
+    },
+    {
+      "name": "Senegal",
+      "idISO": "SN",
+      "idAPI": "SN"
+    },
+    {
+      "name": "Seychelles",
+      "idISO": "SC",
+      "idAPI": "SC"
+    },
+    {
+      "name": "Sierra Leona",
+      "idISO": "SL",
+      "idAPI": "SL"
+    },
+    {
+      "name": "Singapur",
+      "idISO": "SG",
+      "idAPI": "SG"
+    },
+    {
+      "name": "Eslovaquia",
+      "idISO": "SK",
+      "idAPI": "SK"
+    },
+    {
+      "name": "Eslovenia",
+      "idISO": "SI",
+      "idAPI": "SI"
+    },
+    {
+      "name": "Islas Salomón",
+      "idISO": "SB",
+      "idAPI": "SB"
+    },
+    {
+      "name": "Somalia",
+      "idISO": "SO",
+      "idAPI": "SO"
+    },
+    {
+      "name": "Sudáfrica",
+      "idISO": "ZA",
+      "idAPI": "ZA"
+    },
+    {
+      "name": "Georgia del Sur y las Islas Sandwich del Sur",
+      "idISO": "GS",
+      "idAPI": "GS"
+    },
+    {
+      "name": "España",
+      "idISO": "ES",
+      "idAPI": "ES"
+    },
+    {
+      "name": "Sri Lanka",
+      "idISO": "LK",
+      "idAPI": "LK"
+    },
+    {
+      "name": "Sudán",
+      "idISO": "SD",
+      "idAPI": "SD"
+    },
+    {
+      "name": "Suriname",
+      "idISO": "SR",
+      "idAPI": "SR"
+    },
+    {
+      "name": "Svalbard y Jan Mayen",
+      "idISO": "SJ",
+      "idAPI": "SJ"
+    },
+    {
+      "name": "Esuatini",
+      "idISO": "SZ",
+      "idAPI": "SZ"
+    },
+    {
+      "name": "Suecia",
+      "idISO": "SE",
+      "idAPI": "SE"
+    },
+    {
+      "name": "Suiza",
+      "idISO": "CH",
+      "idAPI": "CH"
+    },
+    {
+      "name": "República Árabe Siria",
+      "idISO": "SY",
+      "idAPI": "SY"
+    },
+    {
+      "name": "Taiwán",
+      "idISO": "TW",
+      "idAPI": "TW"
+    },
+    {
+      "name": "Tayikistán",
+      "idISO": "TJ",
+      "idAPI": "TJ"
+    },
+    {
+      "name": "Tanzania",
+      "idISO": "TZ",
+      "idAPI": "TZ"
+    },
+    {
+      "name": "Tailandia",
+      "idISO": "TH",
+      "idAPI": "TH"
+    },
+    {
+      "name": "Timor-Leste",
+      "idISO": "TL",
+      "idAPI": "TL"
+    },
+    {
+      "name": "Togo",
+      "idISO": "TG",
+      "idAPI": "TG"
+    },
+    {
+      "name": "Tokelau",
+      "idISO": "TK",
+      "idAPI": "TK"
+    },
+    {
+      "name": "Tonga",
+      "idISO": "TO",
+      "idAPI": "TO"
+    },
+    {
+      "name": "Trinidad y Tobago",
+      "idISO": "TT",
+      "idAPI": "TT"
+    },
+    {
+      "name": "Túnez",
+      "idISO": "TN",
+      "idAPI": "TN"
+    },
+    {
+      "name": "Turquía",
+      "idISO": "TR",
+      "idAPI": "TR"
+    },
+    {
+      "name": "Turkmenistán",
+      "idISO": "TM",
+      "idAPI": "TM"
+    },
+    {
+      "name": "Islas Turcas y Caicos",
+      "idISO": "TC",
+      "idAPI": "TC"
+    },
+    {
+      "name": "Tuvalu",
+      "idISO": "TV",
+      "idAPI": "TV"
+    },
+    {
+      "name": "Uganda",
+      "idISO": "UG",
+      "idAPI": "UG"
+    },
+    {
+      "name": "Ucrania",
+      "idISO": "UA",
+      "idAPI": "UA"
+    },
+    {
+      "name": "Emiratos Árabes Unidos",
+      "idISO": "AE",
+      "idAPI": "AE"
+    },
+    {
+      "name": "Reino Unido",
+      "idISO": "GB",
+      "idAPI": "GB"
+    },
+    {
+      "name": "Estados Unidos",
+      "idISO": "US",
+      "idAPI": "US"
+    },
+    {
+      "name": "Islas Ultramarinas Menores de los Estados Unidos",
+      "idISO": "UM",
+      "idAPI": "UM"
+    },
+    {
+      "name": "Uruguay",
+      "idISO": "UY",
+      "idAPI": "UY"
+    },
+    {
+      "name": "Uzbekistán",
+      "idISO": "UZ",
+      "idAPI": "UZ"
+    },
+    {
+      "name": "Vanuatu",
+      "idISO": "VU",
+      "idAPI": "VU"
+    },
+    {
+      "name": "Venezuela",
+      "idISO": "VE",
+      "idAPI": "VE"
+    },
+    {
+      "name": "Vietnam",
+      "idISO": "VN",
+      "idAPI": "VN"
+    },
+    {
+      "name": "Islas Vírgenes británicas",
+      "idISO": "VG",
+      "idAPI": "VG"
+    },
+    {
+      "name": "Islas Vírgenes de los Estados Unidos",
+      "idISO": "VI",
+      "idAPI": "VI"
+    },
+    {
+      "name": "Wallis y Futuna",
+      "idISO": "WF",
+      "idAPI": "WF"
+    },
+    {
+      "name": "Sahara Occidental",
+      "idISO": "EH",
+      "idAPI": "EH"
+    },
+    {
+      "name": "Yemen",
+      "idISO": "YE",
+      "idAPI": "YE"
+    },
+    {
+      "name": "Zambia",
+      "idISO": "ZM",
+      "idAPI": "ZM"
+    },
+    {
+      "name": "Zimbabue",
+      "idISO": "ZW",
+      "idAPI": "ZW"
+    },
+    {
+      "name": "Islas Åland",
+      "idISO": "AX",
+      "idAPI": "AX"
+    },
+    {
+      "name": "Bonaire, San Eustaquio y Saba",
+      "idISO": "BQ",
+      "idAPI": "BQ"
+    },
+    {
+      "name": "Curaçao",
+      "idISO": "CW",
+      "idAPI": "CW"
+    },
+    {
+      "name": "Guernsey",
+      "idISO": "GG",
+      "idAPI": "GG"
+    },
+    {
+      "name": "Isla de Man",
+      "idISO": "IM",
+      "idAPI": "IM"
+    },
+    {
+      "name": "Jersey",
+      "idISO": "JE",
+      "idAPI": "JE"
+    },
+    {
+      "name": "Montenegro",
+      "idISO": "ME",
+      "idAPI": "ME"
+    },
+    {
+      "name": "Saint Barthélemy",
+      "idISO": "BL",
+      "idAPI": "BL"
+    },
+    {
+      "name": "Saint Martin (francesa)",
+      "idISO": "MF",
+      "idAPI": "MF"
+    },
+    {
+      "name": "Serbia",
+      "idISO": "RS",
+      "idAPI": "RS"
+    },
+    {
+      "name": "Sint Maarten (neerlandesa)",
+      "idISO": "SX",
+      "idAPI": "SX"
+    },
+    {
+      "name": "Sudán del Sur",
+      "idISO": "SS",
+      "idAPI": "SS"
+    },
+    {
+      "name": "Kosovo",
+      "idISO": "XK",
+      "idAPI": "XK"
+    }
+  ]
+}
