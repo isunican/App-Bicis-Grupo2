@@ -37,6 +37,8 @@ public interface IMainContract {
          */
         public void onMenuInfoClicked();
 
+        public void onNetworkInfoClicked(Network network);
+
     }
 
     /**
@@ -97,6 +99,8 @@ public interface IMainContract {
          * Only the Presenter should call this method
          */
         public void showInfoActivity();
+
+        public void showNetworkDetails(Network network);
 
     }
 }

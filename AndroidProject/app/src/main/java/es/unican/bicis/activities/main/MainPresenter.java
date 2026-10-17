@@ -42,6 +42,11 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
+    @Override
+    public void onNetworkInfoClicked(Network network) {
+        view.showNetworkDetails(network);
+    }
+
     /**
      * Loads the bike networks from the repository, and sends them to the view
      */

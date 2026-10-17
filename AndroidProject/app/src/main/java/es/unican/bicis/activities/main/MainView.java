@@ -114,7 +114,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showNetworks(List<Network> networks) {
         ListView list = findViewById(R.id.lvNetworks);
-        NetworksArrayAdapter adapter = new NetworksArrayAdapter(this, networks);
+        NetworksArrayAdapter adapter = new NetworksArrayAdapter(this, networks, network -> presenter.onNetworkInfoClicked(network));
         list.setAdapter(adapter);
     }
 
@@ -152,6 +152,17 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
+        startActivity(intent);
+    }
+
+    /**
+     * @see IMainContract.View#showNetworkDetails(Network)
+     * @param network the network
+     */
+    @Override
+    public void showNetworkDetails(Network network) {
+        Intent intent = new Intent(this, DetailsView.class);
+        intent.putExtra(DetailsView.INTENT_NETWORK, Parcels.wrap(network));
         startActivity(intent);
     }
 }
