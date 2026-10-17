@@ -185,7 +185,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void showLoadCorrect(int networks) {
-        String showText = R.string.labelResults + ": " + networks;
+        String showText = getString(R.string.labelResults) + ": " + networks;
         TextView text = findViewById(R.id.lblResultados);
         text.setText(showText);
     }
