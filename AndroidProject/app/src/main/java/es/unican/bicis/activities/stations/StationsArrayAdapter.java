@@ -96,7 +96,7 @@ public class StationsArrayAdapter extends BaseAdapter {
     }
 
     private int getAvailabilityColor(Availability av) {
-        int color = 0;
+        int color;
 
         switch (av) {
             case HIGH:
@@ -108,9 +108,8 @@ public class StationsArrayAdapter extends BaseAdapter {
             case NONE:
                 color = R.color.availabilityNone;
                 break;
-            case UNKNOWN:
-                color = R.color.availabilityUnknown;
-                break;
+            default:
+                return R.color.availabilityUnknown;
         }
 
         return color;
