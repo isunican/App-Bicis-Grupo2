@@ -9,4 +9,5 @@
     <string name="cityHint">Ciudad</string>
     <string name="errorTitulo">Error</string>
     <string name="errorPaisNoSeleccionado">No se ha seleccionado ningún pais</string>
+    <string name="labelResults">Resultados</string>
 </resources>
