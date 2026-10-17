@@ -64,6 +64,11 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
+    @Override
+    public void onCountrySelected(Country country) {
+        view.showCities();
+    }
+
     /**
      * Loads the bike networks from the repository, and sends them to the view
      */

@@ -43,6 +43,7 @@ public interface IMainContract {
          */
         public void onMenuInfoClicked();
 
+        public void onCountrySelected(Country country);
     }
 
     /**
@@ -110,6 +111,7 @@ public interface IMainContract {
          */
         public void showInfoActivity();
 
+        public void showCities();
     }
 }
 // Relanzar analisis SonarCloud Sprint 1

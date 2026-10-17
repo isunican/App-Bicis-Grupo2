@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -113,6 +115,26 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             Country country = (Country) countrySpinner.getSelectedItem();
             presenter.onSearchClicked(country);
         });
+
+        // country spinner listener
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Country country = (Country) parent.getItemAtPosition(position);
+
+                // hint row (grayed out in italics) is null so must be ignored
+                if (country != null) {
+                    // tell the presenter to do the respective action when a country gets picked
+                    presenter.onCountrySelected(country);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // nothing to do if no country gets selected
+                // but we're forced to override this method
+            }
+        });
     }
 
     /**
@@ -192,5 +214,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void showCities() {
+        Toast.makeText(this, "Seleccionado un pais", Toast.LENGTH_SHORT).show();
     }
 }
