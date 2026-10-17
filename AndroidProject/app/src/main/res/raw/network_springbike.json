@@ -1,0 +1,64 @@
+{
+    "network": {
+        "id": "springbike",
+        "name": "SpringBike",
+        "location": {
+            "latitude": 39.79297,
+            "longitude": -89.65067,
+            "city": "Springfield, Illinois",
+            "country": "US"
+        },
+        "href": "/v2/networks/springbike",
+        "company": [
+            "Ballard Technologies"
+        ],
+        "ebikes": false,
+        "stations": [
+            {
+                "id": "sp-001",
+                "name": "Capitol Complex",
+                "latitude": 39.79905,
+                "longitude": -89.64412,
+                "timestamp": "2026-10-16T09:15:42.123456+00:00Z",
+                "free_bikes": 12,
+                "empty_slots": 3
+            },
+            {
+                "id": "sp-002",
+                "name": "Lincoln Home Visitor Center",
+                "latitude": 39.79872,
+                "longitude": -89.64633,
+                "timestamp": "2026-10-16T09:14:10.554210+00:00Z",
+                "free_bikes": 6,
+                "empty_slots": 9
+            },
+            {
+                "id": "sp-003",
+                "name": "Union Station",
+                "latitude": 39.80211,
+                "longitude": -89.64388,
+                "timestamp": "2026-10-16T09:15:01.002000+00:00Z",
+                "free_bikes": 3,
+                "empty_slots": 12
+            },
+            {
+                "id": "sp-004",
+                "name": "Washington Park",
+                "latitude": 39.77012,
+                "longitude": -89.69433,
+                "timestamp": "2026-10-16T09:12:55.870000+00:00Z",
+                "free_bikes": 1,
+                "empty_slots": 14
+            },
+            {
+                "id": "sp-005",
+                "name": "Lake Springfield Marina",
+                "latitude": 39.74521,
+                "longitude": -89.62107,
+                "timestamp": "2026-10-16T09:13:30.310000+00:00Z",
+                "free_bikes": 0,
+                "empty_slots": 15
+            }
+        ]
+    }
+}
