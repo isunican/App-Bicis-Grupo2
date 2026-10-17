@@ -1,7 +1,5 @@
 package es.unican.bicis.model;
 
-import android.service.autofill.Dataset;
-
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
@@ -18,7 +16,7 @@ public class Station {
     @SerializedName("latitude")     protected double latitude;
     @SerializedName("longitude")    protected double longitude;
     @SerializedName("timestamp")    protected String timestamp;
-    @SerializedName("freeBikes")    protected Integer free_bikes;
-    @SerializedName("emptySlots")   protected Integer empty_slots;
+    @SerializedName("free_bikes")    protected Integer freeBikes;
+    @SerializedName("empty_slots")   protected Integer emptySlots;
 
 }
