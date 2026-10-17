@@ -1,12 +1,12 @@
 package es.unican.bicis.activities.main;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -104,6 +104,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             Network network = (Network) parent.getItemAtPosition(position);
             presenter.onNetworkClicked(network);
         });
+
+        // search button action upon press
+        Spinner countrySpinner = findViewById(R.id.spPais);
+        Button searchButton = findViewById(R.id.btnBuscar);
+        searchButton.setOnClickListener(v -> {
+            // send the selected spinner items in the view to the presenter
+            Country country = (Country) countrySpinner.getSelectedItem();
+            presenter.onSearchClicked(country);
+        });
     }
 
     /**
@@ -141,6 +150,16 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showCountry(Country country) {
         Toast.makeText(this, getString(R.string.countrySelected, country.getName()), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showCountryError() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.errorPaisNoSeleccionado)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     /**

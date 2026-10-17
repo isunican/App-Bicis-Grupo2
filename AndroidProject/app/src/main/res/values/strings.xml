@@ -5,4 +5,8 @@
     <string name="loadCorrect">Se han cargado %d redes</string>
     <string name="loadError">Ha habido un error cargando las redes</string>
     <string name="info_text">Aplicación creada para el Proyecto Integrado Curso 2026-2027</string>
+    <string name="countryHint">País</string>
+    <string name="countrySelected">País seleccionado: %1$s</string>
+    <string name="errorTitulo">Error</string>
+    <string name="errorPaisNoSeleccionado">No se ha seleccionado ningún pais</string>
 </resources>

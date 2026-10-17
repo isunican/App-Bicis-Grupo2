@@ -30,6 +30,8 @@ public interface IMainContract {
 
         public void onCountrySelected(Country country);
 
+        public void onSearchClicked(Country country);
+
         /**
          * The presenter is informed that a network has been clicked
          * Only the View should call this method
@@ -81,6 +83,8 @@ public interface IMainContract {
         public void showCountries(List<Country> countries);
         
         public void showCountry(Country country);
+
+        public void showCountryError();
 
         /**
          * The view is requested to display a notification indicating  that the networks

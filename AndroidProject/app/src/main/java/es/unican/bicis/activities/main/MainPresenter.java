@@ -40,6 +40,17 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showCountry(country);
     }
 
+    @Override
+    public void onSearchClicked(Country country) {
+        if (country == null) {
+            // the hint was selected, meaning no country was picked
+            view.showCountryError();
+            return;
+        } else {
+            // TODO
+        }
+    }
+
     /**
      * @see IMainContract.Presenter#onNetworkClicked(Network)
      * @param network the network that has been clicked
