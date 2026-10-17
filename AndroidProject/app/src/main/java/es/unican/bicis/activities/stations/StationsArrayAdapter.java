@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 import es.unican.bicis.R;
+import es.unican.bicis.model.Availability;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
 
@@ -68,6 +71,14 @@ public class StationsArrayAdapter extends BaseAdapter {
 
         }
 
+        // availability
+        {
+            ImageView iv = convertView.findViewById(R.id.ivAvailability);
+            Availability availability = Availability.freeBikes(station.getFreeBikes());
+            iv.setColorFilter(ContextCompat.getColor(context, getAvailabilityColor(availability)));
+
+        }
+
         return convertView;
     }
 
@@ -83,5 +94,26 @@ public class StationsArrayAdapter extends BaseAdapter {
         } catch (ParseException e) {
             return rawDate;
         }
+    }
+
+    private int getAvailabilityColor(Availability av) {
+        int color = -1;
+
+        switch (av) {
+            case HIGH:
+                color = R.color.availabilityHigh;
+                break;
+            case LOW:
+                color = R.color.availabilityLow;
+                break;
+            case NONE:
+                color = R.color.availabilityNone;
+                break;
+            case UNKNOWN:
+                color = R.color.availabilityUnknown;
+                break;
+        }
+
+        return color;
     }
 }
