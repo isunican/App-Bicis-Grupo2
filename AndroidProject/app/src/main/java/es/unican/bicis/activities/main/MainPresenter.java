@@ -69,7 +69,9 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public void onCountrySelected(Country country) {
         if (country == null) {
-            // TODO
+            // if no city is selected, the city spinner should still be initialized to prevent it
+            // from showing blank due to no adapter being instantiated
+            view.showCities(new ArrayList<>());
             return;
         } else {
             loadCities(country.getIdAPI());

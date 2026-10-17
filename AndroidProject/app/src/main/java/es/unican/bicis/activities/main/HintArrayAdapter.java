@@ -15,35 +15,37 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import java.util.List;
-import es.unican.bicis.model.Country;
+import java.util.function.Function;
 
-public class CountriesArrayAdapter extends BaseAdapter {
+public class HintArrayAdapter<T> extends BaseAdapter {
 
     private static final int HINT_POSITION = 0;
     private final Context context;
-    private final List<Country> countries;
+    private final List<T> items;
     private final String hint;
+    private final Function<T, String> labelOf;
 
-    public CountriesArrayAdapter(@NonNull Context context, @NonNull List<Country> countries, @Nullable String hint) {
+    public HintArrayAdapter(@NonNull Context context, @NonNull List<T> items, @Nullable String hint, @NonNull Function<T, String> labelOf) {
         this.context = context;
-        this.countries = countries;
+        this.items = items;
         this.hint = hint;
+        this.labelOf = labelOf;
     }
-    
+
     private boolean hasHint() {
         return hint != null;
     }
 
-    private Country countryAt(int position) {
+    private T itemAt(int position) {
         if (hasHint()) {
             position--;
         }
-        return countries.get(position);
+        return items.get(position);
     }
 
     @Override
     public int getCount() {
-        int count = countries.size();
+        int count = items.size();
         if (hasHint()) {
             count++;
         }
@@ -55,7 +57,7 @@ public class CountriesArrayAdapter extends BaseAdapter {
         if (hasHint() && position == HINT_POSITION) {
             return null;
         }
-        return countryAt(position);
+        return itemAt(position);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class CountriesArrayAdapter extends BaseAdapter {
         if (hasHint() && position == HINT_POSITION) {
             tv.setText(styledHint());
         } else {
-            tv.setText(countryAt(position).getName());
+            tv.setText(labelOf.apply(itemAt(position)));
         }
         return convertView;
     }

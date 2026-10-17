@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -165,7 +164,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showCountries(List<Country> countries) {
         Spinner spinner = findViewById(R.id.spPais);
-        CountriesArrayAdapter adapter = new CountriesArrayAdapter(this, countries, getString(R.string.countryHint));
+        HintArrayAdapter<Country> adapter = new HintArrayAdapter<>(this, countries, getString(R.string.countryHint), Country::getName);
         spinner.setAdapter(adapter);
     }
 
@@ -219,8 +218,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showCities(List<String> cities) {
         Spinner spinner = findViewById(R.id.spCiudad);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cities);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        HintArrayAdapter<String> adapter = new HintArrayAdapter<>(this, cities, getString(R.string.cityHint), city -> city);
         spinner.setAdapter(adapter);
     }
 }
