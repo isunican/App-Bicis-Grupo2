@@ -13,12 +13,28 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.Bicis.Toolbar"
-        app:layout_constraintBottom_toTopOf="@+id/lvStations"
+        app:layout_constraintBottom_toTopOf="@+id/tvNetworkLocation"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-    
+
+    <TextView
+        android:id="@+id/tvNetworkLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="center_vertical|start"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/ic_location"
+        android:drawablePadding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/lvStations"
+        tools:text="España, Santander" />
+
     <ListView
         android:id="@+id/lvStations"
         android:layout_width="match_parent"
@@ -26,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tvResults"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/tvNetworkLocation"
         tools:listitem="@layout/activity_stations_list_item"/>
 
     <TextView
