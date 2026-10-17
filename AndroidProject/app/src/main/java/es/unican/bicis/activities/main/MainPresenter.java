@@ -1,8 +1,10 @@
 package es.unican.bicis.activities.main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import es.unican.bicis.model.Country;
+import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
@@ -24,7 +26,6 @@ public class MainPresenter implements IMainContract.Presenter {
     public void init(IMainContract.View view) {
         this.view = view;
         this.view.init();
-        //load();
     }
 
     @Override
@@ -42,7 +43,7 @@ public class MainPresenter implements IMainContract.Presenter {
             view.showCountryError();
             return;
         } else {
-            // TODO
+            load(country.getIdAPI());
         }
     }
 
@@ -66,15 +67,16 @@ public class MainPresenter implements IMainContract.Presenter {
     /**
      * Loads the bike networks from the repository, and sends them to the view
      */
-    private void load() {
+    private void load(String countryIdAPI) {
         INetworksRepository repository = view.getNetworksRepository();
 
         NetworksCallback callBack = new NetworksCallback() {
 
             @Override
             public void onSuccess(List<Network> networks) {
-                view.showNetworks(networks);
-                view.showLoadCorrect(networks.size());
+                List<Network> filtered = filterByCountry(networks, countryIdAPI);
+                view.showNetworks(filtered);
+                view.showLoadCorrect(filtered.size());
             }
 
             @Override
@@ -84,5 +86,18 @@ public class MainPresenter implements IMainContract.Presenter {
         };
 
         repository.requestNetworks(callBack);
+    }
+
+    private List<Network> filterByCountry(List<Network> networks, String countryIdAPI) {
+        List<Network> filtered = new ArrayList<>();
+        for (Network network : networks) {
+            Location location = network.getLocation();
+
+            // only grab the ones that match our filter
+            if (location != null && countryIdAPI.equals(location.getCountry())) {
+                filtered.add(network);
+            }
+        }
+        return filtered;
     }
 }
