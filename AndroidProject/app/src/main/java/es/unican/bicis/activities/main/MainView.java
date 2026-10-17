@@ -136,7 +136,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#showNetworkDetails(Network)
+     * @see IMainContract.View#showStations(Network)
      * @param network the network
      */
     @Override
