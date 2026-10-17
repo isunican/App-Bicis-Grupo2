@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -109,11 +110,13 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // search button action upon press
         Spinner countrySpinner = findViewById(R.id.spPais);
+        Spinner citySpinner = findViewById(R.id.spCiudad);
         Button searchButton = findViewById(R.id.btnBuscar);
         searchButton.setOnClickListener(v -> {
             // send the selected spinner items in the view to the presenter
             Country country = (Country) countrySpinner.getSelectedItem();
-            presenter.onSearchClicked(country);
+            String city = (String) citySpinner.getSelectedItem();
+            presenter.onSearchClicked(country, city);
         });
 
         // country spinner listener
@@ -214,7 +217,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     @Override
-    public void showCities() {
-        Toast.makeText(this, "Seleccionado un pais", Toast.LENGTH_SHORT).show();
+    public void showCities(List<String> cities) {
+        Spinner spinner = findViewById(R.id.spCiudad);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cities);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 }

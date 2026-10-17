@@ -28,7 +28,7 @@ public interface IMainContract {
 
         public void initCountrySpinner();
 
-        public void onSearchClicked(Country country);
+        public void onSearchClicked(Country country, String city);
 
         /**
          * The presenter is informed that a network has been clicked
@@ -111,7 +111,7 @@ public interface IMainContract {
          */
         public void showInfoActivity();
 
-        public void showCities();
+        public void showCities(List<String> cities);
     }
 }
 // Relanzar analisis SonarCloud Sprint 1
