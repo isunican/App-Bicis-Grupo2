@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,16 +26,18 @@ public class NetworksArrayAdapter extends BaseAdapter {
 
     /** Context of the application */
     private final Context context;
+    private final OnInfoClickListener listener;
 
     /**
      * Constructs an adapter to handle a list of networks
      * @param context the application context
      * @param objects the list of networks
      */
-    public NetworksArrayAdapter(@NonNull Context context, @NonNull List<Network> objects) {
+    public NetworksArrayAdapter(@NonNull Context context, @NonNull List<Network> objects, @NonNull OnInfoClickListener listener) {
         // we know the parameters are not null because of the @NonNull annotation
         this.networks = objects;
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -75,7 +78,17 @@ public class NetworksArrayAdapter extends BaseAdapter {
             tv.setText(city);
         }
 
+        // info
+        {
+            ImageView ivNetworkInfo = convertView.findViewById(R.id.ivNetworkInfo);
+            ivNetworkInfo.setOnClickListener(v -> listener.onInfoClick(network));
+        }
+
         return convertView;
+    }
+
+    public interface OnInfoClickListener {
+        void onInfoClick(Network network);
     }
 }
 // Integración Sprint 1 - análisis calidad

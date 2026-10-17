@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.bicis.R;
 import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.activities.details.DetailsView;
+import es.unican.bicis.activities.stations.StationsView;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
 
@@ -113,7 +114,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showNetworks(List<Network> networks) {
         ListView list = findViewById(R.id.lvNetworks);
-        NetworksArrayAdapter adapter = new NetworksArrayAdapter(this, networks);
+        NetworksArrayAdapter adapter = new NetworksArrayAdapter(this, networks, network -> presenter.onNetworkInfoClicked(network));
         list.setAdapter(adapter);
     }
 
@@ -135,12 +136,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#showNetworkDetails(Network)
+     * @see IMainContract.View#showStations(Network)
      * @param network the network
      */
     @Override
-    public void showNetworkDetails(Network network) {
-        Intent intent = new Intent(this, DetailsView.class);
+    public void showStations(Network network) {
+        Intent intent = new Intent(this, StationsView.class);
         intent.putExtra(DetailsView.INTENT_NETWORK, Parcels.wrap(network));
         startActivity(intent);
     }
@@ -151,6 +152,17 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
+        startActivity(intent);
+    }
+
+    /**
+     * @see IMainContract.View#showNetworkDetails(Network)
+     * @param network the network
+     */
+    @Override
+    public void showNetworkDetails(Network network) {
+        Intent intent = new Intent(this, DetailsView.class);
+        intent.putExtra(DetailsView.INTENT_NETWORK, Parcels.wrap(network));
         startActivity(intent);
     }
 }
