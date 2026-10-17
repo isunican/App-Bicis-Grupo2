@@ -3,7 +3,7 @@ package es.unican.bicis.model;
 public enum Availability {
     HIGH, LOW, NONE, UNKNOWN;
 
-    public static Availability freeBikes(Integer freeBikes) {
+    public static Availability bikesAvailability(Integer freeBikes) {
         if (freeBikes == null) {
             return UNKNOWN;
         }

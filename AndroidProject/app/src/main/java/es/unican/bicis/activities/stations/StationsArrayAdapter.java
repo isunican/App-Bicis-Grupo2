@@ -19,7 +19,6 @@ import java.util.Locale;
 
 import es.unican.bicis.R;
 import es.unican.bicis.model.Availability;
-import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
 
 public class StationsArrayAdapter extends BaseAdapter {
@@ -74,7 +73,7 @@ public class StationsArrayAdapter extends BaseAdapter {
         // availability
         {
             ImageView iv = convertView.findViewById(R.id.ivAvailability);
-            Availability availability = Availability.freeBikes(station.getFreeBikes());
+            Availability availability = Availability.bikesAvailability(station.getFreeBikes());
             iv.setColorFilter(ContextCompat.getColor(context, getAvailabilityColor(availability)));
 
         }
@@ -97,7 +96,7 @@ public class StationsArrayAdapter extends BaseAdapter {
     }
 
     private int getAvailabilityColor(Availability av) {
-        int color = -1;
+        int color = 0;
 
         switch (av) {
             case HIGH:

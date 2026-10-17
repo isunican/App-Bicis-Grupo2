@@ -3,6 +3,7 @@ package es.unican.bicis.activities.stations;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
@@ -22,6 +23,14 @@ public class StationsPresenter implements IStationsContract.Presenter {
         this.view = view;
         this.view.init();
         load();
+    }
+
+    /**
+     * @see IMainContract.Presenter#onMenuInfoClicked()
+     */
+    @Override
+    public void onMenuInfoClicked() {
+        view.showInfoActivity();
     }
 
     private void load() {

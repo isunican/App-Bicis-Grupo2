@@ -2,6 +2,7 @@ package es.unican.bicis.activities.stations;
 
 import java.util.List;
 
+import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.INetworksRepository;
@@ -21,6 +22,9 @@ public interface IStationsContract {
          * @param view
          */
         public void init(View view);
+
+
+        public void onMenuInfoClicked();
 
     }
 
@@ -62,6 +66,12 @@ public interface IStationsContract {
         public void showLoadError(String reason);
 
         public void showLoadCorrect(int stations);
+
+        /**
+         * The view is requested to open the info activity.
+         * Only the Presenter should call this method
+         */
+        public void showInfoActivity();
 
     }
 }

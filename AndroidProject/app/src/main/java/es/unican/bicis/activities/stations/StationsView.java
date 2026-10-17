@@ -1,13 +1,16 @@
 package es.unican.bicis.activities.stations;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,8 +24,8 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.bicis.R;
+import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.activities.main.IMainContract;
-import es.unican.bicis.activities.main.MainPresenter;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
@@ -59,6 +62,22 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    /**
+     * This is called when an item in the action bar menu is selected.
+     * @param item The menu item that was selected.
+     *
+     * @return true if we have handled the selection
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.menuItemInfo) {
+            presenter.onMenuInfoClicked();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -144,6 +163,15 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     @Override
     public void showLoadCorrect(int stations) {
         tvResults.setText(String.format("Resultados: %d", stations));
+    }
+
+    /**
+     * @see IStationsContract.View#showInfoActivity()
+     */
+    @Override
+    public void showInfoActivity() {
+        Intent intent = new Intent(this, InfoView.class);
+        startActivity(intent);
     }
 
 }

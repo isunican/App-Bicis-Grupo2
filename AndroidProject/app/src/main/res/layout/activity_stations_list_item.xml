@@ -25,7 +25,7 @@
         android:layout_marginStart="16dp"
         android:maxLines="1"
         android:ellipsize="end"
-        app:layout_constraintBottom_toBottomOf="@+id/tvUpdateDate"
+        app:layout_constraintBottom_toTopOf="@+id/tvUpdateDate"
         app:layout_constraintStart_toEndOf="@+id/ivAvailability"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivFavorite"
