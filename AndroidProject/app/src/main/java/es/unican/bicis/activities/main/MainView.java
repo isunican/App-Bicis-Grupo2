@@ -122,11 +122,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Country country = (Country) parent.getItemAtPosition(position);
 
-                // hint row (grayed out in italics) is null so must be ignored
-                if (country != null) {
-                    // tell the presenter to do the respective action when a country gets picked
-                    presenter.onCountrySelected(country);
-                }
+                // tell the presenter to do the respective action when a country gets picked
+                presenter.onCountrySelected(country);
             }
 
             @Override

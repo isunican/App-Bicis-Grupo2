@@ -66,7 +66,10 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void onCountrySelected(Country country) {
-        view.showCities();
+        // hint row (grayed out in italics) is null so no action to perform
+        if (country != null) {
+            view.showCities();
+        }
     }
 
     /**
