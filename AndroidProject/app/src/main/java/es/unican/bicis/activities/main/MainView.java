@@ -148,11 +148,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     @Override
-    public void showCountry(Country country) {
-        Toast.makeText(this, getString(R.string.countrySelected, country.getName()), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void showCountryError() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.errorTitulo)

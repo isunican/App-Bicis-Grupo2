@@ -28,8 +28,6 @@ public interface IMainContract {
 
         public void initCountrySpinner();
 
-        public void onCountrySelected(Country country);
-
         public void onSearchClicked(Country country);
 
         /**
@@ -81,8 +79,6 @@ public interface IMainContract {
         public void showNetworks(List<Network> networks);
 
         public void showCountries(List<Country> countries);
-        
-        public void showCountry(Country country);
 
         public void showCountryError();
 

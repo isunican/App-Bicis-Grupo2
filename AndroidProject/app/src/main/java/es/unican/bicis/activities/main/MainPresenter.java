@@ -36,11 +36,6 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     @Override
-    public void onCountrySelected(Country country) {
-        view.showCountry(country);
-    }
-
-    @Override
     public void onSearchClicked(Country country) {
         if (country == null) {
             // the hint was selected, meaning no country was picked
