@@ -12,7 +12,10 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import es.unican.bicis.model.CountriesResponse;
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.NetworkResponse;
 import es.unican.bicis.model.NetworksResponse;
@@ -58,6 +61,18 @@ public class Utils {
             return response != null ? response.getNetwork() : null;
         } catch (IOException e) {
             return null;
+        }
+    }
+
+    public static List<Country> parseCountries(Context context, int jsonId) {
+        Type typeToken = new TypeToken<CountriesResponse>() { }.getType();
+        try (InputStream is = context.getResources().openRawResource(jsonId);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            CountriesResponse response = new GsonBuilder().create().fromJson(reader, typeToken);
+            List<Country> countries = response != null ? response.getCountries() : null;
+            return countries != null ? countries : new ArrayList<>();
+        } catch (IOException e) {
+            return new ArrayList<>();
         }
     }
 }

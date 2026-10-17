@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,7 +26,10 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.bicis.R;
 import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.activities.details.DetailsView;
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.repository.CountriesList;
+import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -53,6 +59,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // instantiate presenter and launch initial business logic
         presenter = new MainPresenter();
         presenter.init(this);
+
+        // populate the country list
+        presenter.initCountrySpinner();
     }
 
     /**
@@ -95,6 +104,27 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             Network network = (Network) parent.getItemAtPosition(position);
             presenter.onNetworkClicked(network);
         });
+
+        // country spinner listener
+        Spinner countrySpinner = findViewById(R.id.spPais);
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Country country = (Country) parent.getItemAtPosition(position);
+
+                // hint row (grayed out in italics) is null so must be ignored
+                if (country != null) {
+                    // tell the presenter to do the respective action when a country gets picked
+                    presenter.onCountrySelected(country);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO
+                // if no country is selected, show an error dialog (see acceptance criteria)
+            }
+        });
     }
 
     /**
@@ -106,6 +136,11 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         return repository;
     }
 
+    @Override
+    public ICountriesList getCountriesList() {
+        return new CountriesList(getApplicationContext());
+    }
+
     /**
      * @see IMainContract.View#showNetworks(List)
      * @param networks the list of networks
@@ -115,6 +150,18 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         ListView list = findViewById(R.id.lvNetworks);
         NetworksArrayAdapter adapter = new NetworksArrayAdapter(this, networks);
         list.setAdapter(adapter);
+    }
+
+    @Override
+    public void showCountries(List<Country> countries) {
+        Spinner spinner = findViewById(R.id.spPais);
+        CountriesArrayAdapter adapter = new CountriesArrayAdapter(this, countries, getString(R.string.countryHint));
+        spinner.setAdapter(adapter);
+    }
+
+    @Override
+    public void showCountry(Country country) {
+        Toast.makeText(this, getString(R.string.countrySelected, country.getName()), Toast.LENGTH_SHORT).show();
     }
 
     /**

@@ -2,7 +2,9 @@ package es.unican.bicis.activities.main;
 
 import java.util.List;
 
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworksCallback;
 
@@ -22,7 +24,20 @@ public class MainPresenter implements IMainContract.Presenter {
     public void init(IMainContract.View view) {
         this.view = view;
         this.view.init();
-        load();
+        //load();
+    }
+
+    @Override
+    public void initCountrySpinner() {
+        // populate the spinner with the data obtained through the presenter
+        ICountriesList countriesList = view.getCountriesList();
+        List<Country> countries = countriesList.getList();
+        view.showCountries(countries);
+    }
+
+    @Override
+    public void onCountrySelected(Country country) {
+        view.showCountry(country);
     }
 
     /**

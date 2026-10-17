@@ -2,7 +2,9 @@ package es.unican.bicis.activities.main;
 
 import java.util.List;
 
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -23,6 +25,10 @@ public interface IMainContract {
          * @param view
          */
         public void init(View view);
+
+        public void initCountrySpinner();
+
+        public void onCountrySelected(Country country);
 
         /**
          * The presenter is informed that a network has been clicked
@@ -63,12 +69,18 @@ public interface IMainContract {
          */
         public INetworksRepository getNetworksRepository();
 
+        public ICountriesList getCountriesList();
+
         /**
          * The view is requested to display the given list of bike networks.
          * Only the Presenter should call this method
          * @param networks the list of networks
          */
         public void showNetworks(List<Network> networks);
+
+        public void showCountries(List<Country> countries);
+        
+        public void showCountry(Country country);
 
         /**
          * The view is requested to display a notification indicating  that the networks
