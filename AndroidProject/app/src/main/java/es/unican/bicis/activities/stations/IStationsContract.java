@@ -2,6 +2,7 @@ package es.unican.bicis.activities.stations;
 
 import java.util.List;
 
+import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.INetworksRepository;
 
@@ -48,6 +49,8 @@ public interface IStationsContract {
          * @param stations
          */
         public void showStations(List<Station> stations);
+
+        public void showNetworkLocation(Location networkLocation);
 
 
         /**

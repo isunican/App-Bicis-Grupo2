@@ -3,6 +3,7 @@ package es.unican.bicis.activities.stations;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
@@ -27,7 +28,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
         String networkId = view.getSelectedNetworkId();
 
         if (networkId == null || networkId.trim().isEmpty()) {
-            view.showNoNetworkSelected();
+            view.showLoadError(null);
             return;
         }
 
@@ -45,6 +46,13 @@ public class StationsPresenter implements IStationsContract.Presenter {
                 if (stations == null) {
                     stations = new ArrayList<>();
                 }
+
+                Location networkLocation = network.getLocation();
+                if (networkLocation == null) {
+                    networkLocation = new Location();
+                }
+
+                view.showNetworkLocation(networkLocation);
                 view.showStations(stations);
                 view.showLoadCorrect(stations.size());
             }
