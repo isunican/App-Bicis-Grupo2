@@ -13,57 +13,7 @@
             "JCDecaux SE",
             "Grundon Waste Management Ltd"
         ],
-        "ebikes": true,
-        "stations": [
-            {
-                "id": "sc-001",
-                "name": "Southampton Central",
-                "latitude": 50.9071,
-                "longitude": -1.413,
-                "timestamp": "2026-10-17T08:02:15.400000+00:00Z",
-                "free_bikes": 15,
-                "empty_slots": 5,
-                "extra": {
-                    "slots": 20,
-                    "ebikes": 4
-                }
-            },
-            {
-                "id": "sc-002",
-                "name": "Ocean Village",
-                "latitude": 50.8975,
-                "longitude": -1.3946,
-                "timestamp": "2026-10-17T08:01:48.720000+00:00Z",
-                "free_bikes": 4,
-                "empty_slots": null
-            },
-            {
-                "id": "sc-003",
-                "name": "Bargate",
-                "latitude": 50.9025,
-                "longitude": -1.4048,
-                "timestamp": "2026-10-17T08:02:01.050000+00:00Z",
-                "free_bikes": 1,
-                "empty_slots": 9
-            },
-            {
-                "id": "sc-004",
-                "name": "Southampton General Hospital",
-                "latitude": 50.9344,
-                "longitude": -1.4333,
-                "timestamp": "2026-10-17T08:00:37.610000+00:00Z",
-                "free_bikes": 0,
-                "empty_slots": 10
-            },
-            {
-                "id": "sc-005",
-                "name": "Highfield Campus",
-                "latitude": 50.9356,
-                "longitude": -1.3963,
-                "timestamp": "2026-10-17T08:01:12.880000+00:00Z",
-                "free_bikes": 9,
-                "empty_slots": 6
-            }
-        ]
+        "ebikes": true
+
     }
 }
