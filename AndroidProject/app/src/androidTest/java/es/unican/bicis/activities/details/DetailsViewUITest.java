@@ -62,6 +62,7 @@ public class DetailsViewUITest {
     public void testN1_01_verDetallesCompletosSpringBike() {
         onData(withNetworkName("SpringBike"))
                 .inAdapterView(withId(R.id.lvNetworks))
+                .onChildView(withId(R.id.ivNetworkInfo))
                 .perform(click());
 
         onView(withId(R.id.tvName)).check(matches(withText("SpringBike")));
@@ -78,6 +79,7 @@ public class DetailsViewUITest {
     public void testN1_02_verDetallesParcialesNorthCycle() {
         onData(withNetworkName("NorthCycle"))
                 .inAdapterView(withId(R.id.lvNetworks))
+                .onChildView(withId(R.id.ivNetworkInfo))
                 .perform(click());
 
         onView(withId(R.id.tvName)).check(matches(withText("NorthCycle")));
@@ -93,6 +95,7 @@ public class DetailsViewUITest {
     public void testN1_03_verDetallesValidosSouthCycle() {
         onData(withNetworkName("SouthCycle"))
                 .inAdapterView(withId(R.id.lvNetworks))
+                .onChildView(withId(R.id.ivNetworkInfo))
                 .perform(click());
 
         onView(withId(R.id.tvName)).check(matches(withText("SouthCycle")));
@@ -108,6 +111,7 @@ public class DetailsViewUITest {
     public void testN1_04_detallesNoDisponiblesBike4fun() {
         onData(withNetworkName("Bike4fun"))
                 .inAdapterView(withId(R.id.lvNetworks))
+                .onChildView(withId(R.id.ivNetworkInfo))
                 .perform(click());
 
         onView(withId(R.id.tvName)).check(matches(withText("Bike4fun")));
