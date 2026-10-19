@@ -322,6 +322,11 @@
       "idAPI": "SV"
     },
     {
+      "name": "Estados Unidos",
+      "idISO": "US",
+      "idAPI": "US"
+    },
+    {
       "name": "Guinea Ecuatorial",
       "idISO": "GQ",
       "idAPI": "GQ"
@@ -870,6 +875,11 @@
       "name": "Reunión",
       "idISO": "RE",
       "idAPI": "RE"
+    },
+    {
+      "name": "Reino Unido",
+      "idISO": "UK",
+      "idAPI": "UK"
     },
     {
       "name": "Rumanía",

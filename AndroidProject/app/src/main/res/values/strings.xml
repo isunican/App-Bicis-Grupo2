@@ -10,4 +10,5 @@
     <string name="errorTitulo">Error</string>
     <string name="errorPaisNoSeleccionado">No se ha seleccionado ningún pais</string>
     <string name="labelResults">Resultados</string>
+    <string name="search">Buscar</string>
 </resources>

@@ -109,8 +109,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         });
 
         // search button action upon press
-        Spinner countrySpinner = findViewById(R.id.spPais);
-        Spinner citySpinner = findViewById(R.id.spCiudad);
+        Spinner countrySpinner = findViewById(R.id.spCountry);
+        Spinner citySpinner = findViewById(R.id.spCity);
         Button searchButton = findViewById(R.id.btnBuscar);
         searchButton.setOnClickListener(v -> {
             // send the selected spinner items in the view to the presenter
@@ -164,7 +164,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     @Override
     public void showCountries(List<Country> countries) {
-        Spinner spinner = findViewById(R.id.spPais);
+        Spinner spinner = findViewById(R.id.spCountry);
         HintArrayAdapter<Country> adapter = new HintArrayAdapter<>(this, countries, getString(R.string.countryHint), Country::getName);
         spinner.setAdapter(adapter);
     }
@@ -186,7 +186,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showLoadCorrect(int networks) {
         String showText = getString(R.string.labelResults) + ": " + networks;
-        TextView text = findViewById(R.id.lblResultados);
+        TextView text = findViewById(R.id.tvResults);
         text.setText(showText);
     }
 
@@ -220,7 +220,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     @Override
     public void showCities(List<String> cities) {
-        Spinner spinner = findViewById(R.id.spCiudad);
+        Spinner spinner = findViewById(R.id.spCity);
         HintArrayAdapter<String> adapter = new HintArrayAdapter<>(this, cities, getString(R.string.cityHint), city -> city);
         spinner.setAdapter(adapter);
     }
