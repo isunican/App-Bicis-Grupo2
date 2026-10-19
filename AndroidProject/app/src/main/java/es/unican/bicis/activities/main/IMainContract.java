@@ -2,7 +2,9 @@ package es.unican.bicis.activities.main;
 
 import java.util.List;
 
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -24,6 +26,10 @@ public interface IMainContract {
          */
         public void init(View view);
 
+        public void initCountrySpinner();
+
+        public void onSearchClicked(Country country, String city);
+
         /**
          * The presenter is informed that a network has been clicked
          * Only the View should call this method
@@ -39,6 +45,7 @@ public interface IMainContract {
 
         public void onNetworkInfoClicked(Network network);
 
+        public void onCountrySelected(Country country);
     }
 
     /**
@@ -65,12 +72,18 @@ public interface IMainContract {
          */
         public INetworksRepository getNetworksRepository();
 
+        public ICountriesList getCountriesList();
+
         /**
          * The view is requested to display the given list of bike networks.
          * Only the Presenter should call this method
          * @param networks the list of networks
          */
         public void showNetworks(List<Network> networks);
+
+        public void showCountries(List<Country> countries);
+
+        public void showCountryError();
 
         /**
          * The view is requested to display a notification indicating  that the networks
@@ -102,6 +115,7 @@ public interface IMainContract {
 
         public void showNetworkDetails(Network network);
 
+        public void showCities(List<String> cities);
     }
 }
 // Relanzar analisis SonarCloud Sprint 1

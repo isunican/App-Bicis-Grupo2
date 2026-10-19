@@ -1,11 +1,17 @@
 package es.unican.bicis.activities.main;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,7 +30,10 @@ import es.unican.bicis.R;
 import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.activities.details.DetailsView;
 import es.unican.bicis.activities.stations.StationsView;
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.repository.CountriesList;
+import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -54,6 +63,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // instantiate presenter and launch initial business logic
         presenter = new MainPresenter();
         presenter.init(this);
+
+        // populate the country list
+        presenter.initCountrySpinner();
     }
 
     /**
@@ -96,6 +108,34 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             Network network = (Network) parent.getItemAtPosition(position);
             presenter.onNetworkClicked(network);
         });
+
+        // search button action upon press
+        Spinner countrySpinner = findViewById(R.id.spCountry);
+        Spinner citySpinner = findViewById(R.id.spCity);
+        Button searchButton = findViewById(R.id.btnBuscar);
+        searchButton.setOnClickListener(v -> {
+            // send the selected spinner items in the view to the presenter
+            Country country = (Country) countrySpinner.getSelectedItem();
+            String city = (String) citySpinner.getSelectedItem();
+            presenter.onSearchClicked(country, city);
+        });
+
+        // country spinner listener
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Country country = (Country) parent.getItemAtPosition(position);
+
+                // tell the presenter to do the respective action when a country gets picked
+                presenter.onCountrySelected(country);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // nothing to do if no country gets selected
+                // but we're forced to override this method
+            }
+        });
     }
 
     /**
@@ -105,6 +145,11 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public INetworksRepository getNetworksRepository() {
         return repository;
+    }
+
+    @Override
+    public ICountriesList getCountriesList() {
+        return new CountriesList(getApplicationContext());
     }
 
     /**
@@ -118,13 +163,32 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         list.setAdapter(adapter);
     }
 
+    @Override
+    public void showCountries(List<Country> countries) {
+        Spinner spinner = findViewById(R.id.spCountry);
+        HintArrayAdapter<Country> adapter = new HintArrayAdapter<>(this, countries, getString(R.string.countryHint), Country::getName);
+        spinner.setAdapter(adapter);
+    }
+
+    @Override
+    public void showCountryError() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.errorPaisNoSeleccionado)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
     /**
      * @see IMainContract.View#showLoadCorrect(int)
      * @param networks
      */
     @Override
     public void showLoadCorrect(int networks) {
-        Toast.makeText(this, getString(R.string.loadCorrect, networks), Toast.LENGTH_SHORT).show();
+        String showText = getString(R.string.labelResults) + ": " + networks;
+        TextView text = findViewById(R.id.tvResults);
+        text.setText(showText);
     }
 
     /**
@@ -164,5 +228,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         Intent intent = new Intent(this, DetailsView.class);
         intent.putExtra(DetailsView.INTENT_NETWORK, Parcels.wrap(network));
         startActivity(intent);
+    }
+
+    @Override
+    public void showCities(List<String> cities) {
+        Spinner spinner = findViewById(R.id.spCity);
+        HintArrayAdapter<String> adapter = new HintArrayAdapter<>(this, cities, getString(R.string.cityHint), city -> city);
+        spinner.setAdapter(adapter);
     }
 }

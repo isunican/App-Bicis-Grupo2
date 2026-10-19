@@ -1,0 +1,68 @@
+
+@startuml architecture
+
+hide empty members
+
+' Implementaciones de Interfaces
+MainView ..|> IMainContract.View
+MainPresenter ..|> IMainContract.Presenter
+ApiNetworksRepository ..|> INetworksRepository
+JsonNetworksRepository ..|> INetworksRepository
+
+' Relaciones MVP desacopladas (hacia interfaces)
+MainView --> IMainContract.Presenter : presenter
+MainPresenter --> IMainContract.View : view
+
+' El Presenter es quien accede al Repositorio
+MainPresenter --> INetworksRepository : repository
+
+' Relaciones de uso (Vistas auxiliares y Callbacks)
+MainView ..> InfoView : <<use>>
+MainView ..> DetailsView : <<use>>
+INetworksRepository ..> NetworksCallback : <<use>>
+INetworksRepository ..> NetworkDetailsCallback : <<use>>
+
+class MainView {
+}
+
+class MainPresenter {
+    -load()
+}
+
+class InfoView
+class DetailsView
+class ApiNetworksRepository
+class JsonNetworksRepository
+
+interface IMainContract.View {
+    + init()
+    + showNetworks(networks : List<Network>)
+    + showLoadCorrect(networks : int)
+    + showLoadError()
+    + showNetworkDetails(network : Network)
+    + showInfoActivity()
+}
+
+interface IMainContract.Presenter {
+    + init(View view)
+    + onNetworkClicked(network : Network)
+    + onMenuInfoClicked()
+}
+
+interface INetworksRepository {
+    + requestNetworks(cb : NetworksCallback )
+    + requestNetwork(cb: NetworkDetailsCallback , networkId : String)
+}
+
+interface NetworksCallback {
+    + onSuccess(networks : List<Network>)
+    + onFailure(e : Throwable)
+}
+
+interface NetworkDetailsCallback {
+    + onSuccess(network : Network)
+    + onFailure(e : Throwable)
+}
+
+
+@enduml
