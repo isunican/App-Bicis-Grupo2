@@ -64,7 +64,10 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void onCountrySelected(Country country) {
-        loadCities(country.getIdAPI());
+        // country spinner might be selected before it was asynchronously initialized
+        if (country != null) {
+            loadCities(country.getIdAPI());
+        }
     }
 
     /**
