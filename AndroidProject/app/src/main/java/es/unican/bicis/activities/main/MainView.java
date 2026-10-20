@@ -62,9 +62,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // instantiate presenter and launch initial business logic
         presenter = new MainPresenter();
         presenter.init(this);
-
-        // populate the country list
-        presenter.initCountrySpinner();
     }
 
     /**
@@ -148,6 +145,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     @Override
     public ICountriesList getCountriesList() {
+        // i go back to the view because i need the application context for the json parser,
+        // which i understand can only be obtained from classes that extend Activity
         return new CountriesList(getApplicationContext());
     }
 

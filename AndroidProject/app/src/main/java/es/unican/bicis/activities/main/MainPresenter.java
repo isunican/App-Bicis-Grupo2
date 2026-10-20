@@ -28,14 +28,12 @@ public class MainPresenter implements IMainContract.Presenter {
     public void init(IMainContract.View view) {
         this.view = view;
         this.view.init();
-    }
 
-    @Override
-    public void initCountrySpinner() {
-        // populate the spinner with the data obtained through the presenter
+        // initialize the spinners to populate their content
         ICountriesList countriesList = view.getCountriesList();
         List<Country> countries = countriesList.getList();
-        view.showCountries(countries);
+        this.view.showCountries(countries);
+        loadCities(null);
     }
 
     @Override
@@ -66,14 +64,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void onCountrySelected(Country country) {
-        if (country == null) {
-            // if no city is selected, the city spinner should still be initialized to prevent it
-            // from showing blank due to no adapter being instantiated
-            view.showCities(new ArrayList<>());
-            return;
-        } else {
-            loadCities(country.getIdAPI());
-        }
+        loadCities(country.getIdAPI());
     }
 
     /**
@@ -86,9 +77,15 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Network> networks) {
-                if ((countryIdAPI == null) && (city == null)) {
-                    view.showNetworks(networks);
-                    view.showLoadCorrect(networks.size());
+                if (countryIdAPI == null) {
+                    if (city == null) {
+                        view.showNetworks(networks);
+                        view.showLoadCorrect(networks.size());
+                    } else {
+                        List<Network> filtered = filterByCity(networks, city);
+                        view.showNetworks(filtered);
+                        view.showLoadCorrect(filtered.size());
+                    }
                 } else {
                     List<Network> filtered = filterByCountry(networks, countryIdAPI);
                     if (city != null) {
@@ -119,7 +116,11 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Network> networks) {
-                view.showCities(extractCities(filterByCountry(networks, countryIdAPI)));
+                if (countryIdAPI == null) {
+                    view.showCities(extractCities(networks));
+                } else {
+                    view.showCities(extractCities(filterByCountry(networks, countryIdAPI)));
+                }
             }
 
             @Override

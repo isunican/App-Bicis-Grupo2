@@ -26,8 +26,6 @@ public interface IMainContract {
          */
         public void init(View view);
 
-        public void initCountrySpinner();
-
         public void onSearchClicked(Country country, String city);
 
         /**
