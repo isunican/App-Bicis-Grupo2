@@ -1,14 +1,19 @@
 package es.unican.bicis.activities.main;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
-import es.unican.bicis.repository.ICountriesList;
+import es.unican.bicis.repository.CountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworksCallback;
 
@@ -19,33 +24,48 @@ public class MainPresenter implements IMainContract.Presenter {
 
     /** The view that is controlled by this presenter */
     private IMainContract.View view;
+    private Context context;
+    private boolean delayLoad;
 
     /**
+     * initialize the spinners to populate their content
      * @see IMainContract.Presenter#init(IMainContract.View)
      * @param view the view to control
      */
     @Override
-    public void init(IMainContract.View view) {
+    public void init(IMainContract.View view, Context context) {
         this.view = view;
+        this.context = context;
         this.view.init();
-    }
 
-    @Override
-    public void initCountrySpinner() {
-        // populate the spinner with the data obtained through the presenter
-        ICountriesList countriesList = view.getCountriesList();
-        List<Country> countries = countriesList.getList();
-        view.showCountries(countries);
+        if (isOnline()) {
+            delayLoad = false;
+            loadCountries();
+            loadCities(null);
+        } else {
+            delayLoad = true;
+            view.showCountries(new ArrayList<>());
+            view.showCities(new ArrayList<>());
+            view.showConnectionError();
+        }
     }
 
     @Override
     public void onSearchClicked(Country country, String city) {
-        if (country == null) {
-            // the hint was selected, meaning no country was picked
-            view.showCountryError();
-            return;
+        if (isOnline()) {
+            if (delayLoad) {
+                delayLoad = false;
+                loadCountries();
+                loadCities(null);
+            }
+
+            if (country == null) {
+                loadNetworks(null, city);
+            } else {
+                loadNetworks(country.getIdAPI(), city);
+            }
         } else {
-            loadNetworks(country.getIdAPI(), city);
+            view.showConnectionError();
         }
     }
 
@@ -73,13 +93,12 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void onCountrySelected(Country country) {
-        if (country == null) {
-            // if no city is selected, the city spinner should still be initialized to prevent it
-            // from showing blank due to no adapter being instantiated
-            view.showCities(new ArrayList<>());
-            return;
-        } else {
+        // country spinner might be selected before it was asynchronously initialized
+        if (country != null) {
             loadCities(country.getIdAPI());
+            view.showCountryFlag(country.getFlag());
+        } else {
+            view.showCountryFlag(Country.GLOBE);
         }
     }
 
@@ -93,12 +112,23 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Network> networks) {
-                List<Network> filtered = filterByCountry(networks, countryIdAPI);
-                if (city != null) {
-                    filtered = filterByCity(filtered, city);
+                if (countryIdAPI == null) {
+                    if (city == null) {
+                        view.showNetworks(networks);
+                        view.showLoadCorrect(networks.size());
+                    } else {
+                        List<Network> filtered = filterByCity(networks, city);
+                        view.showNetworks(filtered);
+                        view.showLoadCorrect(filtered.size());
+                    }
+                } else {
+                    List<Network> filtered = filterByCountry(networks, countryIdAPI);
+                    if (city != null) {
+                        filtered = filterByCity(filtered, city);
+                    }
+                    view.showNetworks(filtered);
+                    view.showLoadCorrect(filtered.size());
                 }
-                view.showNetworks(filtered);
-                view.showLoadCorrect(filtered.size());
             }
 
             @Override
@@ -121,7 +151,30 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Network> networks) {
-                view.showCities(extractCities(filterByCountry(networks, countryIdAPI)));
+                if (countryIdAPI == null) {
+                    view.showCities(extractCities(networks));
+                } else {
+                    view.showCities(extractCities(filterByCountry(networks, countryIdAPI)));
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                view.showLoadError();
+            }
+        };
+
+        repository.requestNetworks(callBack);
+    }
+
+    private void loadCountries() {
+        INetworksRepository repository = view.getNetworksRepository();
+
+        NetworksCallback callBack = new NetworksCallback() {
+
+            @Override
+            public void onSuccess(List<Network> networks) {
+                view.showCountries(extractCountries(networks));
             }
 
             @Override
@@ -158,7 +211,7 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     private List<String> extractCities(List<Network> networks) {
-        // stored with this datatype to avoid storing repeated cities
+        // handled with this datatype to avoid storing repeated cities
         Set<String> cities = new LinkedHashSet<>();
         for (Network network : networks) {
             Location location = network.getLocation();
@@ -167,5 +220,53 @@ public class MainPresenter implements IMainContract.Presenter {
             }
         }
         return new ArrayList<>(cities);
+    }
+
+    private List<Country> extractCountries(List<Network> networks) {
+        // handled with this datatype to avoid storing repeated countries
+        Set<String> countriesStrings = new LinkedHashSet<>();
+        for (Network network : networks) {
+            Location location = network.getLocation();
+            if (location != null && location.getCountry() != null) {
+                countriesStrings.add(location.getCountry());
+            }
+        }
+
+        // associate each found country with their respective attributes
+        Map<String, Country> allCountries = new CountriesList(context).getMap();
+        List<Country> countries = new ArrayList<>();
+        for (String countryIdAPI : countriesStrings) {
+            Country country = allCountries.get(countryIdAPI);
+            if (country != null) {
+                countries.add(country);
+            } else {
+                Country unknownCountry = new Country();
+                unknownCountry.setName(countryIdAPI);
+                unknownCountry.setIdISO(countryIdAPI);
+                unknownCountry.setIdAPI(countryIdAPI);
+                unknownCountry.setFlag(Country.WHITE_FLAG);
+                countries.add(unknownCountry);
+            }
+        }
+        return countries;
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+
+        android.net.Network network = manager.getActiveNetwork();
+        if (network == null) {
+            return false;
+        }
+
+        NetworkCapabilities capabilities = manager.getNetworkCapabilities(network);
+        if (capabilities == null) {
+            return false;
+        }
+
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 }

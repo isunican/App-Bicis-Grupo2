@@ -32,8 +32,6 @@ import es.unican.bicis.activities.details.DetailsView;
 import es.unican.bicis.activities.stations.StationsView;
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
-import es.unican.bicis.repository.CountriesList;
-import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -62,10 +60,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // instantiate presenter and launch initial business logic
         presenter = new MainPresenter();
-        presenter.init(this);
-
-        // populate the country list
-        presenter.initCountrySpinner();
+        presenter.init(this, getApplicationContext());
     }
 
     /**
@@ -147,11 +142,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         return repository;
     }
 
-    @Override
-    public ICountriesList getCountriesList() {
-        return new CountriesList(getApplicationContext());
-    }
-
     /**
      * @see IMainContract.View#showNetworks(List)
      * @param networks the list of networks
@@ -171,10 +161,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     @Override
-    public void showCountryError() {
+    public void showConnectionError() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.errorTitulo)
-                .setMessage(R.string.errorPaisNoSeleccionado)
+                .setMessage(R.string.errorNoInternetConnection)
                 .setPositiveButton(android.R.string.ok, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
@@ -189,6 +179,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         String showText = getString(R.string.labelResults) + ": " + networks;
         TextView text = findViewById(R.id.tvResults);
         text.setText(showText);
+    }
+
+    @Override
+    public void showCountryFlag(String flag) {
+        TextView text = findViewById(R.id.tvFlag);
+        text.setText(flag);
     }
 
     /**
