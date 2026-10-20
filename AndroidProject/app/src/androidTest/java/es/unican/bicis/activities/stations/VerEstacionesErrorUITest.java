@@ -43,6 +43,9 @@ public class VerEstacionesErrorUITest {
     @Rule(order = 1)
     public ActivityScenarioRule<MainView> activityRule = new ActivityScenarioRule<>(MainView.class);
 
+    /** Motivo del fallo que devolverá el repositorio simulado (cada test lo fija). */
+    private String mensajeError = "Error en el acceso de datos";
+
     /**
      * Repositorio de prueba: devuelve la lista de redes correctamente,
      * pero falla al pedir los datos de una red (y por tanto sus estaciones).
@@ -67,7 +70,7 @@ public class VerEstacionesErrorUITest {
 
         @Override
         public void requestNetwork(NetworkDetailsCallback cb, String networkId) {
-            cb.onFailure(new Throwable("Error en el acceso de datos"));
+            cb.onFailure(new Throwable(mensajeError));
         }
     };
 
@@ -98,6 +101,20 @@ public class VerEstacionesErrorUITest {
      */
     @Test
     public void testUI04_errorAccesoDatos() {
+        onData(withNetworkName("SpringBike"))
+                .inAdapterView(withId(R.id.lvNetworks))
+                .perform(click());
+
+        onView(withId(R.id.tvResults)).check(matches(withText("Error cargando estaciones")));
+    }
+
+    /**
+     * UI-05: Error en la conexión a la red -> Se muestra el error en la pantalla de estaciones.
+     */
+    @Test
+    public void testUI05_errorConexionRed() {
+        mensajeError = "Error en la conexión a internet";
+
         onData(withNetworkName("SpringBike"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());

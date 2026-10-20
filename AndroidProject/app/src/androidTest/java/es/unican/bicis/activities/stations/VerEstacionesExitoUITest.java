@@ -56,6 +56,18 @@ public class VerEstacionesExitoUITest {
     }
 
     /**
+     * Comprueba el nombre y la fecha de actualización de la estación en una posición de la lista.
+     */
+    private void comprobarEstacion(int posicion, String nombre, String fecha) {
+        onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(posicion)
+                .onChildView(withId(R.id.tvStationName))
+                .check(matches(withText(nombre)));
+        onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(posicion)
+                .onChildView(withId(R.id.tvUpdateDate))
+                .check(matches(withText("Última fecha de actualización: " + fecha)));
+    }
+
+    /**
      * UI-01: Selección "SpringBike" -> Se muestran todas sus estaciones.
      */
     @Test
@@ -67,12 +79,11 @@ public class VerEstacionesExitoUITest {
         onView(withId(R.id.tvNetworkLocation)).check(matches(withText("US Springfield, Illinois")));
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
 
-        onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(0)
-                .onChildView(withId(R.id.tvStationName))
-                .check(matches(withText("Capitol Complex")));
-        onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(0)
-                .onChildView(withId(R.id.tvUpdateDate))
-                .check(matches(withText("Última fecha de actualización: 16/10/2026 09:15")));
+        comprobarEstacion(0, "Capitol Complex", "16/10/2026 09:15");
+        comprobarEstacion(1, "Lincoln Home Visitor Center", "16/10/2026 09:14");
+        comprobarEstacion(2, "Union Station", "16/10/2026 09:15");
+        comprobarEstacion(3, "Washington Park", "16/10/2026 09:12");
+        comprobarEstacion(4, "Lake Springfield Marina", "16/10/2026 09:13");
     }
 
     /**
@@ -100,11 +111,8 @@ public class VerEstacionesExitoUITest {
         onView(withId(R.id.tvNetworkLocation)).check(matches(withText("Tripoli")));
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 3")));
 
-        onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(2)
-                .onChildView(withId(R.id.tvStationName))
-                .check(matches(withText("Estación sin datos")));
-        onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(2)
-                .onChildView(withId(R.id.tvUpdateDate))
-                .check(matches(withText("Última fecha de actualización: Sin fecha")));
+        comprobarEstacion(0, "Estación Plaza Mayor", "24/09/2026 11:11");
+        comprobarEstacion(1, "Estación Puerto", "24/09/2026 11:09");
+        comprobarEstacion(2, "Estación sin datos", "Sin fecha");
     }
 }
