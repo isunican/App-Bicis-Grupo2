@@ -1,10 +1,11 @@
 package es.unican.bicis.activities.main;
 
+import android.content.Context;
+
 import java.util.List;
 
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
-import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -24,7 +25,7 @@ public interface IMainContract {
          * Only the View should call this method
          * @param view
          */
-        public void init(View view);
+        public void init(View view, Context applicationContext);
 
         public void onSearchClicked(Country country, String city);
 
@@ -67,8 +68,6 @@ public interface IMainContract {
          * @return
          */
         public INetworksRepository getNetworksRepository();
-
-        public ICountriesList getCountriesList();
 
         /**
          * The view is requested to display the given list of bike networks.

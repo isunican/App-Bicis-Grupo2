@@ -1,7 +1,7 @@
 package es.unican.bicis.repository;
 
 import android.content.Context;
-import java.util.List;
+import java.util.Map;
 import es.unican.bicis.R;
 import es.unican.bicis.common.Utils;
 import es.unican.bicis.model.Country;
@@ -15,7 +15,7 @@ public class CountriesList implements ICountriesList {
     }
 
     @Override
-    public List<Country> getList() {
+    public Map<String, Country> getMap() {
         return Utils.parseCountries(context, R.raw.countries_es);
     }
 }

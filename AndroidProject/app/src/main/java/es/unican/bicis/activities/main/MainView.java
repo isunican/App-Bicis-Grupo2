@@ -31,8 +31,6 @@ import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.activities.details.DetailsView;
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
-import es.unican.bicis.repository.CountriesList;
-import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -61,7 +59,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // instantiate presenter and launch initial business logic
         presenter = new MainPresenter();
-        presenter.init(this);
+        presenter.init(this, getApplicationContext());
     }
 
     /**
@@ -141,13 +139,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public INetworksRepository getNetworksRepository() {
         return repository;
-    }
-
-    @Override
-    public ICountriesList getCountriesList() {
-        // i go back to the view because i need the application context for the json parser,
-        // which i understand can only be obtained from classes that extend Activity
-        return new CountriesList(getApplicationContext());
     }
 
     /**

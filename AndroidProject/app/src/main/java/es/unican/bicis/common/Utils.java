@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,15 +65,21 @@ public class Utils {
         }
     }
 
-    public static List<Country> parseCountries(Context context, int jsonId) {
+    public static Map<String, Country> parseCountries(Context context, int jsonId) {
         Type typeToken = new TypeToken<CountriesResponse>() { }.getType();
         try (InputStream is = context.getResources().openRawResource(jsonId);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             CountriesResponse response = new GsonBuilder().create().fromJson(reader, typeToken);
             List<Country> countries = response != null ? response.getCountries() : null;
-            return countries != null ? countries : new ArrayList<>();
+            Map<String, Country> countryMap = new LinkedHashMap<>();
+            if (countries != null) {
+                for (Country country : countries) {
+                    countryMap.put(country.getIdAPI(), country);
+                }
+            }
+            return countryMap;
         } catch (IOException e) {
-            return new ArrayList<>();
+            return new LinkedHashMap<>();
         }
     }
 }

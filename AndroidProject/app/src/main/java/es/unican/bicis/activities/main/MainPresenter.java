@@ -1,13 +1,17 @@
 package es.unican.bicis.activities.main;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.repository.CountriesList;
 import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworksCallback;
@@ -19,20 +23,19 @@ public class MainPresenter implements IMainContract.Presenter {
 
     /** The view that is controlled by this presenter */
     private IMainContract.View view;
+    private Context context;
 
     /**
+     * initialize the spinners to populate their content
      * @see IMainContract.Presenter#init(IMainContract.View)
      * @param view the view to control
      */
     @Override
-    public void init(IMainContract.View view) {
+    public void init(IMainContract.View view, Context context) {
         this.view = view;
+        this.context = context;
         this.view.init();
-
-        // initialize the spinners to populate their content
-        ICountriesList countriesList = view.getCountriesList();
-        List<Country> countries = countriesList.getList();
-        this.view.showCountries(countries);
+        loadCountries();
         loadCities(null);
     }
 
@@ -135,6 +138,25 @@ public class MainPresenter implements IMainContract.Presenter {
         repository.requestNetworks(callBack);
     }
 
+    private void loadCountries() {
+        INetworksRepository repository = view.getNetworksRepository();
+
+        NetworksCallback callBack = new NetworksCallback() {
+
+            @Override
+            public void onSuccess(List<Network> networks) {
+                view.showCountries(extractCountries(networks));
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                view.showLoadError();
+            }
+        };
+
+        repository.requestNetworks(callBack);
+    }
+
     private List<Network> filterByCountry(List<Network> networks, String countryIdAPI) {
         List<Network> filtered = new ArrayList<>();
         for (Network network : networks) {
@@ -160,7 +182,7 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     private List<String> extractCities(List<Network> networks) {
-        // stored with this datatype to avoid storing repeated cities
+        // handled with this datatype to avoid storing repeated cities
         Set<String> cities = new LinkedHashSet<>();
         for (Network network : networks) {
             Location location = network.getLocation();
@@ -169,5 +191,33 @@ public class MainPresenter implements IMainContract.Presenter {
             }
         }
         return new ArrayList<>(cities);
+    }
+
+    private List<Country> extractCountries(List<Network> networks) {
+        // handled with this datatype to avoid storing repeated countries
+        Set<String> countriesStrings = new LinkedHashSet<>();
+        for (Network network : networks) {
+            Location location = network.getLocation();
+            if (location != null && location.getCountry() != null) {
+                countriesStrings.add(location.getCountry());
+            }
+        }
+
+        // associate each found country with their respective attributes
+        Map<String, Country> allCountries = new CountriesList(context).getMap();
+        List<Country> countries = new ArrayList<>();
+        for (String countryIdAPI : countriesStrings) {
+            Country country = allCountries.get(countryIdAPI);
+            if (country != null) {
+                countries.add(country);
+            } else {
+                Country unknownCountry = new Country();
+                unknownCountry.setName(countryIdAPI);
+                unknownCountry.setIdISO(countryIdAPI);
+                unknownCountry.setIdAPI(countryIdAPI);
+                countries.add(unknownCountry);
+            }
+        }
+        return countries;
     }
 }
