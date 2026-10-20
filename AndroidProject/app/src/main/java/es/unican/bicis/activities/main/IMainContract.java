@@ -78,8 +78,6 @@ public interface IMainContract {
 
         public void showCountries(List<Country> countries);
 
-        public void showCountryError();
-
         void showConnectionError();
 
         /**

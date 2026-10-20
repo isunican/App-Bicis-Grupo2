@@ -160,16 +160,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     @Override
-    public void showCountryError() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.errorTitulo)
-                .setMessage(R.string.errorPaisNoSeleccionado)
-                .setPositiveButton(android.R.string.ok, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-    @Override
     public void showConnectionError() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.errorTitulo)
