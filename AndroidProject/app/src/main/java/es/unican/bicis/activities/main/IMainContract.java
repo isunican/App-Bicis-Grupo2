@@ -88,6 +88,8 @@ public interface IMainContract {
          */
         public void showLoadCorrect(int networks);
 
+        public void showCountryFlag(String flag);
+
         /**
          * The view is requested to display a notificacion indicating that the networks
          * were not loaded correctly.

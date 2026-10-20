@@ -180,6 +180,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         text.setText(showText);
     }
 
+    @Override
+    public void showCountryFlag(String flag) {
+        TextView text = findViewById(R.id.tvFlag);
+        text.setText(flag);
+    }
+
     /**
      * @see IMainContract.View#showLoadError()
      */

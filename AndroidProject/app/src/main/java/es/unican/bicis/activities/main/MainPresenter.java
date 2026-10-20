@@ -70,6 +70,9 @@ public class MainPresenter implements IMainContract.Presenter {
         // country spinner might be selected before it was asynchronously initialized
         if (country != null) {
             loadCities(country.getIdAPI());
+            view.showCountryFlag(country.getFlag());
+        } else {
+            view.showCountryFlag(Country.GLOBE);
         }
     }
 
@@ -215,6 +218,7 @@ public class MainPresenter implements IMainContract.Presenter {
                 unknownCountry.setName(countryIdAPI);
                 unknownCountry.setIdISO(countryIdAPI);
                 unknownCountry.setIdAPI(countryIdAPI);
+                unknownCountry.setFlag(Country.WHITE_FLAG);
                 countries.add(unknownCountry);
             }
         }
