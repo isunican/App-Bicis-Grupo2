@@ -174,4 +174,9 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         startActivity(intent);
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
 }
