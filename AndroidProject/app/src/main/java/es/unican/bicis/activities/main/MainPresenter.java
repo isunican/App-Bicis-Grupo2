@@ -41,9 +41,7 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public void onSearchClicked(Country country, String city) {
         if (country == null) {
-            // the hint was selected, meaning no country was picked
-            view.showCountryError();
-            return;
+            loadNetworks(null, city);
         } else {
             loadNetworks(country.getIdAPI(), city);
         }
@@ -88,12 +86,17 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Network> networks) {
-                List<Network> filtered = filterByCountry(networks, countryIdAPI);
-                if (city != null) {
-                    filtered = filterByCity(filtered, city);
+                if ((countryIdAPI == null) && (city == null)) {
+                    view.showNetworks(networks);
+                    view.showLoadCorrect(networks.size());
+                } else {
+                    List<Network> filtered = filterByCountry(networks, countryIdAPI);
+                    if (city != null) {
+                        filtered = filterByCity(filtered, city);
+                    }
+                    view.showNetworks(filtered);
+                    view.showLoadCorrect(filtered.size());
                 }
-                view.showNetworks(filtered);
-                view.showLoadCorrect(filtered.size());
             }
 
             @Override
