@@ -20,6 +20,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+    <TextView
+        android:id="@+id/tvFlag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="86dp"
+        android:text="@string/flagPlaceholder"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/llFilters"
         android:layout_width="0dp"
@@ -40,7 +51,8 @@
             android:drawablePadding="8dp"
             android:layout_marginEnd="10dp"
             android:importantForAccessibility="no"
-            app:srcCompat="@drawable/ic_location"/>
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_location" />
 
         <Spinner
             android:id="@+id/spCountry"

@@ -11,4 +11,5 @@
     <string name="errorPaisNoSeleccionado">No se ha seleccionado ningún pais</string>
     <string name="labelResults">Resultados</string>
     <string name="search">Buscar</string>
+    <string name="flagPlaceholder">🌐</string>
 </resources>
