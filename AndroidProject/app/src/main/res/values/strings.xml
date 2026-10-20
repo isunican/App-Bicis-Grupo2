@@ -12,4 +12,5 @@
     <string name="labelResults">Resultados</string>
     <string name="search">Buscar</string>
     <string name="flagPlaceholder">🌐</string>
+    <string name="errorNoInternetConnection">No hay conexión a internet. Esta aplicación requiere de conexión a red para funcionar.</string>
 </resources>

@@ -169,6 +169,16 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
                 .show();
     }
 
+    @Override
+    public void showConnectionError() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.errorNoInternetConnection)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
     /**
      * @see IMainContract.View#showLoadCorrect(int)
      * @param networks

@@ -1,6 +1,8 @@
 package es.unican.bicis.activities.main;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -12,7 +14,6 @@ import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.CountriesList;
-import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworksCallback;
 
@@ -24,6 +25,7 @@ public class MainPresenter implements IMainContract.Presenter {
     /** The view that is controlled by this presenter */
     private IMainContract.View view;
     private Context context;
+    private boolean delayLoad;
 
     /**
      * initialize the spinners to populate their content
@@ -35,16 +37,35 @@ public class MainPresenter implements IMainContract.Presenter {
         this.view = view;
         this.context = context;
         this.view.init();
-        loadCountries();
-        loadCities(null);
+
+        if (isOnline()) {
+            delayLoad = false;
+            loadCountries();
+            loadCities(null);
+        } else {
+            delayLoad = true;
+            view.showCountries(new ArrayList<>());
+            view.showCities(new ArrayList<>());
+            view.showConnectionError();
+        }
     }
 
     @Override
     public void onSearchClicked(Country country, String city) {
-        if (country == null) {
-            loadNetworks(null, city);
+        if (isOnline()) {
+            if (delayLoad) {
+                delayLoad = false;
+                loadCountries();
+                loadCities(null);
+            }
+
+            if (country == null) {
+                loadNetworks(null, city);
+            } else {
+                loadNetworks(country.getIdAPI(), city);
+            }
         } else {
-            loadNetworks(country.getIdAPI(), city);
+            view.showConnectionError();
         }
     }
 
@@ -223,5 +244,24 @@ public class MainPresenter implements IMainContract.Presenter {
             }
         }
         return countries;
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+
+        android.net.Network network = manager.getActiveNetwork();
+        if (network == null) {
+            return false;
+        }
+
+        NetworkCapabilities capabilities = manager.getNetworkCapabilities(network);
+        if (capabilities == null) {
+            return false;
+        }
+
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 }

@@ -80,6 +80,8 @@ public interface IMainContract {
 
         public void showCountryError();
 
+        void showConnectionError();
+
         /**
          * The view is requested to display a notification indicating  that the networks
          * were loaded correctly.
