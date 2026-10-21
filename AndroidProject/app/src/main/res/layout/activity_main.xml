@@ -14,22 +14,12 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.Bicis.Toolbar"
-        app:layout_constraintBottom_toTopOf="@+id/llFilters"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <TextView
-        android:id="@+id/tvFlag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="86dp"
-        android:text="@string/flagPlaceholder"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
         android:id="@+id/llFilters"
@@ -43,28 +33,26 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintBottom_toTopOf="@+id/lvNetworks">
 
-        <ImageView
-            android:id="@+id/ivLocation"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:gravity="center"
-            android:drawablePadding="8dp"
-            android:layout_marginEnd="10dp"
-            android:importantForAccessibility="no"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/ic_location" />
+        <TextView
+            android:id="@+id/tvFlag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flagPlaceholder"
+            android:textSize="20sp" />
 
         <Spinner
             android:id="@+id/spCountry"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:padding="8dp"/>
 
         <Spinner
             android:id="@+id/spCity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:padding="8dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBuscar"

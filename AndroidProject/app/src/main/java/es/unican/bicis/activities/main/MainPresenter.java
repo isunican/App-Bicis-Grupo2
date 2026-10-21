@@ -160,7 +160,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onFailure(Throwable e) {
-                view.showLoadError();
+                //view.showLoadError();
             }
         };
 
@@ -179,7 +179,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onFailure(Throwable e) {
-                view.showLoadError();
+                //view.showLoadError();
             }
         };
 
