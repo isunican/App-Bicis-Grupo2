@@ -191,7 +191,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void showLoadError() {
-        Toast.makeText(this, R.string.loadError, Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.loadError)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     /**
