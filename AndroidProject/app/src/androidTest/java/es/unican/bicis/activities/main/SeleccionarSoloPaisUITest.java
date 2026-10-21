@@ -30,19 +30,18 @@ public class SeleccionarSoloPaisUITest {
     @Rule(order = 1)
     public ActivityScenarioRule<MainView> activityRule = new ActivityScenarioRule<>(MainView.class);
 
+    /**
+     * N1-02 SeleccionarSoloPaisUITest: Verifica las redes en Espanha
+     */
     @Test
     public void seleccionarSoloPais() {
-        // 1. Seleccionar "ES" (España)
         onView(withId(R.id.spCountry)).perform(click());
         onData(withCountryName("España")).perform(click());
 
-        // 2. Pulsar buscar sin seleccionar ciudad
         onView(withId(R.id.btnBuscar)).perform(click());
 
-        // 3. Verificar que se muestran 3 resultados en la etiqueta
         onView(withId(R.id.tvResults)).check(matches(withText(containsString("3"))));
 
-        // 4. Verificar que las redes mostradas son las correctas (Bicing, BiciMAD, TUEBICI)
         onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(0)
                 .onChildView(withId(R.id.tvName)).check(matches(withText("Bicing")));
         onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(1)

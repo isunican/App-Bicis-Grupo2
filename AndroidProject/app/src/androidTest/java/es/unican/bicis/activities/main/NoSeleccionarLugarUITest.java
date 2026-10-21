@@ -24,12 +24,14 @@ public class NoSeleccionarLugarUITest {
     @Rule(order = 1)
     public ActivityScenarioRule<MainView> activityRule = new ActivityScenarioRule<>(MainView.class);
 
+    /**
+     * N1-04 NoSeleccionarLugarUITest: Verifica todas las redes
+     */
     @Test
     public void noSeleccionarLugar() {
-        // 1. Pulsar el botón de búsqueda directamente
+
         onView(withId(R.id.btnBuscar)).perform(click());
 
-        // 2. Verificar que se muestran las 7 redes totales
         onView(withId(R.id.tvResults)).check(matches(withText(containsString("7"))));
 
     }

@@ -18,10 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,11 +53,6 @@ public class MainPresenterTest {
 
     private MainPresenter presenter;
 
-    private Network bicing;
-    private Network biciMAD;
-    private Network tuBici;
-    private Network northCycle;
-
     private List<Network> mockNetworks;
 
     @Before
@@ -71,22 +64,17 @@ public class MainPresenterTest {
         // Simular que el dispositivo tiene conexión a Internet.
         when(context.getSystemService(Context.CONNECTIVITY_SERVICE))
                 .thenReturn(connectivityManager);
-
         when(connectivityManager.getActiveNetwork())
                 .thenReturn(activeNetwork);
-
         when(connectivityManager.getNetworkCapabilities(activeNetwork))
                 .thenReturn(capabilities);
-
         when(capabilities.hasCapability(
                 NetworkCapabilities.NET_CAPABILITY_INTERNET))
                 .thenReturn(true);
 
+        // Se inicializa
         presenter = new MainPresenter();
-
-        // Asignar las dependencias privadas sin ejecutar la carga inicial.
-        setPrivateField(presenter, "view", view);
-        setPrivateField(presenter, "context", context);
+        presenter.init(view, context);
 
         // Preparar las redes de prueba.
         Network springBike = createNetwork("US", "Springfield, Illinois");
@@ -124,22 +112,7 @@ public class MainPresenterTest {
         return network;
     }
 
-    private void setPrivateField(
-            Object target, String fieldName, Object value)
-            throws Exception {
-
-        Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(target, value);
-    }
-
-    private Country createSpain() {
-        Country country = Mockito.mock(Country.class);
-        when(country.getIdAPI()).thenReturn("ES");
-        return country;
-    }
-
-    private void mockSuccessfulRequest() {
+    private void mockCargaRedes() {
         doAnswer(invocation -> {
             NetworksCallback callback = invocation.getArgument(0);
             callback.onSuccess(mockNetworks);
@@ -152,13 +125,13 @@ public class MainPresenterTest {
      */
     @Test
     public void testU101_paisEspanaCiudadSantander() {
-        // Arrange
-        mockSuccessfulRequest();
+        mockCargaRedes();
 
-        // Act
-        presenter.onSearchClicked(createSpain(), "Santander");
+        Country country = new Country();
+        country.setIdAPI("ES");
 
-        // Assert
+        presenter.onSearchClicked(country, "Santander");
+
         ArgumentCaptor<List<Network>> captor =
                 ArgumentCaptor.forClass(List.class);
 
@@ -178,13 +151,13 @@ public class MainPresenterTest {
      */
     @Test
     public void testU102_paisEspanaSinCiudad() {
-        // Arrange
-        mockSuccessfulRequest();
+        mockCargaRedes();
 
-        // Act
-        presenter.onSearchClicked(createSpain(), null);
+        Country country = new Country();
+        country.setIdAPI("ES");
 
-        // Assert
+        presenter.onSearchClicked(country, null);
+
         ArgumentCaptor<List<Network>> captor =
                 ArgumentCaptor.forClass(List.class);
 
@@ -202,13 +175,10 @@ public class MainPresenterTest {
      */
     @Test
     public void testU103_sinPaisCiudadNorthampton() {
-        // Arrange
-        mockSuccessfulRequest();
+        mockCargaRedes();
 
-        // Act
         presenter.onSearchClicked(null, "Northampton");
 
-        // Assert
         ArgumentCaptor<List<Network>> captor =
                 ArgumentCaptor.forClass(List.class);
 
@@ -228,18 +198,13 @@ public class MainPresenterTest {
      */
     @Test
     public void testU104_sinFiltros() {
-        // Arrange
-        mockSuccessfulRequest();
+        mockCargaRedes();
 
-        // Act
         presenter.onSearchClicked(null, null);
 
-        // Assert
         verify(view).showNetworks(mockNetworks);
         verify(view).showLoadCorrect(7);
         verify(view, never()).showLoadError();
-
-        // MainPresenter no guarda preferencias en este flujo.
     }
 
     /**
@@ -247,7 +212,6 @@ public class MainPresenterTest {
      */
     @Test
     public void testU105_errorAlCargarRedes() {
-        // Arrange
         doAnswer(invocation -> {
             NetworksCallback callback = invocation.getArgument(0);
             callback.onFailure(
@@ -255,10 +219,11 @@ public class MainPresenterTest {
             return null;
         }).when(repository).requestNetworks(any(NetworksCallback.class));
 
-        // Act
-        presenter.onSearchClicked(createSpain(), "Santander");
+        Country country = new Country();
+        country.setIdAPI("ES");
 
-        // Assert
+        presenter.onSearchClicked(country, "Santander");
+
         verify(view).showLoadError();
         verify(view, never()).showNetworks(any());
         verify(view, never()).showLoadCorrect(anyInt());

@@ -31,12 +31,15 @@ import es.unican.bicis.model.Country;
 @HiltAndroidTest
 public class SeleccionarLugarExitoUITest {
 
-    @Rule(order = 0)  // the Hilt rule must execute first
+    @Rule(order = 0)
     public HiltAndroidRule hiltRule = new HiltAndroidRule(this);
 
     @Rule(order = 1)
     public ActivityScenarioRule<MainView> activityRule = new ActivityScenarioRule<>(MainView.class);
 
+    /**
+     * N1-01 SeleccionarLugarExitoUITest: Verifica las redes en Espanha, Santander
+     */
     @Test
     public void seleccionarLugarExito() {
         onView(withId(R.id.spCountry)).perform(click());

@@ -28,6 +28,9 @@ import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 import es.unican.bicis.repository.NetworksCallback;
 
+/**
+ * N1-04 ErrorAccesoDatosUITest: Verifica cuando hay error en el acceso de datos
+ */
 @UninstallModules(RepositoriesModule.class)
 @HiltAndroidTest
 public class ErrorAccesoDatosUITest {
@@ -56,7 +59,6 @@ public class ErrorAccesoDatosUITest {
 
         onView(withId(R.id.btnBuscar)).perform(click());
 
-        // 2. Verificar que la aplicación muestra el diálogo de error indicando el problema
         onView(withText(containsString("Ha habido un error cargando las redes")))
                 .check(matches(isDisplayed()));
     }

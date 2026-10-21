@@ -7,6 +7,9 @@ import org.hamcrest.TypeSafeMatcher;
 import es.unican.bicis.model.Country;
 
 public class CountryMatcher {
+    /**
+     *  Busca un pais por su nombre
+     */
     public static Matcher<Object> withCountryName(String expectedName) {
         return new TypeSafeMatcher<Object>() {
             @Override
@@ -21,7 +24,7 @@ public class CountryMatcher {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("Un país con el nombre que contenga: " + expectedName);
+                description.appendText("Nombre de Pais " + expectedName);
             }
         };
     }
