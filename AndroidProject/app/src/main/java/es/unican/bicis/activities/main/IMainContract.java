@@ -102,7 +102,7 @@ public interface IMainContract {
          * connection is available to the application whilst being required.
          * Only the Presenter should call this method
          */
-        void showConnectionError();
+        public void showConnectionError();
 
         /**
          * The view is requested to display a notification indicating that the networks
