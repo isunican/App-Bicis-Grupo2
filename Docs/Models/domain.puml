@@ -1,4 +1,4 @@
-@startuml
+@startuml domain
 
 hide empty members
 
@@ -13,6 +13,17 @@ class Network {
 
 class Location {
     - city : String
+    - country : String
+}
+
+class Station {
+    - id : String
+    - name : String
+    - latitude : double
+    - longitude : double
+    - freeBikes : Integer
+    - emptySlots : Integer
+    - timestamp : String
 }
 
 class NetworksResponse {
@@ -20,10 +31,15 @@ class NetworksResponse {
 }
 
 class NetworkResponse {
-    
+
 }
 
+note "Se incluyen las clases wrapper NetworksResponse y NetworkResponse\npara reflejar la estructura del paquete model implementado\npara el consumo de la API CityBikes" as NoteWrapper
+NetworksResponse .. NoteWrapper
+NetworkResponse .. NoteWrapper
+
 Network *--> "1" Location : location
+Network *--> "*" Station : stations
 NetworksResponse *--> "*" Network : networks
 NetworkResponse *--> "1" Network : network
 
