@@ -21,12 +21,23 @@ import es.unican.bicis.R;
 import es.unican.bicis.model.Availability;
 import es.unican.bicis.model.Station;
 
+/**
+ * Array adapter that formats and renders individual station rows inside a ListView.
+ */
 public class StationsArrayAdapter extends BaseAdapter {
 
+    /** List of stations to be displayed */
     private final List<Station> stations;
 
+    /** Application context */
     private final Context context;
 
+    /**
+     * Constructs a new adapter instance.
+     *
+     * @param context application context
+     * @param objects list of stations to display
+     */
     public StationsArrayAdapter(@NonNull Context context, @NonNull List<Station> objects) {
         // we know the parameters are not null because of the @NonNull annotation
         this.stations = objects;
@@ -81,6 +92,12 @@ public class StationsArrayAdapter extends BaseAdapter {
         return convertView;
     }
 
+    /**
+     * Converts an ISO-8601 date string into a user-friendly format (dd/MM/yyyy HH:mm).
+     *
+     * @param rawDate raw ISO-8601 timestamp string from the model
+     * @return formatted date string, or a fallback string if null or invalid
+     */
     private String formatDate(String rawDate) {
         if (rawDate == null || rawDate.isEmpty()) {
             return context.getString(R.string.noDate);
@@ -95,6 +112,12 @@ public class StationsArrayAdapter extends BaseAdapter {
         }
     }
 
+    /**
+     * Gets the corresponding color resource ID for a given availability status.
+     *
+     * @param av availability status enum value
+     * @return color resource ID
+     */
     private int getAvailabilityColor(Availability av) {
         int color;
 

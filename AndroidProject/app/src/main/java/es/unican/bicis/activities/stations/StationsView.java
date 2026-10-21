@@ -32,7 +32,7 @@ import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
- * The stations view of the application.
+ * View layer for the stations activity. Displays the list of bike stations for a given network.
  */
 @AndroidEntryPoint
 public class StationsView extends AppCompatActivity implements IStationsContract.View {
@@ -45,6 +45,11 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     @Inject
     INetworksRepository repository;
 
+    /**
+     * Initializes the activity, unpacks the selected network from intent extras, and initializes the presenter.
+     *
+     * @param savedInstanceState saved instance state bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +62,12 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         presenter.init(this);
     }
 
+    /**
+     * Inflates the toolbar menu.
+     *
+     * @param menu the menu to inflate into
+     * @return true if menu creation succeeded
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -65,10 +76,10 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     }
 
     /**
-     * This is called when an item in the action bar menu is selected.
-     * @param item The menu item that was selected.
+     * Handles selection events on action bar menu items.
      *
-     * @return true if we have handled the selection
+     * @param item the selected menu item
+     * @return true if item selection was handled
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -174,6 +185,11 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         startActivity(intent);
     }
 
+    /**
+     * Navigates back when clicking the UP button on the action bar.
+     *
+     * @return true when navigation completes
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();
