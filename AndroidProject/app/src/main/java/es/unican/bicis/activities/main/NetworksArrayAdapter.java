@@ -78,4 +78,3 @@ public class NetworksArrayAdapter extends BaseAdapter {
         return convertView;
     }
 }
-// Integración Sprint 1 - análisis calidad

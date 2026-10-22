@@ -1,11 +1,17 @@
 package es.unican.bicis.activities.main;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.bicis.R;
 import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.activities.details.DetailsView;
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
 
@@ -39,6 +46,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Inject
     INetworksRepository repository;
 
+    /**
+     * Activity first initialization method
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}. Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +65,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // instantiate presenter and launch initial business logic
         presenter = new MainPresenter();
-        presenter.init(this);
+        presenter.init(this, getApplicationContext());
     }
 
     /**
@@ -95,6 +108,34 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             Network network = (Network) parent.getItemAtPosition(position);
             presenter.onNetworkClicked(network);
         });
+
+        // search button action upon press
+        Spinner countrySpinner = findViewById(R.id.spCountry);
+        Spinner citySpinner = findViewById(R.id.spCity);
+        Button searchButton = findViewById(R.id.btnBuscar);
+        searchButton.setOnClickListener(v -> {
+            // send the selected spinner items in the view to the presenter
+            Country country = (Country) countrySpinner.getSelectedItem();
+            String city = (String) citySpinner.getSelectedItem();
+            presenter.onSearchClicked(country, city);
+        });
+
+        // country spinner listener
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Country country = (Country) parent.getItemAtPosition(position);
+
+                // tell the presenter to do the respective action when a country gets picked
+                presenter.onCountrySelected(country);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // nothing to do if no country gets selected
+                // but we're forced to override this method
+            }
+        });
     }
 
     /**
@@ -118,12 +159,48 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * @see IMainContract.View#showCountries(List)
+     * @param countries the list of countries
+     */
+    @Override
+    public void showCountries(List<Country> countries) {
+        Spinner spinner = findViewById(R.id.spCountry);
+        HintArrayAdapter<Country> adapter = new HintArrayAdapter<>(this, countries, getString(R.string.countryHint), Country::getName);
+        spinner.setAdapter(adapter);
+    }
+
+    /**
+     * @see IMainContract.View#showConnectionError()
+     */
+    @Override
+    public void showConnectionError() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.errorNoInternetConnection)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    /**
      * @see IMainContract.View#showLoadCorrect(int)
-     * @param networks
+     * @param networks the number of networks that were loaded
      */
     @Override
     public void showLoadCorrect(int networks) {
-        Toast.makeText(this, getString(R.string.loadCorrect, networks), Toast.LENGTH_SHORT).show();
+        String showText = getString(R.string.labelResults) + ": " + networks;
+        TextView text = findViewById(R.id.tvResults);
+        text.setText(showText);
+    }
+
+    /**
+     * @see IMainContract.View#showCountryFlag(String) 
+     * @param flag the emoji representing the country flag in the UNICODE character set
+     */
+    @Override
+    public void showCountryFlag(String flag) {
+        TextView text = findViewById(R.id.tvFlag);
+        text.setText(flag);
     }
 
     /**
@@ -131,7 +208,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void showLoadError() {
-        Toast.makeText(this, R.string.loadError, Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.loadError)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     /**
@@ -152,5 +234,16 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
         startActivity(intent);
+    }
+
+    /**
+     * @see IMainContract.View#showCities(List)
+     * @param cities the list of cities
+     */
+    @Override
+    public void showCities(List<String> cities) {
+        Spinner spinner = findViewById(R.id.spCity);
+        HintArrayAdapter<String> adapter = new HintArrayAdapter<>(this, cities, getString(R.string.cityHint), city -> city);
+        spinner.setAdapter(adapter);
     }
 }
