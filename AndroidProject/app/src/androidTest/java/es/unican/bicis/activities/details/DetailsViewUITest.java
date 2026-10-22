@@ -60,6 +60,7 @@ public class DetailsViewUITest {
      */
     @Test
     public void testN1_01_verDetallesCompletosSpringBike() {
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("SpringBike"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
@@ -76,6 +77,7 @@ public class DetailsViewUITest {
      */
     @Test
     public void testN1_02_verDetallesParcialesNorthCycle() {
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("NorthCycle"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
@@ -91,6 +93,7 @@ public class DetailsViewUITest {
      */
     @Test
     public void testN1_03_verDetallesValidosSouthCycle() {
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("SouthCycle"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
@@ -106,6 +109,7 @@ public class DetailsViewUITest {
      */
     @Test
     public void testN1_04_detallesNoDisponiblesBike4fun() {
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("Bike4fun"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
