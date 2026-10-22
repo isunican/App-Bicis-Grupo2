@@ -101,6 +101,7 @@ public class VerEstacionesErrorUITest {
      */
     @Test
     public void testUI04_errorAccesoDatos() {
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("SpringBike"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
@@ -115,6 +116,7 @@ public class VerEstacionesErrorUITest {
     public void testUI05_errorConexionRed() {
         mensajeError = "Error en la conexión a internet";
 
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("SpringBike"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());

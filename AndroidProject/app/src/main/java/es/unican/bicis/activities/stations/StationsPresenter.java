@@ -18,6 +18,11 @@ public class StationsPresenter implements IStationsContract.Presenter {
     /** The view that is controlled by this presenter.*/
     private IStationsContract.View view;
 
+    /**
+     * Links the presenter to the view and triggers station data fetching.
+     *
+     * @param view the view instance to attach
+     */
     @Override
     public void init(IStationsContract.View view) {
         this.view = view;
@@ -26,13 +31,16 @@ public class StationsPresenter implements IStationsContract.Presenter {
     }
 
     /**
-     * @see IMainContract.Presenter#onMenuInfoClicked()
+     * Handles clicks on the info menu option by navigating to the info screen.
      */
     @Override
     public void onMenuInfoClicked() {
         view.showInfoActivity();
     }
 
+    /**
+     * Fetches station details for the selected network from the repository and passes them to the view.
+     */
     private void load() {
         String networkId = view.getSelectedNetworkId();
 
