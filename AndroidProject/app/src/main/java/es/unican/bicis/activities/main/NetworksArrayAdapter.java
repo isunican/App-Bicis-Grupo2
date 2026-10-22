@@ -91,4 +91,3 @@ public class NetworksArrayAdapter extends BaseAdapter {
         void onInfoClick(Network network);
     }
 }
-// Integración Sprint 1 - análisis calidad
