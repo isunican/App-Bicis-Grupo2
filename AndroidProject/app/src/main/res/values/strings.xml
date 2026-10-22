@@ -5,4 +5,12 @@
     <string name="loadCorrect">Se han cargado %d redes</string>
     <string name="loadError">Ha habido un error cargando las redes</string>
     <string name="info_text">Aplicación creada para el Proyecto Integrado Curso 2026-2027</string>
+    <string name="noDate">Sin fecha</string>
+    <string name="countryHint">País</string>
+    <string name="cityHint">Ciudad</string>
+    <string name="errorTitulo">Error</string>
+    <string name="labelResults">Resultados</string>
+    <string name="search">Buscar</string>
+    <string name="flagPlaceholder">🌐</string>
+    <string name="errorNoInternetConnection">No hay conexión a internet. Esta aplicación requiere de conexión a red para funcionar.</string>
 </resources>

@@ -11,8 +11,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import es.unican.bicis.model.CountriesResponse;
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.NetworkResponse;
 import es.unican.bicis.model.NetworksResponse;
@@ -58,6 +62,32 @@ public class Utils {
             return response != null ? response.getNetwork() : null;
         } catch (IOException e) {
             return null;
+        }
+    }
+
+    /**
+     * Parses a list of countries from a json resource file.
+     * The json must contain a serialized CountriesResponse object.
+     * It uses GSON to parse the json file
+     * @param context the application context
+     * @param jsonId the resource id of the json file
+     * @return a linked hash map with all the countries, keyed by country ID as per the API
+     */
+    public static Map<String, Country> parseCountries(Context context, int jsonId) {
+        Type typeToken = new TypeToken<CountriesResponse>() { }.getType();
+        try (InputStream is = context.getResources().openRawResource(jsonId);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            CountriesResponse response = new GsonBuilder().create().fromJson(reader, typeToken);
+            List<Country> countries = response != null ? response.getCountries() : null;
+            Map<String, Country> countryMap = new LinkedHashMap<>();
+            if (countries != null) {
+                for (Country country : countries) {
+                    countryMap.put(country.getIdAPI(), country);
+                }
+            }
+            return countryMap;
+        } catch (IOException e) {
+            return new LinkedHashMap<>();
         }
     }
 }

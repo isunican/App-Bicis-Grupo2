@@ -28,4 +28,10 @@ public class InfoView extends AppCompatActivity {
         assert bar != null;  // to avoid warning in the line below
         bar.setDisplayHomeAsUpEnabled(true);  // show back button in action bar
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
 }

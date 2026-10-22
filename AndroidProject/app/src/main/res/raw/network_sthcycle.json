@@ -1,0 +1,19 @@
+{
+    "network": {
+        "id": "sthcycle",
+        "name": "SouthCycle",
+        "location": {
+            "latitude": 50.916,
+            "longitude": -1.3925,
+            "city": "Southampton",
+            "country": "UK"
+        },
+        "href": "/v2/networks/sthcycle",
+        "company": [
+            "JCDecaux SE",
+            "Grundon Waste Management Ltd"
+        ],
+        "ebikes": true
+
+    }
+}

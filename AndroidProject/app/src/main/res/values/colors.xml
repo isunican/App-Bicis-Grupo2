@@ -12,4 +12,11 @@
 
     <!--   a secondary color for controls like checkboxes and text fields. -->
     <color name="colorAccent">#FF4081</color>
+
+    <!--   Availability of bikes in a station (more than 3, between 1 and 3, none, unknown). -->
+    <color name="availabilityHigh">#FF4CAF50</color>
+    <color name="availabilityLow">#FFFF9800</color>
+    <color name="availabilityNone">#FFF44336</color>
+    <color name="availabilityUnknown">#FF9E9E9E</color>
+
 </resources>
