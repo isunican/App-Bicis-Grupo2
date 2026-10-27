@@ -111,6 +111,7 @@ public class MainPresenter implements IMainContract.Presenter {
             loadCities(country.getIdAPI());
             view.showCountryFlag(country.getFlag());
         } else {
+            loadCities(null); // Fixed city bug
             view.showCountryFlag(Country.GLOBE);
         }
     }
