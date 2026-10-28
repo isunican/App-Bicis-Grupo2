@@ -24,13 +24,17 @@ public class MainPresenter implements IMainContract.Presenter {
 
     /** The view that is controlled by this presenter */
     private IMainContract.View view;
+
+    /** The context to be used for resource access */
     private Context context;
+
+    /** The indicator for yet unpopulated lists over no internet situations */
     private boolean delayLoad;
 
     /**
-     * initialize the spinners to populate their content
-     * @see IMainContract.Presenter#init(IMainContract.View)
-     * @param view the view to control
+     * @see IMainContract.Presenter#init(IMainContract.View, Context)
+     * @param view the associated view class object
+     * @param context a context used to access resources (e.g. the Application)
      */
     @Override
     public void init(IMainContract.View view, Context context) {
@@ -50,6 +54,11 @@ public class MainPresenter implements IMainContract.Presenter {
         }
     }
 
+    /**
+     * @see IMainContract.Presenter#onSearchClicked(Country, String) 
+     * @param country the selected country, or null if none was selected
+     * @param city the selected city, or null if none was selected
+     */
     @Override
     public void onSearchClicked(Country country, String city) {
         if (isOnline()) {
@@ -86,6 +95,10 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
+    /**
+     * @see IMainContract.Presenter#onCountrySelected(Country) 
+     * @param country the selected country, or null if none was selected
+     */
     @Override
     public void onNetworkInfoClicked(Network network) {
         view.showNetworkDetails(network);
@@ -98,12 +111,16 @@ public class MainPresenter implements IMainContract.Presenter {
             loadCities(country.getIdAPI());
             view.showCountryFlag(country.getFlag());
         } else {
+            loadCities(null); // Fixed city bug
             view.showCountryFlag(Country.GLOBE);
         }
     }
 
     /**
-     * Loads the list of networks located on a given country and, optionally, city
+     * Loads the list of networks located on a given country and/or city, providing
+     * all networks present at the platform if neither of those were specified.
+     * @param countryIdAPI the chosen country (its ID), or null if none was specified
+     * @param city the chosen city, or null if none was specified
      */
     private void loadNetworks(String countryIdAPI, String city) {
         INetworksRepository repository = view.getNetworksRepository();
@@ -141,8 +158,9 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
-     * load the list of cities located inside a country
-     * @param countryIdAPI
+     * Loads the list of cities located inside a country, providing all the
+     * cities present at the platform is none was specified.
+     * @param countryIdAPI the chosen country (its ID), or null if none was specified
      */
     private void loadCities(String countryIdAPI) {
         INetworksRepository repository = view.getNetworksRepository();
@@ -167,6 +185,9 @@ public class MainPresenter implements IMainContract.Presenter {
         repository.requestNetworks(callBack);
     }
 
+    /**
+     * Loads the list of cities present at the platform.
+     */
     private void loadCountries() {
         INetworksRepository repository = view.getNetworksRepository();
 
@@ -186,6 +207,13 @@ public class MainPresenter implements IMainContract.Presenter {
         repository.requestNetworks(callBack);
     }
 
+    /**
+     * Filters the list of bike networks over a given country, so that the resulting
+     * list only includes networks that are present in that specific country.
+     * @param networks the list of bike networks
+     * @param countryIdAPI the chosen country (its ID as per the API)
+     * @return the filtered list of bike networks
+     */
     private List<Network> filterByCountry(List<Network> networks, String countryIdAPI) {
         List<Network> filtered = new ArrayList<>();
         for (Network network : networks) {
@@ -199,6 +227,13 @@ public class MainPresenter implements IMainContract.Presenter {
         return filtered;
     }
 
+    /**
+     * Filters the list of bike networks over a given city, so that the resulting
+     * list only includes networks that are present in that specific city.
+     * @param networks the list of bike networks
+     * @param city the chosen city
+     * @return the filtered list of bike networks
+     */
     private List<Network> filterByCity(List<Network> networks, String city) {
         List<Network> filtered = new ArrayList<>();
         for (Network network : networks) {
@@ -210,6 +245,11 @@ public class MainPresenter implements IMainContract.Presenter {
         return filtered;
     }
 
+    /**
+     * Obtains the list of cities that appear on a set of networks
+     * @param networks the list of bike networks
+     * @return the list of cities
+     */
     private List<String> extractCities(List<Network> networks) {
         // handled with this datatype to avoid storing repeated cities
         Set<String> cities = new LinkedHashSet<>();
@@ -222,6 +262,11 @@ public class MainPresenter implements IMainContract.Presenter {
         return new ArrayList<>(cities);
     }
 
+    /**
+     * Obtains the list of countries that appear on a set of networks
+     * @param networks the list of bike networks
+     * @return the list of countries
+     */
     private List<Country> extractCountries(List<Network> networks) {
         // handled with this datatype to avoid storing repeated countries
         Set<String> countriesStrings = new LinkedHashSet<>();
@@ -241,6 +286,10 @@ public class MainPresenter implements IMainContract.Presenter {
         return countries;
     }
 
+    /**
+     * Checks that the application has networking and internet connectivity
+     * @return true if there is an active internet connection, false if otherwise
+     */
     private boolean isOnline() {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (manager == null) {

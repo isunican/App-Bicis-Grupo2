@@ -47,6 +47,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Inject
     INetworksRepository repository;
 
+    /**
+     * Activity first initialization method
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}. Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,6 +159,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         list.setAdapter(adapter);
     }
 
+    /**
+     * @see IMainContract.View#showCountries(List)
+     * @param countries the list of countries
+     */
     @Override
     public void showCountries(List<Country> countries) {
         Spinner spinner = findViewById(R.id.spCountry);
@@ -160,6 +170,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         spinner.setAdapter(adapter);
     }
 
+    /**
+     * @see IMainContract.View#showConnectionError()
+     */
     @Override
     public void showConnectionError() {
         new AlertDialog.Builder(this)
@@ -172,7 +185,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     /**
      * @see IMainContract.View#showLoadCorrect(int)
-     * @param networks
+     * @param networks the number of networks that were loaded
      */
     @Override
     public void showLoadCorrect(int networks) {
@@ -181,6 +194,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         text.setText(showText);
     }
 
+    /**
+     * @see IMainContract.View#showCountryFlag(String) 
+     * @param flag the emoji representing the country flag in the UNICODE character set
+     */
     @Override
     public void showCountryFlag(String flag) {
         TextView text = findViewById(R.id.tvFlag);
@@ -231,6 +248,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         startActivity(intent);
     }
 
+    /**
+     * @see IMainContract.View#showCities(List)
+     * @param cities the list of cities
+     */
     @Override
     public void showCities(List<String> cities) {
         Spinner spinner = findViewById(R.id.spCity);
