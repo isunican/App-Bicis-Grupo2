@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp"
+        android:background="@color/colorPrimaryTranslucent"
         android:gravity="center_vertical|start"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

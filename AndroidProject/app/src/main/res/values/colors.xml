@@ -10,6 +10,10 @@
            the status bar (on Android 5.0+) and contextual app bars. -->
     <color name="colorPrimaryDark">#303F9F</color>
 
+    <!-- A more translucent variant of the primary color, used for
+         the background color of the filters bar.-->
+    <color name="colorPrimaryTranslucent">#473F51B5</color>
+
     <!--   a secondary color for controls like checkboxes and text fields. -->
     <color name="colorAccent">#FF4081</color>
 
