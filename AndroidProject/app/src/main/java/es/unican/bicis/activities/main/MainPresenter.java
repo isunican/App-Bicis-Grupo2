@@ -236,17 +236,7 @@ public class MainPresenter implements IMainContract.Presenter {
         Map<String, Country> allCountries = new CountriesList(context).getMap();
         List<Country> countries = new ArrayList<>();
         for (String countryIdAPI : countriesStrings) {
-            Country country = allCountries.get(countryIdAPI);
-            if (country != null) {
-                countries.add(country);
-            } else {
-                Country unknownCountry = new Country();
-                unknownCountry.setName(countryIdAPI);
-                unknownCountry.setIdISO(countryIdAPI);
-                unknownCountry.setIdAPI(countryIdAPI);
-                unknownCountry.setFlag(Country.WHITE_FLAG);
-                countries.add(unknownCountry);
-            }
+            countries.add(Country.find(allCountries, countryIdAPI));
         }
         return countries;
     }

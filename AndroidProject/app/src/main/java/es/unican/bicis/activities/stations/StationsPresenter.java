@@ -2,10 +2,14 @@ package es.unican.bicis.activities.stations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import es.unican.bicis.activities.main.IMainContract;
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 import es.unican.bicis.model.Station;
@@ -71,6 +75,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
 
                 view.showNetworkLocation(networkLocation);
                 view.showStations(stations);
+                view.showCountryFlag(resolveFlag(networkLocation.getCountry()));
                 view.showLoadCorrect(stations.size());
             }
 
@@ -82,8 +87,28 @@ public class StationsPresenter implements IStationsContract.Presenter {
                     view.showLoadError(null);
                 }
             }
+
+
         };
 
+
+
         repository.requestNetwork(callBack, networkId);
+    }
+
+    private String resolveFlag(String countryIdAPI) {
+        if (countryIdAPI == null || countryIdAPI.isEmpty()) {
+            return Country.GLOBE;
+        }
+
+        Map<String, Country> countries = null;
+        ICountriesList countriesList = view.getCountriesList();
+        if (countriesList != null) {
+            countries = countriesList.getMap();
+        }
+
+        String flag = Country.find(countries, countryIdAPI).getFlag();
+        return Objects.requireNonNullElse(flag, Country.WHITE_FLAG);
+
     }
 }

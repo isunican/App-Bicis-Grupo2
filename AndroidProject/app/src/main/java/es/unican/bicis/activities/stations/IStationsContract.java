@@ -6,6 +6,7 @@ import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.INetworksRepository;
+import es.unican.bicis.repository.ICountriesList;
 
 
 /**
@@ -91,5 +92,15 @@ public interface IStationsContract {
          * Opens the main information activity.
          */
         public void showInfoActivity();
+
+        /**
+         * Displays the flag of the network's country.
+         *
+         * @param flag flag emoji to display
+         */
+        public void showCountryFlag(String flag);
+
+
+        ICountriesList getCountriesList();
     }
 }

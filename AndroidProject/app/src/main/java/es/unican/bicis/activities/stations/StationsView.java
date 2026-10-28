@@ -29,6 +29,8 @@ import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
+import es.unican.bicis.repository.CountriesList;
+import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -183,6 +185,17 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void showCountryFlag(String flag) {
+        TextView text = findViewById(R.id.tvFlag);
+        text.setText(flag);
+    }
+
+    @Override
+    public ICountriesList getCountriesList() {
+        return new CountriesList(this);
     }
 
     /**
