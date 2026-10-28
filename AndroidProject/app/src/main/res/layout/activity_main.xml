@@ -62,6 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/search"
+            android:textColor="@color/colorTitle"
             app:icon="@drawable/ic_search" />
 
     </LinearLayout>
@@ -83,6 +84,7 @@
         android:gravity="center"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/colorTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
