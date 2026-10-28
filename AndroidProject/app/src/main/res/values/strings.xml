@@ -4,7 +4,7 @@
     <string name="info">Info</string>
     <string name="loadCorrect">Se han cargado %d redes</string>
     <string name="loadError">Ha habido un error cargando las redes</string>
-    <string name="info_text">Aplicación creada para el Proyecto Integrado Curso 2026-2027</string>
+    <string name="info_text">Bicity</string>
     <string name="noDate">Sin fecha</string>
     <string name="countryHint">País</string>
     <string name="cityHint">Ciudad</string>
@@ -13,4 +13,12 @@
     <string name="search">Buscar</string>
     <string name="flagPlaceholder">🌐</string>
     <string name="errorNoInternetConnection">No hay conexión a internet. Esta aplicación requiere de conexión a red para funcionar.</string>
+    <string name="last_update_date">Última fecha de actualización: %s</string>
+    <string name="favorite_alias_dialog_title">Guardar como favorita</string>
+    <string name="favorite_alias_dialog_hint">Introduce un alias (opcional)</string>
+    <string name="favorite_added_success">Estación añadida a favoritos exitosamente</string>
+    <string name="favorite_error_connection">Error de conexión al guardar favorito</string>
+    <string name="favorite_error_persistence">Error en la persistencia de datos</string>
+    <string name="dialog_accept">Aceptar</string>
+    <string name="dialog_close">Cerrar</string>
 </resources>
