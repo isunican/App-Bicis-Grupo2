@@ -1,11 +1,16 @@
 package es.unican.bicis.activities.stations;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +30,6 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.bicis.R;
 import es.unican.bicis.activities.info.InfoView;
-import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
@@ -43,6 +47,8 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     private ListView lvStations;
     private TextView tvResults;
     private TextView tvNetworkLocation;
+    private StationsArrayAdapter adapter;
+
     @Inject
     INetworksRepository repository;
 
@@ -58,7 +64,7 @@ public class StationsView extends AppCompatActivity implements IStationsContract
 
         network = Parcels.unwrap(getIntent().getParcelableExtra("INTENT_NETWORK"));
 
-        // instantiate presenter and launch initial business logic
+        // Instantiate presenter and launch initial business logic
         presenter = new StationsPresenter();
         presenter.init(this);
     }
@@ -139,8 +145,8 @@ public class StationsView extends AppCompatActivity implements IStationsContract
      */
     @Override
     public void showStations(List<Station> stations) {
-        StationsArrayAdapter adapter = new StationsArrayAdapter(this, stations);
-        lvStations.setAdapter(adapter);
+        this.adapter = new StationsArrayAdapter(this, stations, station -> presenter.onFavoriteIconClicked(station));
+        lvStations.setAdapter(this.adapter);
     }
 
     /**
@@ -197,6 +203,71 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     public void showFavoriteStationsActivity() {
         Intent intent = new Intent(this, FavoriteStationsView.class);
         startActivity(intent);
+    }
+
+    /**
+     * @see IStationsContract.View#showAddFavoriteDialog(Station)
+     */
+    @Override
+    public void showAddFavoriteDialog(Station station) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_favorite, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        EditText input = dialogView.findViewById(R.id.etAlias);
+        ImageButton ibClose = dialogView.findViewById(R.id.ibCloseDialog);
+        Button btnAccept = dialogView.findViewById(R.id.btnAccept);
+
+        if (ibClose != null) {
+            ibClose.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        if (btnAccept != null) {
+            btnAccept.setOnClickListener(v -> {
+                String alias = input != null ? input.getText().toString() : "";
+                presenter.onConfirmAddFavorite(station, alias);
+                dialog.dismiss();
+            });
+        }
+
+        dialog.show();
+    }
+
+    /**
+     * @see IStationsContract.View#showFavoriteAddedSuccess()
+     */
+    @Override
+    public void showFavoriteAddedSuccess() {
+        Toast.makeText(this, R.string.favorite_added_success, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IStationsContract.View#showConnectionError()
+     */
+    @Override
+    public void showConnectionError() {
+        Toast.makeText(this, R.string.favorite_error_connection, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IStationsContract.View#showPersistenceError()
+     */
+    @Override
+    public void showPersistenceError() {
+        Toast.makeText(this, R.string.favorite_error_persistence, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IStationsContract.View#updateFavoriteIcon(String, boolean)
+     */
+    @Override
+    public void updateFavoriteIcon(String stationId, boolean isFavorite) {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**

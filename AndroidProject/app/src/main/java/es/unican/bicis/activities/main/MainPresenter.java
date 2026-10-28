@@ -96,6 +96,14 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
+     * @see IMainContract.Presenter#onMenuFavoriteStationsClicked()
+     */
+    @Override
+    public void onMenuFavoriteStationsClicked() {
+        view.showFavoriteStationsActivity();
+    }
+
+    /**
      * @see IMainContract.Presenter#onCountrySelected(Country) 
      * @param country the selected country, or null if none was selected
      */

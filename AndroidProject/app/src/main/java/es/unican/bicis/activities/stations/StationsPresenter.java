@@ -1,38 +1,54 @@
 package es.unican.bicis.activities.stations;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.model.Station;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
-import es.unican.bicis.model.Station;
+import es.unican.bicis.repository.FavoriteStationsRepository;
+import es.unican.bicis.activities.favorites.FavoriteStationsView;
+
 
 /**
- * The presenter of the stations activity from the application. It controls {@link StationsView}
+ * Presenter implementation for the stations activity.
  */
 public class StationsPresenter implements IStationsContract.Presenter {
 
-    /** The view that is controlled by this presenter.*/
     private IStationsContract.View view;
+    private IFavoriteStationsRepository favoriteStationsRepository;
 
     /**
-     * Links the presenter to the view and triggers station data fetching.
+     * Constructs presenter with custom favorite repository (useful for testing/injection).
      *
-     * @param view the view instance to attach
+     * @param favoriteStationsRepository repository instance
      */
+    public StationsPresenter(IFavoriteStationsRepository favoriteStationsRepository) {
+        this.favoriteStationsRepository = favoriteStationsRepository;
+    }
+
+    /**
+     * Default constructor.
+     */
+    public StationsPresenter() {
+        // Default constructor
+    }
+
     @Override
     public void init(IStationsContract.View view) {
         this.view = view;
         this.view.init();
+        if (favoriteStationsRepository == null && view instanceof Context) {
+            favoriteStationsRepository = new FavoriteStationsRepository((Context) view);
+        }
         load();
     }
 
-    /**
-     * Handles clicks on the info menu option by navigating to the info screen.
-     */
     @Override
     public void onMenuInfoClicked() {
         view.showInfoActivity();
@@ -46,9 +62,46 @@ public class StationsPresenter implements IStationsContract.Presenter {
         view.showFavoriteStationsActivity();
     }
 
-    /**
-     * Fetches station details for the selected network from the repository and passes them to the view.
-     */
+    @Override
+    public void onFavoriteIconClicked(Station station) {
+        if (station == null) {
+            return;
+        }
+        if (favoriteStationsRepository != null && favoriteStationsRepository.isFavorite(station.getId())) {
+            return;
+        }
+        view.showAddFavoriteDialog(station);
+    }
+
+    @Override
+    public void onConfirmAddFavorite(Station station, String alias) {
+        if (station == null) {
+            return;
+        }
+
+        if (favoriteStationsRepository == null) {
+            view.showPersistenceError();
+            return;
+        }
+
+        if (favoriteStationsRepository.isFavorite(station.getId())) {
+            return;
+        }
+
+        String finalAlias = alias;
+        if (finalAlias == null || finalAlias.trim().isEmpty()) {
+            finalAlias = station.getName() != null ? station.getName() : "";
+        }
+
+        boolean success = favoriteStationsRepository.addFavorite(station.getId(), finalAlias);
+        if (success) {
+            view.updateFavoriteIcon(station.getId(), true);
+            view.showFavoriteAddedSuccess();
+        } else {
+            view.showPersistenceError();
+        }
+    }
+
     private void load() {
         String networkId = view.getSelectedNetworkId();
 
@@ -58,8 +111,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
         }
 
         INetworksRepository repository = view.getNetworksRepository();
-        NetworkDetailsCallback callBack = new NetworkDetailsCallback() {
-
+        repository.requestNetwork(new NetworkDetailsCallback() {
             @Override
             public void onSuccess(Network network) {
                 if (network == null) {
@@ -90,8 +142,6 @@ public class StationsPresenter implements IStationsContract.Presenter {
                     view.showLoadError(null);
                 }
             }
-        };
-
-        repository.requestNetwork(callBack, networkId);
+        }, networkId);
     }
 }

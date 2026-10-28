@@ -31,8 +31,27 @@ public interface IStationsContract {
          */
         public void onMenuInfoClicked();
 
+        /**
+         * The presenter is informed that the favorite stations menu item has been clicked.
+         */
         public void onMenuFavoriteStationsClicked();
+
+        /**
+         * Notifies presenter that a station's star icon was clicked.
+         *
+         * @param station selected station
+         */
+        void onFavoriteIconClicked(Station station);
+
+        /**
+         * Confirms adding a station to favorites with an optional alias.
+         *
+         * @param station station to be added
+         * @param alias custom alias entered by user
+         */
+        void onConfirmAddFavorite(Station station, String alias);
     }
+
 
     /**
      * Methods that must be implemented by the Stations View.
@@ -93,6 +112,40 @@ public interface IStationsContract {
          */
         public void showInfoActivity();
 
+
+        /**
+         * The view is requested to open the favorite stations activity.
+         */
         public void showFavoriteStationsActivity();
+
+        /**
+         * Displays popup dialog allowing user to enter an alias for the favorite station.
+         *
+         * @param station selected station
+         */
+        void showAddFavoriteDialog(Station station);
+
+        /**
+         * Displays message notifying user that the favorite station was saved successfully.
+         */
+        void showFavoriteAddedSuccess();
+
+        /**
+         * Displays popup message indicating connection error during operation.
+         */
+        void showConnectionError();
+
+        /**
+         * Displays popup message indicating a data persistence error.
+         */
+        void showPersistenceError();
+
+        /**
+         * Updates the visual representation of the favorite star icon.
+         *
+         * @param stationId station ID
+         * @param isFavorite true if marked as favorite
+         */
+        void updateFavoriteIcon(String stationId, boolean isFavorite);
     }
 }
