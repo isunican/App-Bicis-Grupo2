@@ -13,4 +13,9 @@
     <string name="search">Buscar</string>
     <string name="flagPlaceholder">🌐</string>
     <string name="errorNoInternetConnection">No hay conexión a internet. Esta aplicación requiere de conexión a red para funcionar.</string>
+    <string name="favorites">Favoritos</string>
+    <string name="viewFavoriteStations">Ver estaciones favoritas</string>
+    <string name="viewFavoriteNetworks">Ver redes favoritas</string>
+    <string name="favoriteStationsTitle">Estaciones Favoritas</string>
+    <string name="favoritesCountZero">Favoritos: 0</string>
 </resources>

@@ -30,6 +30,10 @@
             android:exported="false"
             android:parentActivityName=".activities.main.MainView" />
         <activity
+            android:name=".activities.favorites.FavoriteStationsView"
+            android:exported="false"
+            android:parentActivityName=".activities.main.MainView" />
+        <activity
             android:name=".activities.main.MainView"
             android:exported="true">
             <intent-filter>

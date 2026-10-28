@@ -39,6 +39,14 @@ public class StationsPresenter implements IStationsContract.Presenter {
     }
 
     /**
+     * Handles clicks on the favorite stations menu option by navigating to that screen.
+     */
+    @Override
+    public void onMenuFavoriteStationsClicked() {
+        view.showFavoriteStationsActivity();
+    }
+
+    /**
      * Fetches station details for the selected network from the repository and passes them to the view.
      */
     private void load() {

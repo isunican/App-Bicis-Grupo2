@@ -31,6 +31,7 @@ public interface IStationsContract {
          */
         public void onMenuInfoClicked();
 
+        public void onMenuFavoriteStationsClicked();
     }
 
     /**
@@ -91,5 +92,7 @@ public interface IStationsContract {
          * Opens the main information activity.
          */
         public void showInfoActivity();
+
+        public void showFavoriteStationsActivity();
     }
 }
