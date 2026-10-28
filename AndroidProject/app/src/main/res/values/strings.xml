@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bicis</string>
+    <string name="app_name">BiCity</string>
     <string name="refresh">Recargar</string>
     <string name="info">Info</string>
     <string name="loadCorrect">Se han cargado %d redes</string>
@@ -26,5 +26,6 @@
     <string name="favoriteStationsTitle">Estaciones Favoritas</string>
     <string name="favoritesCountZero">Favoritos: 0</string>
     <string name="favoritesCount">Favoritos: %d</string>
+    <string name="deleteFavorite">Eliminar de favoritos</string>
 
 </resources>
