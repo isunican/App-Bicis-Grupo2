@@ -1,11 +1,13 @@
 package es.unican.bicis.activities.stations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import es.unican.bicis.activities.main.IMainContract;
+import es.unican.bicis.common.Utils;
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
@@ -67,6 +69,8 @@ public class StationsPresenter implements IStationsContract.Presenter {
                 if (stations == null) {
                     stations = new ArrayList<>();
                 }
+
+                Collections.sort(stations, (s1, s2) -> Utils.compareNames(s1.getName(), s2.getName()));
 
                 Location networkLocation = network.getLocation();
                 if (networkLocation == null) {
