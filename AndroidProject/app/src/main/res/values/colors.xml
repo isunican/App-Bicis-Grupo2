@@ -5,7 +5,7 @@
 
     <color name="colorBackground">#F4F6F8</color>
     <!--   Color for the app bar and other primary UI elements. -->
-    <color name="colorPrimary">#13C89B</color>
+    <color name="colorPrimary">#13B188</color>
 
     <!--   A darker variant of the primary color, used for
            the status bar (on Android 5.0+) and contextual app bars. -->
@@ -13,7 +13,7 @@
 
     <!-- A more translucent variant of the primary color, used for
          the background color of the filters bar.-->
-    <color name="colorPrimaryTranslucent">#5113C89B</color>
+    <color name="colorPrimaryTranslucent">#2E13C89B</color>
 
     <!--   a secondary color for controls like checkboxes and text fields. -->
     <color name="colorAccent">#FF4081</color>
