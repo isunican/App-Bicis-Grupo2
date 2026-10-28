@@ -65,6 +65,14 @@ public class Utils {
         }
     }
 
+    /**
+     * Parses a list of countries from a json resource file.
+     * The json must contain a serialized CountriesResponse object.
+     * It uses GSON to parse the json file
+     * @param context the application context
+     * @param jsonId the resource id of the json file
+     * @return a linked hash map with all the countries, keyed by country ID as per the API
+     */
     public static Map<String, Country> parseCountries(Context context, int jsonId) {
         Type typeToken = new TypeToken<CountriesResponse>() { }.getType();
         try (InputStream is = context.getResources().openRawResource(jsonId);

@@ -17,14 +17,31 @@ import androidx.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Class used to adapt the functionality of an interface spinner, configuring
+ * the default behavior to allow for placeholder items.
+ *
+ * @param <T> generic type representing the object type listed at the spinner
+ */
 public class HintArrayAdapter<T> extends BaseAdapter {
 
+    /** Position for the placeholder item */
     private static final int HINT_POSITION = 0;
+
+    /** Text to display at the placeholder item */
+    private final String hint;
+
     private final Context context;
     private final List<T> items;
-    private final String hint;
     private final Function<T, String> labelOf;
 
+    /**
+     * Constructs an adapter to handle the spinner of objects
+     * @param context the application context
+     * @param items list of items to be contained at the spinner
+     * @param hint text to display at the placeholder item
+     * @param labelOf data structure to hold the labels in relation to their corresponding object
+     */
     public HintArrayAdapter(@NonNull Context context, @NonNull List<T> items, @Nullable String hint, @NonNull Function<T, String> labelOf) {
         this.context = context;
         this.items = items;

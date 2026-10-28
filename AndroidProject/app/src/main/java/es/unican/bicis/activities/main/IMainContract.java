@@ -23,10 +23,18 @@ public interface IMainContract {
         /**
          * Links the presenter with its view.
          * Only the View should call this method
-         * @param view
+         * @param view the associated view class object
+         * @param applicationContext a context used to access resources (e.g. the Application)
          */
         public void init(View view, Context applicationContext);
 
+        /**
+         * The presenter is informed that the search button, provided for
+         * querying a list of bike networks, has been clicked.
+         * Only the View should call this method
+         * @param country the selected country, or null if none was selected
+         * @param city the selected city, or null if none was selected
+         */
         public void onSearchClicked(Country country, String city);
 
         /**
@@ -44,6 +52,12 @@ public interface IMainContract {
 
         public void onNetworkInfoClicked(Network network);
 
+        /**
+         * The presenter is informed that a country item has just been selected at the
+         * country selector UI element (usually a spinner).
+         * Only the View should call this method
+         * @param country the selected country, or null if none was selected
+         */
         public void onCountrySelected(Country country);
     }
 
@@ -67,7 +81,7 @@ public interface IMainContract {
          * therefore the Presenter should be unable to instantiate repositories and must rely on
          * the view to create the repository.
          * Only the Presenter should call this method
-         * @return
+         * @return the networks repository handler
          */
         public INetworksRepository getNetworksRepository();
 
@@ -78,22 +92,37 @@ public interface IMainContract {
          */
         public void showNetworks(List<Network> networks);
 
+        /**
+         * The view is requested to populate the list of countries shown to the user.
+         * Only the Presenter should call this method
+         * @param countries the list of countries
+         */
         public void showCountries(List<Country> countries);
 
-        void showConnectionError();
+        /**
+         * The view is requested to display a notification indicating that no internet
+         * connection is available to the application whilst being required.
+         * Only the Presenter should call this method
+         */
+        public void showConnectionError();
 
         /**
-         * The view is requested to display a notification indicating  that the networks
+         * The view is requested to display a notification indicating that the networks
          * were loaded correctly.
          * Only the Presenter should call this method
-         * @param networks
+         * @param networks the number of networks that were loaded
          */
         public void showLoadCorrect(int networks);
 
+        /**
+         * The view is requested to display the emoji flag of the currently selected country.
+         * Only the Presenter should call this method
+         * @param flag the emoji representing the country flag in the UNICODE character set
+         */
         public void showCountryFlag(String flag);
 
         /**
-         * The view is requested to display a notificacion indicating that the networks
+         * The view is requested to display a notification indicating that the networks
          * were not loaded correctly.
          * Only the Presenter should call this method
          */
@@ -114,7 +143,11 @@ public interface IMainContract {
 
         public void showNetworkDetails(Network network);
 
+        /**
+         * The view is requested to populate the list of cities shown to the user.
+         * Only the Presenter should call this method
+         * @param cities the list of cities
+         */
         public void showCities(List<String> cities);
     }
 }
-// Relanzar analisis SonarCloud Sprint 1

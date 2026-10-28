@@ -59,6 +59,7 @@ public class VerEstacionesExitoUITest {
      * Comprueba el nombre y la fecha de actualización de la estación en una posición de la lista.
      */
     private void comprobarEstacion(int posicion, String nombre, String fecha) {
+
         onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(posicion)
                 .onChildView(withId(R.id.tvStationName))
                 .check(matches(withText(nombre)));
@@ -72,6 +73,7 @@ public class VerEstacionesExitoUITest {
      */
     @Test
     public void testUI01_verEstacionesSpringBike() {
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("SpringBike"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
@@ -91,6 +93,7 @@ public class VerEstacionesExitoUITest {
      */
     @Test
     public void testUI02_verEstacionesSouthCycleSinEstaciones() {
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("SouthCycle"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
@@ -104,6 +107,7 @@ public class VerEstacionesExitoUITest {
      */
     @Test
     public void testUI03_verEstacionesBike4funSinFecha() {
+        onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("Bike4fun"))
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());

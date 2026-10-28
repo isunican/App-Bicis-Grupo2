@@ -1,22 +1,41 @@
 @startuml architecture
 
 hide empty members
+left to right direction
 
+' --- VISTA PRINCIPAL (MAIN) ---
 MainView ..|> IMainContract.View
 MainPresenter ..|> IMainContract.Presenter
+MainView --> IMainContract.Presenter : presenter
+MainPresenter --> IMainContract.View : view
 MainView --> INetworksRepository : repository
+
+' --- VISTA DE ESTACIONES (STATIONS) ---
+StationsView ..|> IStationsContract.View
+StationsPresenter ..|> IStationsContract.Presenter
+StationsView --> IStationsContract.Presenter : presenter
+StationsPresenter --> IStationsContract.View : view
+StationsView --> INetworksRepository : repository
+
+' Implementaciones de Repositorio
 ApiNetworksRepository ..|> INetworksRepository
 JsonNetworksRepository ..|> INetworksRepository
-MainView --> MainPresenter : presenter
-MainPresenter --> MainView : view
+
+' Relaciones de uso
 MainView ..> InfoView : <<use>>
 MainView ..> DetailsView : <<use>>
+MainView ..> StationsView : <<use>>
+INetworksRepository ..> NetworksCallback : <<use>>
+INetworksRepository ..> NetworkDetailsCallback : <<use>>
 
-class MainView {
+class MainView
+class MainPresenter {
+- load()
 }
 
-class MainPresenter {
-    -load()
+class StationsView
+class StationsPresenter {
+- load()
 }
 
 class InfoView
@@ -35,14 +54,30 @@ interface IMainContract.View {
 }
 
 interface IMainContract.Presenter {
-    + init(View view)
+    + init(view : View)
     + onNetworkClicked(network : Network)
     + onMenuInfoClicked()
 }
 
+interface IStationsContract.View {
+    + init()
+    + getNetworksRepository() : INetworksRepository
+    + getSelectedNetworkId() : String
+    + showStations(stations : List<Station>)
+    + showNetworkLocation(networkLocation : Location)
+    + showLoadError(reason : String)
+    + showLoadCorrect(stations : int)
+    + showInfoActivity()
+}
+
+interface IStationsContract.Presenter {
+    + init(view : View)
+    + onMenuInfoClicked()
+}
+
 interface INetworksRepository {
-    + requestNetworks(cb : NetworksCallback )
-    + requestNetwork(cb: NetworkDetailsCallback , networkId : String)
+    + requestNetworks(cb : NetworksCallback)
+    + requestNetwork(cb : NetworkDetailsCallback, networkId : String)
 }
 
 interface NetworksCallback {
@@ -51,9 +86,8 @@ interface NetworksCallback {
 }
 
 interface NetworkDetailsCallback {
-    + onSuccess(network : Networ)
+    + onSuccess(network : Network)
     + onFailure(e : Throwable)
 }
-
 
 @enduml
