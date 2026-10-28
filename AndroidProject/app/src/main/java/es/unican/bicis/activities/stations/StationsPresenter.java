@@ -20,6 +20,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
 
     private IStationsContract.View view;
     private IFavoriteStationsRepository favoriteStationsRepository;
+    private Location currentNetworkLocation;
 
     /**
      * Constructs presenter with custom favorite repository (useful for testing/injection).
@@ -83,7 +84,9 @@ public class StationsPresenter implements IStationsContract.Presenter {
             finalAlias = station.getName() != null ? station.getName() : "";
         }
 
-        boolean success = favoriteStationsRepository.addFavorite(station.getId(), finalAlias);
+        String networkId = view != null ? view.getSelectedNetworkId() : "";
+
+        boolean success = favoriteStationsRepository.addFavorite(station, networkId, currentNetworkLocation, finalAlias);
         if (success) {
             view.updateFavoriteIcon(station.getId(), true);
             view.showFavoriteAddedSuccess();
@@ -118,6 +121,8 @@ public class StationsPresenter implements IStationsContract.Presenter {
                 if (networkLocation == null) {
                     networkLocation = new Location();
                 }
+
+                currentNetworkLocation = networkLocation;
 
                 view.showNetworkLocation(networkLocation);
                 view.showStations(stations);
