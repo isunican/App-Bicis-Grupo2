@@ -77,7 +77,7 @@ public class StationsArrayAdapter extends BaseAdapter {
         // last update
         {
             TextView tv = convertView.findViewById(R.id.tvUpdateDate);
-            tv.setText("Última fecha de actualización: " + formatDate(station.getTimestamp()));
+            tv.setText("Últ. actualización: " + formatDate(station.getTimestamp()));
 
         }
 
