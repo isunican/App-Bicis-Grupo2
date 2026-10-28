@@ -25,5 +25,6 @@
     <string name="viewFavoriteNetworks">Ver redes favoritas</string>
     <string name="favoriteStationsTitle">Estaciones Favoritas</string>
     <string name="favoritesCountZero">Favoritos: 0</string>
+    <string name="favoritesCount">Favoritos: %d</string>
 
 </resources>
