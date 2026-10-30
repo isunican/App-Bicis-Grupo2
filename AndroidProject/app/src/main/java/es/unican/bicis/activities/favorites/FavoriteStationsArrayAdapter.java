@@ -48,21 +48,39 @@ public class FavoriteStationsArrayAdapter extends BaseAdapter {
         this.favorites = favorites;
     }
 
+    /** @return the number of favorite stations in the list */
     @Override
     public int getCount() {
         return favorites.size();
     }
 
+    /**
+     * @param position position of the item in the list
+     * @return the favorite station at the given position
+     */
     @Override
     public Object getItem(int position) {
         return favorites.get(position);
     }
 
+    /**
+     * @param position position of the item in the list
+     * @return the position itself, used as item identifier
+     */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+
+    /**
+     * Builds the row of a favorite station: flag, alias, availability color,
+     * city, original station name and delete icon.
+     * @param position position of the item in the list
+     * @param convertView row view to reuse, or null
+     * @param parent parent view the row will be attached to
+     * @return the view of the row
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         FavoriteStation favorite = (FavoriteStation) getItem(position);

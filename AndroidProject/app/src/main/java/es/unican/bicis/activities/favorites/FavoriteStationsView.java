@@ -40,6 +40,11 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     /** The presenter of this view */
     private IFavoriteStationsContract.Presenter presenter;
 
+    /**
+     * Called when the activity is created. Instantiates the presenter and starts the
+     * initial business logic.
+     * @param savedInstanceState saved state of the activity, or null
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +125,10 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
         Toast.makeText(this, R.string.favorite_error_connection, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Closes this screen when the back button of the action bar is pressed.
+     * @return true, since the navigation has been handled
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();
