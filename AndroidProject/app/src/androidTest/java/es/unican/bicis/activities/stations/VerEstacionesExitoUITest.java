@@ -69,10 +69,10 @@ public class VerEstacionesExitoUITest {
     }
 
     /**
-     * UI-01: Selección "SpringBike" -> Se muestran todas sus estaciones.
+     * UI-01a: Red "SpringBike" -> Estaciones con alta disponibilidad (más de 3 bicis).
      */
     @Test
-    public void testUI01_verEstacionesSpringBike() {
+    public void testUI01a_springBikeDisponibilidadAlta() {
         onView(withId(R.id.btnBuscar)).perform(click());
         onData(withNetworkName("SpringBike"))
                 .inAdapterView(withId(R.id.lvNetworks))
@@ -83,8 +83,38 @@ public class VerEstacionesExitoUITest {
 
         comprobarEstacion(0, "Capitol Complex", "16/10/2026 09:15");
         comprobarEstacion(1, "Lincoln Home Visitor Center", "16/10/2026 09:14");
+    }
+
+    /**
+     * UI-01b: Red "SpringBike" -> Estaciones con disponibilidad media (1 a 3 bicis).
+     */
+    @Test
+    public void testUI01b_springBikeDisponibilidadMedia() {
+        onView(withId(R.id.btnBuscar)).perform(click());
+        onData(withNetworkName("SpringBike"))
+                .inAdapterView(withId(R.id.lvNetworks))
+                .perform(click());
+
+        onView(withId(R.id.tvNetworkLocation)).check(matches(withText("US Springfield, Illinois")));
+        onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
+
         comprobarEstacion(2, "Union Station", "16/10/2026 09:15");
         comprobarEstacion(3, "Washington Park", "16/10/2026 09:12");
+    }
+
+    /**
+     * UI-01c: Red "SpringBike" -> Estación sin disponibilidad (0 bicis).
+     */
+    @Test
+    public void testUI01c_springBikeSinDisponibilidad() {
+        onView(withId(R.id.btnBuscar)).perform(click());
+        onData(withNetworkName("SpringBike"))
+                .inAdapterView(withId(R.id.lvNetworks))
+                .perform(click());
+
+        onView(withId(R.id.tvNetworkLocation)).check(matches(withText("US Springfield, Illinois")));
+        onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
+
         comprobarEstacion(4, "Lake Springfield Marina", "16/10/2026 09:13");
     }
 
