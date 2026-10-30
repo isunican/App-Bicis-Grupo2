@@ -7,22 +7,19 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
+import static es.unican.bicis.utils.Matchers.withAvailabilityColor;
+import static es.unican.bicis.utils.Matchers.withNetworkName;
 
+import androidx.test.espresso.DataInteraction;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
-
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 
 import org.junit.Rule;
 import org.junit.Test;
 
 import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
-
 import es.unican.bicis.R;
 import es.unican.bicis.activities.main.MainView;
-import es.unican.bicis.model.Network;
 
 @HiltAndroidTest
 public class VerEstacionesExitoUITest {
@@ -34,38 +31,19 @@ public class VerEstacionesExitoUITest {
     public ActivityScenarioRule<MainView> activityRule = new ActivityScenarioRule<>(MainView.class);
 
     /**
-     * Matcher personalizado para buscar una red por su atributo name
-     * dentro del adapter, evitando problemas con toString().
+     * Comprueba el nombre, la fecha de actualización y el color de disponibilidad
+     * de la estación en una posición de la lista.
      */
-    private static Matcher<Object> withNetworkName(String name) {
-        return new TypeSafeMatcher<Object>() {
-            @Override
-            protected boolean matchesSafely(Object item) {
-                if (item instanceof Network) {
-                    Network net = (Network) item;
-                    return name.equals(net.getName());
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Network with name: " + name);
-            }
-        };
-    }
-
-    /**
-     * Comprueba el nombre y la fecha de actualización de la estación en una posición de la lista.
-     */
-    private void comprobarEstacion(int posicion, String nombre, String fecha) {
-
-        onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(posicion)
-                .onChildView(withId(R.id.tvStationName))
+    private void comprobarEstacion(int posicion, String nombre, String fecha, int colorDisponibilidad) {
+        DataInteraction fila = onData(anything())
+                .inAdapterView(withId(R.id.lvStations))
+                .atPosition(posicion);
+        fila.onChildView(withId(R.id.tvStationName))
                 .check(matches(withText(nombre)));
-        onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(posicion)
-                .onChildView(withId(R.id.tvUpdateDate))
+        fila.onChildView(withId(R.id.tvUpdateDate))
                 .check(matches(withText("Última fecha de actualización: " + fecha)));
+        fila.onChildView(withId(R.id.ivAvailability))
+                .check(matches(withAvailabilityColor(colorDisponibilidad)));
     }
 
     /**
@@ -81,8 +59,8 @@ public class VerEstacionesExitoUITest {
         onView(withId(R.id.tvNetworkLocation)).check(matches(withText("US Springfield, Illinois")));
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
 
-        comprobarEstacion(0, "Capitol Complex", "16/10/2026 09:15");
-        comprobarEstacion(1, "Lincoln Home Visitor Center", "16/10/2026 09:14");
+        comprobarEstacion(0, "Capitol Complex", "16/10/2026 09:15", R.color.availabilityHigh);
+        comprobarEstacion(1, "Lincoln Home Visitor Center", "16/10/2026 09:14", R.color.availabilityHigh);
     }
 
     /**
@@ -98,10 +76,9 @@ public class VerEstacionesExitoUITest {
         onView(withId(R.id.tvNetworkLocation)).check(matches(withText("US Springfield, Illinois")));
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
 
-        comprobarEstacion(2, "Union Station", "16/10/2026 09:15");
-        comprobarEstacion(3, "Washington Park", "16/10/2026 09:12");
+        comprobarEstacion(2, "Union Station", "16/10/2026 09:15", R.color.availabilityLow);
+        comprobarEstacion(3, "Washington Park", "16/10/2026 09:12", R.color.availabilityLow);
     }
-
     /**
      * UI-01c: Red "SpringBike" -> Estación sin disponibilidad (0 bicis).
      */
@@ -115,7 +92,7 @@ public class VerEstacionesExitoUITest {
         onView(withId(R.id.tvNetworkLocation)).check(matches(withText("US Springfield, Illinois")));
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
 
-        comprobarEstacion(4, "Lake Springfield Marina", "16/10/2026 09:13");
+        comprobarEstacion(4, "Lake Springfield Marina", "16/10/2026 09:13", R.color.availabilityNone);
     }
 
     /**
@@ -145,8 +122,7 @@ public class VerEstacionesExitoUITest {
         onView(withId(R.id.tvNetworkLocation)).check(matches(withText("Tripoli")));
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 3")));
 
-        comprobarEstacion(0, "Estación Plaza Mayor", "24/09/2026 11:11");
-        comprobarEstacion(1, "Estación Puerto", "24/09/2026 11:09");
-        comprobarEstacion(2, "Estación sin datos", "Sin fecha");
-    }
+        comprobarEstacion(0, "Estación Plaza Mayor", "24/09/2026 11:11", R.color.availabilityHigh);
+        comprobarEstacion(1, "Estación Puerto", "24/09/2026 11:09", R.color.availabilityNone);
+        comprobarEstacion(2, "Estación sin datos", "Sin fecha", R.color.availabilityUnknown);}
 }

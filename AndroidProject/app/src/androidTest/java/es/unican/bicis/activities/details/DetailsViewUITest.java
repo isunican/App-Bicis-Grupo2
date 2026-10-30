@@ -9,6 +9,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import static es.unican.bicis.utils.Matchers.withNetworkName;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -32,28 +33,6 @@ public class DetailsViewUITest {
 
     @Rule(order = 1)
     public ActivityScenarioRule<MainView> activityRule = new ActivityScenarioRule<>(MainView.class);
-
-    /**
-     * Matcher personalizado para buscar una red por su atributo name
-     * dentro del adapter, evitando problemas con toString().
-     */
-    private static Matcher<Object> withNetworkName(String name) {
-        return new TypeSafeMatcher<Object>() {
-            @Override
-            protected boolean matchesSafely(Object item) {
-                if (item instanceof Network) {
-                    Network net = (Network) item;
-                    return name.equals(net.getName());
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Network with name: " + name);
-            }
-        };
-    }
 
     /**
      * N1-01: Selección "SpringBike" -> Se muestran todos los detalles.

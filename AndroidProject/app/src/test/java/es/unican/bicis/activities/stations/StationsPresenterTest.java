@@ -57,18 +57,18 @@ public class StationsPresenterTest {
         String networkId = "bici-santander";
         when(view.getSelectedNetworkId()).thenReturn(networkId);
 
-        Location mockLocation = new Location();
-        mockLocation.setCity("Santander");
-        mockLocation.setCountry("Spain");
+        Location location = new Location();
+        location.setCity("Santander");
+        location.setCountry("Spain");
 
-        List<Station> mockStations = Arrays.asList(new Station(), new Station(), new Station());
-        Network mockNetwork = new Network();
-        mockNetwork.setLocation(mockLocation);
-        mockNetwork.setStations(mockStations);
+        List<Station> stations = Arrays.asList(new Station(), new Station(), new Station());
+        Network network = new Network();
+        network.setLocation(location);
+        network.setStations(stations);
 
         Mockito.doAnswer(invocation -> {
             NetworkDetailsCallback callback = invocation.getArgument(0);
-            callback.onSuccess(mockNetwork);
+            callback.onSuccess(network);
             return null;
         }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
 
@@ -77,8 +77,8 @@ public class StationsPresenterTest {
 
         // Assert
         verify(view).init();
-        verify(view).showNetworkLocation(mockLocation);
-        verify(view).showStations(mockStations);
+        verify(view).showNetworkLocation(location);
+        verify(view).showStations(stations);
         verify(view).showLoadCorrect(3);
     }
 
@@ -91,18 +91,18 @@ public class StationsPresenterTest {
         String networkId = "red-vacia";
         when(view.getSelectedNetworkId()).thenReturn(networkId);
 
-        Location mockLocation = new Location();
-        mockLocation.setCity("Southampton");
-        mockLocation.setCountry("UK");
+        Location location = new Location();
+        location.setCity("Southampton");
+        location.setCountry("UK");
 
-        List<Station> mockStations = new ArrayList<>();
-        Network mockNetwork = new Network();
-        mockNetwork.setLocation(mockLocation);
-        mockNetwork.setStations(mockStations);
+        List<Station> stations = new ArrayList<>();
+        Network network = new Network();
+        network.setLocation(location);
+        network.setStations(stations);
 
         Mockito.doAnswer(invocation -> {
             NetworkDetailsCallback callback = invocation.getArgument(0);
-            callback.onSuccess(mockNetwork);
+            callback.onSuccess(network);
             return null;
         }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
 
@@ -111,8 +111,8 @@ public class StationsPresenterTest {
 
         // Assert
         verify(view).init();
-        verify(view).showNetworkLocation(mockLocation);
-        verify(view).showStations(mockStations);
+        verify(view).showNetworkLocation(location);
+        verify(view).showStations(stations);
         verify(view).showLoadCorrect(0);
     }
 
