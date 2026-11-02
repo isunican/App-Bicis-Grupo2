@@ -50,6 +50,13 @@ public interface IMainContract {
          */
         public void onMenuInfoClicked();
 
+        /**
+         * The presenter is informed that the "Ver estaciones favoritas" item in the
+         * menu has been clicked.
+         * Only the View should call this method
+         */
+        public void onMenuFavoriteStationsClicked();
+
         public void onNetworkInfoClicked(Network network);
 
         /**
@@ -140,6 +147,12 @@ public interface IMainContract {
          * Only the Presenter should call this method
          */
         public void showInfoActivity();
+
+        /**
+         * The view is requested to open the favorite stations activity.
+         * Only the Presenter should call this method
+         */
+        public void showFavoriteStationsActivity();
 
         public void showNetworkDetails(Network network);
 

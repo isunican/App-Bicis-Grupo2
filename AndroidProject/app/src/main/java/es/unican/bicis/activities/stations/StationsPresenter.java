@@ -12,6 +12,8 @@ import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 import es.unican.bicis.repository.FavoriteStationsRepository;
+import es.unican.bicis.activities.favorites.FavoriteStationsView;
+
 
 /**
  * Presenter implementation for the stations activity.
@@ -51,6 +53,14 @@ public class StationsPresenter implements IStationsContract.Presenter {
     @Override
     public void onMenuInfoClicked() {
         view.showInfoActivity();
+    }
+
+    /**
+     * Handles clicks on the favorite stations menu option by navigating to that screen.
+     */
+    @Override
+    public void onMenuFavoriteStationsClicked() {
+        view.showFavoriteStationsActivity();
     }
 
     @Override

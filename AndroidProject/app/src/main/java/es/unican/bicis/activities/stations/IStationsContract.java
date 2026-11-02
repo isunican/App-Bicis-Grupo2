@@ -32,6 +32,11 @@ public interface IStationsContract {
         public void onMenuInfoClicked();
 
         /**
+         * The presenter is informed that the favorite stations menu item has been clicked.
+         */
+        public void onMenuFavoriteStationsClicked();
+
+        /**
          * Notifies presenter that a station's star icon was clicked.
          *
          * @param station selected station
@@ -106,6 +111,12 @@ public interface IStationsContract {
          * Opens the main information activity.
          */
         public void showInfoActivity();
+
+
+        /**
+         * The view is requested to open the favorite stations activity.
+         */
+        public void showFavoriteStationsActivity();
 
         /**
          * Displays popup dialog allowing user to enter an alias for the favorite station.

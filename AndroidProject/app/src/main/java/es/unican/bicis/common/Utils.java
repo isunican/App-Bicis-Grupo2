@@ -90,4 +90,42 @@ public class Utils {
             return new LinkedHashMap<>();
         }
     }
+
+    /**
+     * Compares two names alphabetically (ignoring case).
+     * Names starting with a number go first, sorted by that number (2 before 10).
+     */
+    public static int compareNames(String a, String b) {
+        if (a == null) {
+            a = "";
+        }
+        if (b == null) {
+            b = "";
+        }
+
+        boolean aIsNumber = !a.isEmpty() && Character.isDigit(a.charAt(0));
+        boolean bIsNumber = !b.isEmpty() && Character.isDigit(b.charAt(0));
+
+        if (aIsNumber && bIsNumber) {
+            int result = Long.compare(leadingNumber(a), leadingNumber(b));
+            if (result != 0) {
+                return result;
+            }
+        } else if (aIsNumber) {
+            return -1;
+        } else if (bIsNumber) {
+            return 1;
+        }
+
+        return a.compareToIgnoreCase(b);
+    }
+
+    /** Returns the number at the beginning of a text, e.g. "12 Plaza" -> 12 */
+    private static long leadingNumber(String text) {
+        int end = 0;
+        while (end < text.length() && Character.isDigit(text.charAt(end))) {
+            end++;
+        }
+        return Long.parseLong(text.substring(0, end));
+    }
 }

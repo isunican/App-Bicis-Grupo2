@@ -33,6 +33,7 @@ import es.unican.bicis.activities.stations.StationsView;
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
+import es.unican.bicis.activities.favorites.FavoriteStationsView;
 
 /**
  * The main view of the application. It shows a list of bike sharing networks.
@@ -93,6 +94,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         int itemId = item.getItemId();
         if (itemId == R.id.menuItemInfo) {
             presenter.onMenuInfoClicked();
+            return true;
+        }
+        if (itemId == R.id.menuItemFavoriteStations) {
+            presenter.onMenuFavoriteStationsClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -234,6 +239,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
+        startActivity(intent);
+    }
+
+    /**
+     * @see IMainContract.View#showFavoriteStationsActivity()
+     */
+    @Override
+    public void showFavoriteStationsActivity() {
+        Intent intent = new Intent(this, FavoriteStationsView.class);
         startActivity(intent);
     }
 

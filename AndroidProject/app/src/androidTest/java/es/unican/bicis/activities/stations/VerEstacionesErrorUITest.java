@@ -9,10 +9,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -23,7 +19,6 @@ import dagger.hilt.android.testing.BindValue;
 import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
 import dagger.hilt.android.testing.UninstallModules;
-
 import es.unican.bicis.R;
 import es.unican.bicis.activities.main.MainView;
 import es.unican.bicis.injection.RepositoriesModule;
@@ -32,6 +27,7 @@ import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 import es.unican.bicis.repository.NetworksCallback;
+import static es.unican.bicis.utils.Matchers.withNetworkName;
 
 @UninstallModules(RepositoriesModule.class)
 @HiltAndroidTest
@@ -73,28 +69,6 @@ public class VerEstacionesErrorUITest {
             cb.onFailure(new Throwable(mensajeError));
         }
     };
-
-    /**
-     * Matcher personalizado para buscar una red por su atributo name
-     * dentro del adapter, evitando problemas con toString().
-     */
-    private static Matcher<Object> withNetworkName(String name) {
-        return new TypeSafeMatcher<Object>() {
-            @Override
-            protected boolean matchesSafely(Object item) {
-                if (item instanceof Network) {
-                    Network net = (Network) item;
-                    return name.equals(net.getName());
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Network with name: " + name);
-            }
-        };
-    }
 
     /**
      * UI-04: Error en el acceso a los datos -> Se muestra el error en la pantalla de estaciones.

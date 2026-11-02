@@ -34,6 +34,7 @@ import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.INetworksRepository;
+import es.unican.bicis.activities.favorites.FavoriteStationsView;
 
 /**
  * View layer for the stations activity. Displays the list of bike stations for a given network.
@@ -92,6 +93,10 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         int itemId = item.getItemId();
         if (itemId == R.id.menuItemInfo) {
             presenter.onMenuInfoClicked();
+            return true;
+        }
+        if (itemId == R.id.menuItemFavoriteStations) {
+            presenter.onMenuFavoriteStationsClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -188,6 +193,15 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     @Override
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
+        startActivity(intent);
+    }
+
+    /**
+     * @see IStationsContract.View#showFavoriteStationsActivity()
+     */
+    @Override
+    public void showFavoriteStationsActivity() {
+        Intent intent = new Intent(this, FavoriteStationsView.class);
         startActivity(intent);
     }
 
