@@ -9,8 +9,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class CityBikesService {
 
+    private CityBikesService() {
+        throw new UnsupportedOperationException("Clase de utilidad");
+    }
+
     /** CityBikes API base URL */
-    final static String BASE_URL = "https://api.citybik.es/";
+     static final String BASE_URL = "https://api.citybik.es/";
 
     /** Retrofit object for the CityBikes API */
     public static final Retrofit retrofit;

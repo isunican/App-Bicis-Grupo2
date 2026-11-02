@@ -26,6 +26,10 @@ import es.unican.bicis.model.NetworksResponse;
  */
 public class Utils {
 
+    private Utils() {
+        throw new UnsupportedOperationException("Clase de utilidad");
+    }
+
     /**
      * Parses a list of bike networks from a json resource file.
      * The json must contain a serialized NetworksResponse object.

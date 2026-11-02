@@ -24,6 +24,10 @@ import es.unican.bicis.repository.JsonNetworksRepository;
 @InstallIn(ActivityComponent.class)
 public abstract class RepositoriesModule {
 
+    private RepositoriesModule() {
+        throw new UnsupportedOperationException("Clase de utilidad");
+    }
+
     @Provides
     public static INetworksRepository provideRepository(Application application) {
         return new JsonNetworksRepository(application);

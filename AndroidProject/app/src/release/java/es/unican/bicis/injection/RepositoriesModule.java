@@ -21,6 +21,10 @@ import es.unican.bicis.repository.ApiNetworksRepository;
 @InstallIn(ActivityComponent.class)
 public abstract class RepositoriesModule {
 
+    private RepositoriesModule() {
+        throw new UnsupportedOperationException("Clase de utilidad");
+    }
+
     @Provides
     public static INetworksRepository provideRepository() {
         return ApiNetworksRepository.INSTANCE;
