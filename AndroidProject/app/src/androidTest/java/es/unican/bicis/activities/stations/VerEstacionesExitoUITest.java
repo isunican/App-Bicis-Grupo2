@@ -65,7 +65,7 @@ public class VerEstacionesExitoUITest {
                 .check(matches(withText(nombre)));
         onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(posicion)
                 .onChildView(withId(R.id.tvUpdateDate))
-                .check(matches(withText("Última fecha de actualización: " + fecha)));
+                .check(matches(withText("Últ. actualización: " + fecha)));
     }
 
     /**
@@ -82,10 +82,10 @@ public class VerEstacionesExitoUITest {
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
 
         comprobarEstacion(0, "Capitol Complex", "16/10/2026 09:15");
-        comprobarEstacion(1, "Lincoln Home Visitor Center", "16/10/2026 09:14");
-        comprobarEstacion(2, "Union Station", "16/10/2026 09:15");
-        comprobarEstacion(3, "Washington Park", "16/10/2026 09:12");
-        comprobarEstacion(4, "Lake Springfield Marina", "16/10/2026 09:13");
+        comprobarEstacion(1, "Lake Springfield Marina", "16/10/2026 09:13");
+        comprobarEstacion(2, "Lincoln Home Visitor Center", "16/10/2026 09:14");
+        comprobarEstacion(3, "Union Station", "16/10/2026 09:15");
+        comprobarEstacion(4, "Washington Park", "16/10/2026 09:12");
     }
 
     /**
