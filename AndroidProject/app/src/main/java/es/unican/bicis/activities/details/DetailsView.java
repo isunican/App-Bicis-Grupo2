@@ -29,8 +29,6 @@ public class DetailsView extends AppCompatActivity {
     /** Key for the intent that contains the network */
     public static final String INTENT_NETWORK = "INTENT_NETWORK";
 
-    private MapView map;
-
     /**
      * Initializes the details screen of a bike sharing network.
      * Reads the network from the intent, shows its name, city, country and company
@@ -63,7 +61,7 @@ public class DetailsView extends AppCompatActivity {
         TextView tvCountry = findViewById(R.id.tvCountry);
         TextView tvCompany = findViewById(R.id.tvCompany);
 
-        map = findViewById(R.id.mapView);
+        MapView map = findViewById(R.id.mapView);
 
         // Configurar ajustes básicos del mapa OSMDroid
         map.setTileSource(TileSourceFactory.MAPNIK); // Estilo de mapa estándar
