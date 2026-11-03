@@ -48,11 +48,6 @@ public class FavoriteStationsUITest {
      */
     @Test
     public void testN1_01_usuarioTieneFavoritos() {
-        // ideally, we would use a mock with Mockito so that the FavoriteStationsRepository
-        // reflects the state expected in this test, however, the current code structure doesn't
-        // easily allow for it, so this is what we do for the moment instead
-        // (recommended: improve this in the future)
-
         // clear the user data
         Context context = ApplicationProvider.getApplicationContext();
         context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE)
