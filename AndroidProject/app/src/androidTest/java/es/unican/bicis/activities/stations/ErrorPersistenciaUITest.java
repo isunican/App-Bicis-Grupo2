@@ -160,24 +160,6 @@ public class ErrorPersistenciaUITest {
         // Comprobamos que se ha cargado la lista de estaciones
         onView(withId(R.id.lvStations)).check(matches(isDisplayed()));
 
-        // Sustituimos el repositorio en el Presenter de la Activity activa
-        activityRule.getScenario().onActivity(activity -> {
-            try {
-                // Obtenemos el presenter de la vista
-                java.lang.reflect.Field presenterField = StationsView.class.getDeclaredField("presenter");
-                presenterField.setAccessible(true);
-                Object presenter = presenterField.get(activity);
-
-                // Reemplazamos su favoriteStationsRepository por nuestro repositorio de prueba
-                // simulado que devuelve false
-                java.lang.reflect.Field repoField = StationsPresenter.class.getDeclaredField("favoriteStationsRepository");
-                repoField.setAccessible(true);
-                repoField.set(presenter, favoriteStationsRepository);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
         // Pulsamos la estrella de Capitol Complex
         onData(withStationName("Capitol Complex"))
                 .inAdapterView(withId(R.id.lvStations))
