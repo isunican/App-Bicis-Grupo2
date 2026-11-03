@@ -145,6 +145,8 @@ public class FavoriteStationsUITest {
         onView(withId(R.id.menuItemFavorites)).perform(click());
         onView(withText("Ver estaciones favoritas")).perform(click());
         onView(withText("Error")).inRoot(isDialog()).check(matches(isDisplayed()));
+		
+		// TODO: confirm the error dialog and check that the other features work
     }
 
     /**

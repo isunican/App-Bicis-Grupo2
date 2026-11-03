@@ -105,7 +105,7 @@ public class FavoriteStationsRepositoryTest {
 
     /**
      * Test U1-04:
-     * (sucede fallo en el acceso a la persistencia de datos)
+     * (sucede un fallo en la persistencia de los datos)
      */
     @Test
     public void testU1_04_falloPersistenciaDatos() {
