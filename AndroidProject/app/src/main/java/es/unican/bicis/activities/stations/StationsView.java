@@ -29,14 +29,15 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.bicis.R;
+import es.unican.bicis.activities.favorites.FavoriteStationsView;
 import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.CountriesList;
 import es.unican.bicis.repository.ICountriesList;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
-import es.unican.bicis.activities.favorites.FavoriteStationsView;
 
 /**
  * View layer for the stations activity. Displays the list of bike stations for a given network.
@@ -54,6 +55,9 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     @Inject
     INetworksRepository repository;
 
+    @Inject
+    IFavoriteStationsRepository favoriteStationsRepository;
+
     /**
      * Initializes the activity, unpacks the selected network from intent extras, and initializes the presenter.
      *
@@ -67,7 +71,11 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         network = Parcels.unwrap(getIntent().getParcelableExtra("INTENT_NETWORK"));
 
         // Instantiate presenter and launch initial business logic
-        presenter = new StationsPresenter();
+        if (favoriteStationsRepository != null) {
+            presenter = new StationsPresenter(favoriteStationsRepository);
+        } else {
+            presenter = new StationsPresenter();
+        }
         presenter.init(this);
     }
 

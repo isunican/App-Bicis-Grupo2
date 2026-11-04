@@ -6,6 +6,8 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
+import es.unican.bicis.repository.FavoriteStationsRepository;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.JsonNetworksRepository;
 
@@ -31,6 +33,11 @@ public abstract class RepositoriesModule {
     @Provides
     public static INetworksRepository provideRepository(Application application) {
         return new JsonNetworksRepository(application);
+    }
+
+    @Provides
+    public static IFavoriteStationsRepository provideFavoriteRepository(Application application) {
+        return new FavoriteStationsRepository(application);
     }
 
 }
