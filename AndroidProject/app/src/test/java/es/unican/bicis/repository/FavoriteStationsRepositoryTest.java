@@ -7,6 +7,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -70,6 +73,10 @@ public class FavoriteStationsRepositoryTest {
         } catch (DataAccessException e) {
             fail("se lanza DataAccessException");
         }
+
+        verify(context, times(1)).getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        verify(prefs, times(1)).getAll();
+        verify(prefs, never()).edit();
     }
 
     /**
@@ -96,6 +103,10 @@ public class FavoriteStationsRepositoryTest {
         } catch (DataAccessException e) {
             fail("se lanza DataAccessException");
         }
+
+        verify(context, times(1)).getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        verify(prefs, times(1)).getAll();
+        verify(prefs, never()).edit();
     }
 
     /**
@@ -115,6 +126,10 @@ public class FavoriteStationsRepositoryTest {
         } catch (DataAccessException e) {
             fail("se lanza DataAccessException");
         }
+
+        verify(context, times(1)).getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        verify(prefs, times(1)).getAll();
+        verify(prefs, never()).edit();
     }
 
     /**
@@ -132,5 +147,8 @@ public class FavoriteStationsRepositoryTest {
         assertThrows(DataAccessException.class, () -> {
             Map<String, String> favorites = repository.getFavorites();
         });
+
+        verify(prefs, times(1)).getAll();
+        verify(prefs, never()).edit();
     }
 }
