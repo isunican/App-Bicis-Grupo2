@@ -7,7 +7,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
@@ -22,6 +21,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -60,7 +60,7 @@ public class FavoriteStationsUITest {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("sp-001", "City Center");
         editor.putString("sp-004", "Park Area");
-        editor.putString("nc-001", "NULL");
+        editor.putString("nc-001", "Grandma House");
         editor.commit();
 
         // perform the test
@@ -69,9 +69,9 @@ public class FavoriteStationsUITest {
         onView(withText("Ver estaciones favoritas")).perform(click());
 
         onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(0)
-                .onChildView(withId(R.id.tvAlias)).check(matches(withText("Abington Street")));
-        onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(1)
                 .onChildView(withId(R.id.tvAlias)).check(matches(withText("City Center")));
+        onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(1)
+                .onChildView(withId(R.id.tvAlias)).check(matches(withText("Grandma House")));
         onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(2)
                 .onChildView(withId(R.id.tvAlias)).check(matches(withText("Park Area")));
 
@@ -118,7 +118,8 @@ public class FavoriteStationsUITest {
         onView(withText("Ver estaciones favoritas")).check(doesNotExist());
 
         // check that the other features in this view continue to work
-        onView(withId(R.id.menuItemInfo)).perform(click());
+        Espresso.openActionBarOverflowOrOptionsMenu(
+                InstrumentationRegistry.getInstrumentation().getTargetContext());
         onView(withText("Info")).check(matches(isDisplayed()));
         Espresso.pressBack();
 
@@ -150,11 +151,13 @@ public class FavoriteStationsUITest {
         onView(withText("Ver estaciones favoritas")).perform(click());
         onView(withText("Error")).inRoot(isDialog()).check(matches(isDisplayed()));
 
-        // confirm the error dialog
-        onView(isRoot()).perform(click());
+        // confirm the error dialog and go back
+        onView(withText(android.R.string.ok)).perform(click());
+        Espresso.pressBack();
 
         // check that the other features in this view continue to work
-        onView(withId(R.id.menuItemInfo)).perform(click());
+        Espresso.openActionBarOverflowOrOptionsMenu(
+                InstrumentationRegistry.getInstrumentation().getTargetContext());
         onView(withText("Info")).check(matches(isDisplayed()));
         Espresso.pressBack();
 
