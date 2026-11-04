@@ -31,7 +31,6 @@ import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
 import es.unican.bicis.R;
 import es.unican.bicis.activities.main.MainView;
-import es.unican.bicis.repository.FavoriteStationsRepository;
 
 @HiltAndroidTest
 public class FavoriteStationsUITest {
@@ -40,6 +39,8 @@ public class FavoriteStationsUITest {
 
     @Rule(order = 1)
     public ActivityScenarioRule<MainView> activityRule = new ActivityScenarioRule<>(MainView.class);
+
+    private static final String PREF_NAME = "favorite_stations_prefs";
 
     /**
      * Test N1-01:
@@ -50,14 +51,16 @@ public class FavoriteStationsUITest {
     public void testN1_01_usuarioTieneFavoritos() {
         // clear the user data
         Context context = ApplicationProvider.getApplicationContext();
-        context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE)
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
                 .edit().clear().commit();
 
         // add favorite stations to the user data
-        FavoriteStationsRepository repository = new FavoriteStationsRepository(context);
-        repository.addFavorite("sp-001", "City Center");
-        repository.addFavorite("sp-004", "Park Area");
-        repository.addFavorite("nc-001", null);
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("sp-001", "City Center");
+        editor.putString("sp-004", "Park Area");
+        editor.putString("nc-001", null);
+        editor.commit();
 
         // perform the test
         // note: alphabetically ordered list by default
@@ -84,7 +87,7 @@ public class FavoriteStationsUITest {
     public void testN1_02_usuarioNoTieneFavoritos() {
         // clear the user data
         Context context = ApplicationProvider.getApplicationContext();
-        context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE)
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
                 .edit().clear().commit();
 
         // perform the test
@@ -104,7 +107,7 @@ public class FavoriteStationsUITest {
     public void testN1_03_usuarioCancelaProceso() {
         // clear the user data
         Context context = ApplicationProvider.getApplicationContext();
-        context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE)
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
                 .edit().clear().commit();
 
         // perform the test
@@ -132,11 +135,11 @@ public class FavoriteStationsUITest {
     public void testN1_04_falloPersistenciaDatos() {
         // clear the user data
         Context context = ApplicationProvider.getApplicationContext();
-        context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE)
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
                 .edit().clear().commit();
 
         // store incorrect data assumed as data corruption
-        SharedPreferences prefs = context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("sp-001", true);
         editor.commit();
