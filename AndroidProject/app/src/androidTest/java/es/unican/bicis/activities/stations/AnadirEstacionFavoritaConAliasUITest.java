@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import static es.unican.bicis.utils.Matchers.withStationName;
 
@@ -35,6 +36,7 @@ import org.parceler.Parcels;
 import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
 import es.unican.bicis.R;
+import es.unican.bicis.common.DataAccessException;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.FavoriteStationsRepository;
 
@@ -128,7 +130,11 @@ public class AnadirEstacionFavoritaConAliasUITest {
         FavoriteStationsRepository repo = new FavoriteStationsRepository(context);
 
         assertTrue(repo.isFavorite("sp-001"));
-        assertEquals("Casa", repo.getFavorites().get("sp-001"));
+        try {
+            assertEquals("Casa", repo.getFavorites().get("sp-001"));
+        } catch (DataAccessException e) {
+            fail("Se lanzo DataAccessException");
+        }
 
     }
 
