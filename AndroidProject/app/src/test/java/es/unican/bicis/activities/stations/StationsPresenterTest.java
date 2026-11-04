@@ -1,7 +1,9 @@
 package es.unican.bicis.activities.stations;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -21,6 +23,7 @@ import java.util.List;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 
@@ -34,19 +37,26 @@ public class StationsPresenterTest {
     @Mock
     private INetworksRepository repository;
 
+    @Mock
+    private IFavoriteStationsRepository favoriteStationsRepository;
+
     private StationsPresenter presenter;
 
     @Before
     public void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
         when(view.getNetworksRepository()).thenReturn(repository);
-        presenter = new StationsPresenter();
+        presenter = new StationsPresenter(favoriteStationsRepository);
     }
 
     @After
     public void tearDown() throws Exception {
         closeable.close();
     }
+
+    /**
+     * PRUEBAS UNITARIAS DE StationsPresenter.init(IStationsContract.View view)
+     */
 
     /**
      * T-01: Carga una red de manera exitosa.
@@ -190,4 +200,297 @@ public class StationsPresenterTest {
         verify(view, never()).showStations(any());
         verify(view, never()).showLoadCorrect(anyInt());
     }
+
+    /**
+     * PRUEBAS UNITARIAS DE StationsPresenter.onConfirmAddFavorite(Station station, String alias)
+     */
+
+    /**
+     * U-01: Confirmar estacion como favorita con alias. (A2-01)
+     */
+    @Test
+    public void testU01_confirmarConAlias() {
+        // Arrange
+        Location networkLocation = new Location();
+        networkLocation.setCity("Springfield, Illinois");
+        networkLocation.setCountry("US");
+
+        Network network = new Network();
+        network.setLocation(networkLocation);
+        network.setStations(new ArrayList<>());
+
+        when(view.getSelectedNetworkId()).thenReturn("springbike");
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq("springbike"));
+
+        presenter.init(view);
+
+        Station station = new Station();
+        station.setId("sp-001");
+        station.setName("Capitol Complex");
+
+        when(favoriteStationsRepository.isFavorite("sp-001")).thenReturn(false);
+        when(favoriteStationsRepository
+                .addFavorite(station, "springbike", networkLocation, "Casa"))
+                .thenReturn(true);
+
+        // Act
+        presenter.onConfirmAddFavorite(station, "Casa");
+
+        // Assert
+        verify(favoriteStationsRepository).addFavorite(station, "springbike", networkLocation, "Casa");
+        verify(view).updateFavoriteIcon("sp-001", true);
+        verify(view).showFavoriteAddedSuccess();
+        verify(view, never()).showPersistenceError();
+    }
+
+    /**
+     * U-02: Confirmar estacion como favorita con alias vacio. (A2-02)
+     */
+    @Test
+    public void testU02_confirmarConAliasVacio () {
+        // Arrange
+        Location networkLocation = new Location();
+        networkLocation.setCity("Springfield, Illinois");
+        networkLocation.setCountry("US");
+
+        Network network = new Network();
+        network.setLocation(networkLocation);
+        network.setStations(new ArrayList<>());
+
+        when(view.getSelectedNetworkId()).thenReturn("springbike");
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq("springbike"));
+
+        presenter.init(view);
+
+        Station station = new Station();
+        station.setId("sp-001");
+        station.setName("Capitol Complex");
+
+        when(favoriteStationsRepository.isFavorite("sp-001")).thenReturn(false);
+        when(favoriteStationsRepository
+                .addFavorite(station, "springbike", networkLocation, "Capitol Complex"))
+                .thenReturn(true);
+
+        // Act
+        presenter.onConfirmAddFavorite(station, "");
+
+        // Assert
+        verify(favoriteStationsRepository).addFavorite(station, "springbike", networkLocation, "Capitol Complex");
+        verify(view).updateFavoriteIcon("sp-001", true);
+        verify(view).showFavoriteAddedSuccess();
+        verify(view, never()).showPersistenceError();
+    }
+
+    /**
+     * U-03: Confirmar estacion como favorita con alias nulo. (A2-02)
+     */
+    @Test
+    public void testU03_confirmarConAliasNull () {
+        // Arrange
+        Location networkLocation = new Location();
+        networkLocation.setCity("Springfield, Illinois");
+        networkLocation.setCountry("US");
+
+        Network network = new Network();
+        network.setLocation(networkLocation);
+        network.setStations(new ArrayList<>());
+
+        when(view.getSelectedNetworkId()).thenReturn("springbike");
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq("springbike"));
+
+        presenter.init(view);
+
+        Station station = new Station();
+        station.setId("sp-001");
+        station.setName("Capitol Complex");
+
+        when(favoriteStationsRepository.isFavorite("sp-001")).thenReturn(false);
+        when(favoriteStationsRepository
+                .addFavorite(station, "springbike", networkLocation, "Capitol Complex"))
+                .thenReturn(true);
+
+        // Act
+        presenter.onConfirmAddFavorite(station, null);
+
+        // Assert
+        verify(favoriteStationsRepository).addFavorite(station, "springbike", networkLocation, "Capitol Complex");
+        verify(view).updateFavoriteIcon("sp-001", true);
+        verify(view).showFavoriteAddedSuccess();
+        verify(view, never()).showPersistenceError();
+    }
+
+    /**
+     * U-04: Confirmar estacion como favorita con alias formado solo por espacios. (A2-02)
+     */
+    @Test
+    public void testU04_confirmarConAliasConSoloEspacios () {
+        // Arrange
+        Location networkLocation = new Location();
+        networkLocation.setCity("Springfield, Illinois");
+        networkLocation.setCountry("US");
+
+        Network network = new Network();
+        network.setLocation(networkLocation);
+        network.setStations(new ArrayList<>());
+
+        when(view.getSelectedNetworkId()).thenReturn("springbike");
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq("springbike"));
+
+        presenter.init(view);
+
+        Station station = new Station();
+        station.setId("sp-001");
+        station.setName("Capitol Complex");
+
+        when(favoriteStationsRepository.isFavorite("sp-001")).thenReturn(false);
+        when(favoriteStationsRepository
+                .addFavorite(station, "springbike", networkLocation, "Capitol Complex"))
+                .thenReturn(true);
+
+        // Act
+        presenter.onConfirmAddFavorite(station, "  ");
+
+        // Assert
+        verify(favoriteStationsRepository).addFavorite(station, "springbike", networkLocation, "Capitol Complex");
+        verify(view).updateFavoriteIcon("sp-001", true);
+        verify(view).showFavoriteAddedSuccess();
+        verify(view, never()).showPersistenceError();
+    }
+
+    /**
+     * U-05: Error de persistencia al intentar guardar los datos. (A2-03)
+     */
+    @Test
+    public void testU05_errorPersistencia () {
+        // Arrange
+        Location networkLocation = new Location();
+        networkLocation.setCity("Springfield, Illinois");
+        networkLocation.setCountry("US");
+
+        Network network = new Network();
+        network.setLocation(networkLocation);
+        network.setStations(new ArrayList<>());
+
+        when(view.getSelectedNetworkId()).thenReturn("springbike");
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq("springbike"));
+
+        presenter.init(view);
+
+        Station station = new Station();
+        station.setId("sp-001");
+        station.setName("Capitol Complex");
+
+        when(favoriteStationsRepository.isFavorite("sp-001")).thenReturn(false);
+        when(favoriteStationsRepository
+                .addFavorite(station, "springbike", networkLocation, "Casa"))
+                .thenReturn(false);
+
+        // Act
+        presenter.onConfirmAddFavorite(station, "Casa");
+
+        // Assert
+        verify(view).showPersistenceError();
+        verify(view, never()).showFavoriteAddedSuccess();
+        verify(view, never()).updateFavoriteIcon(anyString(), anyBoolean());
+        verify(view, never()).showFavoriteAddedSuccess();
+
+    }
+
+    /**
+     * U-06: Confirmar sobre una estación que ya es favorita.
+     */
+    @Test
+    public void testU06_confirmarSobreYaFavorita () {
+        // Arrange
+        Location networkLocation = new Location();
+        networkLocation.setCity("Springfield, Illinois");
+        networkLocation.setCountry("US");
+
+        Network network = new Network();
+        network.setLocation(networkLocation);
+        network.setStations(new ArrayList<>());
+
+        when(view.getSelectedNetworkId()).thenReturn("springbike");
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq("springbike"));
+
+        presenter.init(view);
+
+        Station station = new Station();
+        station.setId("sp-001");
+        station.setName("Capitol Complex");
+
+        when(favoriteStationsRepository.isFavorite("sp-001")).thenReturn(true);
+
+        // Act
+        presenter.onConfirmAddFavorite(station, "Casa");
+
+        // Assert
+        verify(favoriteStationsRepository, never()).addFavorite(any(), any(), any(), any());
+        verify(view, never()).updateFavoriteIcon(anyString(), anyBoolean());
+        verify(view, never()).showFavoriteAddedSuccess();
+        verify(view, never()).showPersistenceError();
+    }
+
+    /**
+     * U-07: Confirmar con estacion nula.
+     */
+    @Test
+    public void testU07_confirmarConEstacionNull () {
+        // Arrange
+        Location networkLocation = new Location();
+        networkLocation.setCity("Springfield, Illinois");
+        networkLocation.setCountry("US");
+
+        Network network = new Network();
+        network.setLocation(networkLocation);
+        network.setStations(new ArrayList<>());
+
+        when(view.getSelectedNetworkId()).thenReturn("springbike");
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq("springbike"));
+
+        presenter.init(view);
+
+        Station station = new Station();
+        station.setId("sp-001");
+        station.setName("Capitol Complex");
+
+        // Act
+        presenter.onConfirmAddFavorite(null, "Casa");
+
+        // Assert
+        verify(favoriteStationsRepository, never()).isFavorite(anyString());
+        verify(favoriteStationsRepository, never()).addFavorite(any(), any(), any(), any());
+        verify(view, never()).updateFavoriteIcon(anyString(), anyBoolean());
+        verify(view, never()).showFavoriteAddedSuccess();
+        verify(view, never()).showPersistenceError();
+    }
+
 }
