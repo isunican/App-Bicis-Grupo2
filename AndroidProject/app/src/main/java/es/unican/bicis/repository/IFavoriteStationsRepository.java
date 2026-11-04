@@ -3,6 +3,7 @@ package es.unican.bicis.repository;
 import java.util.List;
 import java.util.Map;
 
+import es.unican.bicis.common.DataAccessException;
 import es.unican.bicis.model.FavoriteStation;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Station;
@@ -45,7 +46,7 @@ public interface IFavoriteStationsRepository {
      *
      * @return map containing station IDs as keys and aliases as values
      */
-    Map<String, String> getFavorites();
+    Map<String, String> getFavorites() throws DataAccessException;
 
     /**
      * Retrieves all stored favorite stations as a list of FavoriteStation objects.
