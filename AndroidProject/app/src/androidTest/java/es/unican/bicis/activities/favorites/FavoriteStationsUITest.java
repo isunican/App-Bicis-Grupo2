@@ -7,6 +7,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
@@ -148,8 +149,18 @@ public class FavoriteStationsUITest {
         onView(withId(R.id.menuItemFavorites)).perform(click());
         onView(withText("Ver estaciones favoritas")).perform(click());
         onView(withText("Error")).inRoot(isDialog()).check(matches(isDisplayed()));
-		
-		// TODO: confirm the error dialog and check that the other features work
+
+        // confirm the error dialog
+        onView(isRoot()).perform(click());
+
+        // check that the other features in this view continue to work
+        onView(withId(R.id.menuItemInfo)).perform(click());
+        onView(withText("Info")).check(matches(isDisplayed()));
+        Espresso.pressBack();
+
+        // check that the popup list appears again
+        onView(withId(R.id.menuItemFavorites)).perform(click());
+        onView(withText("Ver estaciones favoritas")).check(matches(isDisplayed()));
     }
 
     /**
