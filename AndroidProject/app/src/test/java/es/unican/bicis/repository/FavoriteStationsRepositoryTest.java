@@ -23,6 +23,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.HashMap;
 import java.util.Map;
 
+import es.unican.bicis.common.DataAccessException;
+
 public class FavoriteStationsRepositoryTest {
 
     @Mock
@@ -63,7 +65,11 @@ public class FavoriteStationsRepositoryTest {
         expectedMap.put("sp-004", "Park Area");
         expectedMap.put("nc-001", "Grandma House");
 
-        assertEquals(repository.getFavorites() ,expectedMap);
+        try {
+            assertEquals(expectedMap, repository.getFavorites());
+        } catch (DataAccessException e) {
+            fail("se lanza DataAccessException");
+        }
     }
 
     /**
@@ -85,7 +91,11 @@ public class FavoriteStationsRepositoryTest {
         expectedMap.put("sp-004", "Park Area");
         expectedMap.put("nc-001", null);
 
-        assertEquals(expectedMap, repository.getFavorites());
+        try {
+            assertEquals(expectedMap, repository.getFavorites());
+        } catch (DataAccessException e) {
+            fail("se lanza DataAccessException");
+        }
     }
 
     /**
@@ -100,7 +110,11 @@ public class FavoriteStationsRepositoryTest {
         doReturn(storedData).when(prefs).getAll();
 
         Map<String, String> expectedMap = new HashMap<>();
-        assertEquals(expectedMap, repository.getFavorites());
+        try {
+            assertEquals(expectedMap, repository.getFavorites());
+        } catch (DataAccessException e) {
+            fail("se lanza DataAccessException");
+        }
     }
 
     /**
@@ -115,10 +129,8 @@ public class FavoriteStationsRepositoryTest {
         storedData.put("sp-001", true);
         doReturn(storedData).when(prefs).getAll();
 
-        // TODO: implement DataAccessException
-        /*assertThrows(DataAccessException.class, () -> {
+        assertThrows(DataAccessException.class, () -> {
             Map<String, String> favorites = repository.getFavorites();
-        });*/
-        fail();
+        });
     }
 }
