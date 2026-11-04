@@ -44,7 +44,6 @@ import es.unican.bicis.model.FavoriteStation;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
-import es.unican.bicis.repository.FavoriteStationsRepository;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
@@ -52,7 +51,7 @@ import es.unican.bicis.repository.NetworksCallback;
 
 @UninstallModules(RepositoriesModule.class)
 @HiltAndroidTest
-public class ErrorPersistenciaUITest {
+public class AnadirEstacionFavoritaErrorPersistenciaUITest {
 
     @Rule(order = 0)
     public HiltAndroidRule hiltRule = new HiltAndroidRule(this);
@@ -67,17 +66,16 @@ public class ErrorPersistenciaUITest {
     public void setUp() {
         // Obtenemos el decorView
         activityRule.getScenario().onActivity(activity -> decorView = activity.getWindow().getDecorView());
+    }
 
+    private static Intent createIntent() {
         // Limpiamos SharedPreferences para asegurar un entorno de prueba limpio
         Context context = ApplicationProvider.getApplicationContext();
         context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE)
                 .edit()
                 .clear()
                 .commit();
-    }
 
-    private static Intent createIntent() {
-        Context context = ApplicationProvider.getApplicationContext();
         Intent intent = new Intent(context, StationsView.class);
 
         // Creamos la red de prueba para pasarla como parametro en el intent, y que el test se
@@ -152,11 +150,11 @@ public class ErrorPersistenciaUITest {
     };
 
     /**
-     * UI-03 ErrorPersistenciaUITest: Verifica que cuando un error de persistencia ocurre, la
+     * UI-03 AnadirEstacionFavoritaErrorPersistenciaUITest: Verifica que cuando un error de persistencia ocurre, la
      * estacion no aparece como favorita.
      */
     @Test
-    public void errorPersistencia () {
+    public void anadirEstacionFavoritaErrorPersistencia () {
         // Comprobamos que se ha cargado la lista de estaciones
         onView(withId(R.id.lvStations)).check(matches(isDisplayed()));
 

@@ -1,20 +1,15 @@
 package es.unican.bicis.activities.stations;
 
-import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.RootMatchers.isDialog;
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -30,9 +25,6 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,18 +33,15 @@ import org.parceler.Parcels;
 import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
 import es.unican.bicis.R;
-import es.unican.bicis.activities.stations.StationsView;
 import es.unican.bicis.model.Network;
-import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.FavoriteStationsRepository;
 
 @HiltAndroidTest
-public class AnadirFavoritaConAliasUITest {
+public class AnadirEstacionFavoritaSinAliasUITest {
 
     @Rule(order = 0)
     public HiltAndroidRule hiltRule = new HiltAndroidRule(this);
 
-    // Lanzamos StationsView directamente pasándole la red SpringBike en el Intent
     @Rule(order = 1)
     public ActivityScenarioRule<StationsView> activityRule = new ActivityScenarioRule<>(createIntent());
 
@@ -64,21 +53,21 @@ public class AnadirFavoritaConAliasUITest {
         // Obtenemos el objeto decorView
         activityRule.getScenario().onActivity(activity -> decorView = activity.getWindow().getDecorView());
 
+
+    }
+
+    private static Intent createIntent() {
         // Limpiamos SharedPreferences para asegurar un entorno de prueba limpio
         Context context = ApplicationProvider.getApplicationContext();
         context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE)
                 .edit()
                 .clear()
                 .commit();
-    }
 
-
-    private static Intent createIntent() {
-        Context context = ApplicationProvider.getApplicationContext();
         Intent intent = new Intent(context, StationsView.class);
 
         // Creamos la red de prueba para pasarla como parametro en el intent, y que el test se
-        // ejecuten con la lista de estaciones de springbike ya cargada
+        // ejecute con la lista de estaciones de springbike ya cargada
         Network network = new Network();
         network.setId("springbike");
         network.setName("SpringBike");
@@ -89,26 +78,25 @@ public class AnadirFavoritaConAliasUITest {
         return intent;
     }
 
-
     /**
-     * UI-01 AnadirFavoritaConAliasUITest: Verifica que una estacion es guardada como favorita con
-     * un alias exitosamente.
+     * UI-02 AnadirEstacionFavoritaSinAliasUITest: Verifica que una estacion es guardada como favorita
+     * sin un alias exitosamente.
      */
     @Test
-    public void anadirFavoritaConAlias () {
-        // Comprobamos que la lista de estaciones esta visible
+    public void anadirEstacionFavoritaSinAlias () {
+        // Comprobamos que se ha cargado la lista de estaciones
         onView(withId(R.id.lvStations)).check(matches(isDisplayed()));
 
-        // Pulsamos la estrella de Capitol Complex
-        onData(withStationName("Capitol Complex"))
+        // Pulsamos la estrella de Union Station
+        onData(withStationName("Union Station"))
                 .inAdapterView(withId(R.id.lvStations))
                 .onChildView(withId(R.id.ivFavorite))
                 .perform(click());
 
         // Comprobamos que en el dialogo aparece el texto indicado
         onView(withText("Guardar como favorita")).check(matches(isDisplayed()));
-        // Introducimos el alias en el campo de texto
-        onView(withId(R.id.etAlias)).perform(typeText("Casa"), ViewActions.closeSoftKeyboard());
+        // No introducimos ningun alias dentro del campo de texto
+        onView(withId(R.id.etAlias)).perform(typeText(""), ViewActions.closeSoftKeyboard());
         // Pulsamos el boton de aceptar
         onView(withId(R.id.btnAccept)).perform(click());
 
@@ -118,7 +106,7 @@ public class AnadirFavoritaConAliasUITest {
                 .check(matches(isDisplayed()));
 
         // Comprobamos que la estrella de Capitol Complex aparece rellenada
-        onData(withStationName("Capitol Complex"))
+        onData(withStationName("Union Station"))
                 .inAdapterView(withId(R.id.lvStations))
                 .onChildView(withId(R.id.ivFavorite))
                 .check(matches(withTagValue(is(android.R.drawable.btn_star_big_on))));
@@ -126,19 +114,18 @@ public class AnadirFavoritaConAliasUITest {
         // Recreamos la actividad y comprobamos que la estrella sigue apareciendo rellenada
         activityRule.getScenario().recreate();
 
-        onData(withStationName("Capitol Complex"))
+        onData(withStationName("Union Station"))
                 .inAdapterView(withId(R.id.lvStations))
                 .onChildView(withId(R.id.ivFavorite))
                 .check(matches(withTagValue(is(android.R.drawable.btn_star_big_on))));
 
         // Por ultimo, verificamos que la estacion se ha guardado realmente como favorita con
-        // el alias introducido por el usuario.
+        // el nombre de la estacion como alias (comportamiento por defecto cuando no se introduce alias).
         Context context = ApplicationProvider.getApplicationContext();
         FavoriteStationsRepository repo = new FavoriteStationsRepository(context);
 
-        assertTrue(repo.isFavorite("sp-001"));
-        assertEquals("Casa", repo.getFavorites().get("sp-001"));
+        assertTrue(repo.isFavorite("sp-003"));
+        assertEquals("Union Station", repo.getFavorites().get("sp-003"));
 
     }
-
 }

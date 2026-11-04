@@ -251,7 +251,7 @@ public class StationsPresenterTest {
      * U-02: Confirmar estacion como favorita con alias vacio. (A2-02)
      */
     @Test
-    public void testU02_confirmarConAliasVacio () {
+    public void testU02_confirmarConAliasVacio() {
         // Arrange
         Location networkLocation = new Location();
         networkLocation.setCity("Springfield, Illinois");
@@ -293,7 +293,7 @@ public class StationsPresenterTest {
      * U-03: Confirmar estacion como favorita con alias nulo. (A2-02)
      */
     @Test
-    public void testU03_confirmarConAliasNull () {
+    public void testU03_confirmarConAliasNull() {
         // Arrange
         Location networkLocation = new Location();
         networkLocation.setCity("Springfield, Illinois");
@@ -335,7 +335,7 @@ public class StationsPresenterTest {
      * U-04: Confirmar estacion como favorita con alias formado solo por espacios. (A2-02)
      */
     @Test
-    public void testU04_confirmarConAliasConSoloEspacios () {
+    public void testU04_confirmarConAliasConSoloEspacios() {
         // Arrange
         Location networkLocation = new Location();
         networkLocation.setCity("Springfield, Illinois");
@@ -377,7 +377,7 @@ public class StationsPresenterTest {
      * U-05: Error de persistencia al intentar guardar los datos. (A2-03)
      */
     @Test
-    public void testU05_errorPersistencia () {
+    public void testU05_errorPersistencia() {
         // Arrange
         Location networkLocation = new Location();
         networkLocation.setCity("Springfield, Illinois");
@@ -410,7 +410,6 @@ public class StationsPresenterTest {
 
         // Assert
         verify(view).showPersistenceError();
-        verify(view, never()).showFavoriteAddedSuccess();
         verify(view, never()).updateFavoriteIcon(anyString(), anyBoolean());
         verify(view, never()).showFavoriteAddedSuccess();
 
@@ -420,7 +419,7 @@ public class StationsPresenterTest {
      * U-06: Confirmar sobre una estación que ya es favorita.
      */
     @Test
-    public void testU06_confirmarSobreYaFavorita () {
+    public void testU06_confirmarSobreYaFavorita() {
         // Arrange
         Location networkLocation = new Location();
         networkLocation.setCity("Springfield, Illinois");
@@ -477,10 +476,6 @@ public class StationsPresenterTest {
         }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq("springbike"));
 
         presenter.init(view);
-
-        Station station = new Station();
-        station.setId("sp-001");
-        station.setName("Capitol Complex");
 
         // Act
         presenter.onConfirmAddFavorite(null, "Casa");

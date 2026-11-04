@@ -30,7 +30,7 @@ import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.FavoriteStationsRepository;
 
 @HiltAndroidTest
-public class UsuarioCancelaProcesoUITest {
+public class AnadirEstacionFavoritaUsuarioCancelaProcesoUITest {
 
     @Rule(order = 0)
     public HiltAndroidRule hiltRule = new HiltAndroidRule(this);
@@ -39,19 +39,14 @@ public class UsuarioCancelaProcesoUITest {
     @Rule(order = 1)
     public ActivityScenarioRule<StationsView> activityRule = new ActivityScenarioRule<>(createIntent());
 
-    @Before
-    public void setUp() {
+    private static Intent createIntent() {
         // Limpiamos SharedPreferences para asegurar un entorno de prueba limpio
         Context context = ApplicationProvider.getApplicationContext();
         context.getSharedPreferences("favorite_stations_prefs", Context.MODE_PRIVATE)
                 .edit()
                 .clear()
                 .commit();
-    }
 
-
-    private static Intent createIntent() {
-        Context context = ApplicationProvider.getApplicationContext();
         Intent intent = new Intent(context, StationsView.class);
 
         // Creamos la red de prueba para pasarla como parametro en el intent, y que el test se
@@ -67,11 +62,11 @@ public class UsuarioCancelaProcesoUITest {
     }
 
     /**
-     * UI-03 UsuarioCancelaProcesoUITest: Verifica que cuando el usuario pulsa la "X", el proceso
+     * UI-03 AnadirEstacionFavoritaUsuarioCancelaProcesoUITest: Verifica que cuando el usuario pulsa la "X", el proceso
      * de guardar una estacion como favorita es cancelado exitosamente.
      */
     @Test
-    public void usuarioCancelaProceso () {
+    public void anadirEstacionFavoritaUsuarioCancelaProceso () {
         // Comprobamos que la lista de estaciones esta visible
         onView(withId(R.id.lvStations)).check(matches(isDisplayed()));
 
