@@ -83,7 +83,7 @@ public class FavoriteStationsRepositoryTest {
         Map<String, String> storedData = new HashMap<>();
         storedData.put("sp-001", "City Center");
         storedData.put("sp-004", "Park Area");
-        storedData.put("nc-001", null);
+        storedData.put("nc-001", "NULL");
         doReturn(storedData).when(prefs).getAll();
 
         Map<String, String> expectedMap = new HashMap<>();

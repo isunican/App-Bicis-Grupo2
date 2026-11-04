@@ -60,7 +60,7 @@ public class FavoriteStationsUITest {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("sp-001", "City Center");
         editor.putString("sp-004", "Park Area");
-        editor.putString("nc-001", null);
+        editor.putString("nc-001", "NULL");
         editor.commit();
 
         // perform the test
