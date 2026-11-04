@@ -289,6 +289,11 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void showPersistenceError() {
-        Toast.makeText(this, R.string.favorite_error_persistence, Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.loadErrorLocal)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

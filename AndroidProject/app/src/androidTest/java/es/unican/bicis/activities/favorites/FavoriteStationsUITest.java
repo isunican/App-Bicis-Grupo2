@@ -151,9 +151,8 @@ public class FavoriteStationsUITest {
         onView(withText("Ver estaciones favoritas")).perform(click());
         onView(withText("Error")).inRoot(isDialog()).check(matches(isDisplayed()));
 
-        // confirm the error dialog and go back
+        // confirm the error dialog
         onView(withText(android.R.string.ok)).perform(click());
-        Espresso.pressBack();
 
         // check that the other features in this view continue to work
         Espresso.openActionBarOverflowOrOptionsMenu(

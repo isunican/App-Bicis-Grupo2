@@ -308,6 +308,11 @@ public class StationsView extends AppCompatActivity implements IStationsContract
      */
     @Override
     public void showFavoritesConnectionError() {
-        Toast.makeText(this, R.string.favoritesConnectionError, Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.loadErrorLocal)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
