@@ -23,7 +23,7 @@ REM 1. Comprobar que Java esta instalado
 where java >nul 2>&1
 if errorlevel 1 (
   echo ERROR: Java no esta instalado o no esta en el PATH.
-  echo Instala un JRE/JDK (por ejemplo, desde https://adoptium.net/) y vuelve a intentarlo.
+  echo Instala un JRE/JDK por ejemplo, desde https://adoptium.net/ y vuelve a intentarlo.
   exit /b 1
 )
 
