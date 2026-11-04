@@ -66,7 +66,7 @@ public class FavoriteStationsUITest {
         // perform the test
         // note: alphabetically ordered list by default
         onView(withId(R.id.menuItemFavorites)).perform(click());
-        onView(withText("Ver estaciones favoritas")).perform(click());
+        onView(withText(R.string.viewFavoriteStations)).perform(click());
 
         onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(0)
                 .onChildView(withId(R.id.tvAlias)).check(matches(withText("City Center")));
@@ -93,7 +93,7 @@ public class FavoriteStationsUITest {
 
         // perform the test
         onView(withId(R.id.menuItemFavorites)).perform(click());
-        onView(withText("Ver estaciones favoritas")).perform(click());
+        onView(withText(R.string.viewFavoriteStations)).perform(click());
 
         onView(withId(R.id.lvFavoriteStations)).check(matches(withListSize(0)));
         onView(withId(R.id.tvResults)).check(matches(withText(containsString("0"))));
@@ -113,19 +113,19 @@ public class FavoriteStationsUITest {
 
         // perform the test
         onView(withId(R.id.menuItemFavorites)).perform(click());
-        onView(withText("Ver estaciones favoritas")).check(matches(isDisplayed()));
+        onView(withText(R.string.viewFavoriteStations)).check(matches(isDisplayed()));
         Espresso.pressBack();
-        onView(withText("Ver estaciones favoritas")).check(doesNotExist());
+        onView(withText(R.string.viewFavoriteStations)).check(doesNotExist());
 
         // check that the other features in this view continue to work
         Espresso.openActionBarOverflowOrOptionsMenu(
                 InstrumentationRegistry.getInstrumentation().getTargetContext());
-        onView(withText("Info")).check(matches(isDisplayed()));
+        onView(withText(R.string.info)).check(matches(isDisplayed()));
         Espresso.pressBack();
 
         // check that the popup list appears again
         onView(withId(R.id.menuItemFavorites)).perform(click());
-        onView(withText("Ver estaciones favoritas")).check(matches(isDisplayed()));
+        onView(withText(R.string.viewFavoriteStations)).check(matches(isDisplayed()));
     }
 
     /**
@@ -148,8 +148,8 @@ public class FavoriteStationsUITest {
 
         // perform the test
         onView(withId(R.id.menuItemFavorites)).perform(click());
-        onView(withText("Ver estaciones favoritas")).perform(click());
-        onView(withText("Error")).inRoot(isDialog()).check(matches(isDisplayed()));
+        onView(withText(R.string.viewFavoriteStations)).perform(click());
+        onView(withText(R.string.errorTitulo)).inRoot(isDialog()).check(matches(isDisplayed()));
 
         // confirm the error dialog
         onView(withText(android.R.string.ok)).perform(click());
@@ -157,12 +157,12 @@ public class FavoriteStationsUITest {
         // check that the other features in this view continue to work
         Espresso.openActionBarOverflowOrOptionsMenu(
                 InstrumentationRegistry.getInstrumentation().getTargetContext());
-        onView(withText("Info")).check(matches(isDisplayed()));
+        onView(withText(R.string.info)).check(matches(isDisplayed()));
         Espresso.pressBack();
 
         // check that the popup list appears again
         onView(withId(R.id.menuItemFavorites)).perform(click());
-        onView(withText("Ver estaciones favoritas")).check(matches(isDisplayed()));
+        onView(withText(R.string.viewFavoriteStations)).check(matches(isDisplayed()));
     }
 
     /**
