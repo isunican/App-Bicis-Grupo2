@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import es.unican.bicis.common.DataAccessException;
 import es.unican.bicis.model.Availability;
 import es.unican.bicis.model.FavoriteStation;
 import es.unican.bicis.model.Network;
@@ -46,10 +47,11 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
         List<FavoriteStation> favorites;
         try {
             favorites = view.getFavoriteStationsRepository().getFavoriteStations();
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | DataAccessException e) {
             view.showPersistenceError();
             return;
         }
+
         // sort alphabetically by alias, numbers first (same criterion as the stations list)
         favorites = new ArrayList<>(favorites);
         Collections.sort(favorites, (f1, f2) -> Utils.compareNames(f1.getAlias(), f2.getAlias()));

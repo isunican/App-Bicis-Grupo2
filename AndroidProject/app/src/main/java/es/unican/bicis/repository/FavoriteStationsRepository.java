@@ -113,14 +113,20 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
     }
 
     @Override
-    public List<FavoriteStation> getFavoriteStations() {
+    public List<FavoriteStation> getFavoriteStations() throws DataAccessException {
         Map<String, ?> allEntries = prefs.getAll();
         List<FavoriteStation> list = new ArrayList<>();
 
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             Object val = entry.getValue();
-            if (val instanceof String) {
-                String strVal = (String) val;
+            if ((val instanceof String) || (val == null)) {
+                // value may be null if the favorite has no set alias
+                String strVal = null;
+
+                if (val != null) {
+                    strVal = (String) val;
+                }
+
                 try {
                     FavoriteStation fav = gson.fromJson(strVal, FavoriteStation.class);
                     if (fav != null && fav.getStationId() != null) {
@@ -131,6 +137,9 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
                 } catch (JsonSyntaxException e) {
                     list.add(new FavoriteStation(entry.getKey(), "", strVal, strVal, "", ""));
                 }
+            } else {
+                // value is of an unexpected type due to mishandling or corruption
+                throw new DataAccessException();
             }
         }
         return list;

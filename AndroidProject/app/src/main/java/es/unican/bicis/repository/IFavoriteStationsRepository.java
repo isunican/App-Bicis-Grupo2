@@ -53,5 +53,5 @@ public interface IFavoriteStationsRepository {
      *
      * @return list of favorite stations containing stationId, networkId, alias, stationName, country, and city
      */
-    List<FavoriteStation> getFavoriteStations();
+    List<FavoriteStation> getFavoriteStations() throws DataAccessException;
 }
