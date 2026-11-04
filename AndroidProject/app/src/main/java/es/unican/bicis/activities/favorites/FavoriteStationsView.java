@@ -1,5 +1,6 @@
 package es.unican.bicis.activities.favorites;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -96,7 +97,12 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showPersistenceError() {
-        Toast.makeText(this, R.string.favorite_error_persistence, Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.loadErrorLocal)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     /**

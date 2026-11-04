@@ -18,6 +18,7 @@ import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.CountriesList;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworksCallback;
+import es.unican.bicis.common.DataAccessException;
 
 /**
  * The presenter of the main activity of the application. It controls {@link MainView}
@@ -102,6 +103,16 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onMenuFavoriteStationsClicked() {
+        if (!isOnline()) {
+            view.showConnectionError();
+            return;
+        }
+        try {
+            view.getFavoriteStationsRepository().getFavoriteStations();
+        } catch (RuntimeException | DataAccessException e) {
+            view.showPersistenceError();
+            return;
+        }
         view.showFavoriteStationsActivity();
     }
 

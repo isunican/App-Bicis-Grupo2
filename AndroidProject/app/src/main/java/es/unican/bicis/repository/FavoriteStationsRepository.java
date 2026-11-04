@@ -37,6 +37,10 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
 
     @Override
     public boolean addFavorite(Station station, String networkId, Location location, String alias) {
+        if (alias == null) {
+            alias = "NULL";
+        }
+
         if (station == null || station.getId() == null || station.getId().trim().isEmpty()) {
             return false;
         }
@@ -47,7 +51,7 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
         FavoriteStation favStation = new FavoriteStation(
                 station.getId(),
                 networkId != null ? networkId : "",
-                alias != null ? alias.trim() : "",
+                alias.trim(),
                 station.getName() != null ? station.getName() : "",
                 country != null ? country : "",
                 city != null ? city : ""
@@ -61,11 +65,16 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
 
     @Override
     public boolean addFavorite(String stationId, String alias) {
+        if (alias == null) {
+            alias = "NULL";
+        }
+
         if (stationId == null || stationId.trim().isEmpty()) {
             return false;
         }
+
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(stationId, alias != null ? alias.trim() : "");
+        editor.putString(stationId, alias.trim());
         return editor.commit(); // Returns false if disk write fails
     }
 
@@ -84,11 +93,11 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
 
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             Object val = entry.getValue();
-            if ((val instanceof String) || (val == null)) {
+            if (val instanceof String) {
                 // value may be null if the favorite has no set alias
                 String strVal = null;
 
-                if (val != null) {
+                if (!val.equals("NULL")) {
                     strVal = (String) val;
                 }
 
@@ -113,14 +122,20 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
     }
 
     @Override
-    public List<FavoriteStation> getFavoriteStations() {
+    public List<FavoriteStation> getFavoriteStations() throws DataAccessException {
         Map<String, ?> allEntries = prefs.getAll();
         List<FavoriteStation> list = new ArrayList<>();
 
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             Object val = entry.getValue();
             if (val instanceof String) {
-                String strVal = (String) val;
+                // value may be null if the favorite has no set alias
+                String strVal = null;
+
+                if (!val.equals("NULL")) {
+                    strVal = (String) val;
+                }
+
                 try {
                     FavoriteStation fav = gson.fromJson(strVal, FavoriteStation.class);
                     if (fav != null && fav.getStationId() != null) {
@@ -131,6 +146,9 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
                 } catch (JsonSyntaxException e) {
                     list.add(new FavoriteStation(entry.getKey(), "", strVal, strVal, "", ""));
                 }
+            } else {
+                // value is of an unexpected type due to mishandling or corruption
+                throw new DataAccessException();
             }
         }
         return list;

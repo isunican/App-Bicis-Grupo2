@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import android.content.Context;
+import android.content.Intent;
 
 import org.parceler.Parcels;
 
@@ -38,6 +40,9 @@ import es.unican.bicis.repository.CountriesList;
 import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
+import es.unican.bicis.activities.favorites.FavoriteStationsView;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 
 /**
  * View layer for the stations activity. Displays the list of bike stations for a given network.
@@ -300,5 +305,36 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    /**
+     * @see IStationsContract.View#isOnline()
+     */
+    @Override
+    public boolean isOnline() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+        android.net.Network network = manager.getActiveNetwork();
+        if (network == null) {
+            return false;
+        }
+        NetworkCapabilities capabilities = manager.getNetworkCapabilities(network);
+        return capabilities != null
+                && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+
+    /**
+     * @see IStationsContract.View#showFavoritesConnectionError()
+     */
+    @Override
+    public void showFavoritesConnectionError() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.loadErrorLocal)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

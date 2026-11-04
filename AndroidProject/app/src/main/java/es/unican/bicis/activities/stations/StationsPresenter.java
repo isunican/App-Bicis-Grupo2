@@ -20,7 +20,7 @@ import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 import es.unican.bicis.repository.FavoriteStationsRepository;
 import es.unican.bicis.activities.favorites.FavoriteStationsView;
-
+import es.unican.bicis.common.DataAccessException;
 
 /**
  * Presenter implementation for the stations activity.
@@ -66,10 +66,26 @@ public class StationsPresenter implements IStationsContract.Presenter {
     }
 
     /**
-     * Handles clicks on the favorite stations menu option by navigating to that screen.
+     * Handles clicks on the favorite stations menu option. Checks the connection and the
+     * persistence system first; the screen is only opened if both are available,
+     * otherwise the error is shown and the current screen is kept.
      */
     @Override
     public void onMenuFavoriteStationsClicked() {
+        if (!view.isOnline()) {
+            view.showFavoritesConnectionError();
+            return;
+        }
+        try {
+            if (favoriteStationsRepository == null) {
+                view.showPersistenceError();
+                return;
+            }
+            favoriteStationsRepository.getFavoriteStations();
+        } catch (RuntimeException | DataAccessException e) {
+            view.showPersistenceError();
+            return;
+        }
         view.showFavoriteStationsActivity();
     }
 

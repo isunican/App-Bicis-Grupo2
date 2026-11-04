@@ -157,5 +157,11 @@ public interface IStationsContract {
 
 
         ICountriesList getCountriesList();
+
+        /** Checks whether the device has an active internet connection. */
+        boolean isOnline();
+
+        /** Shows an error message indicating that the favorite stations cannot be opened without connection. */
+        void showFavoritesConnectionError();
     }
 }

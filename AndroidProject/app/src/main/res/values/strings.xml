@@ -4,6 +4,7 @@
     <string name="info">Info</string>
     <string name="loadCorrect">Se han cargado %d redes</string>
     <string name="loadError">Ha habido un error cargando las redes</string>
+    <string name="loadErrorLocal">Ha habido un error en la persistencia local de los datos</string>
     <string name="info_text">Bicity</string>
     <string name="noDate">Sin fecha</string>
     <string name="countryHint">País</string>
@@ -27,5 +28,6 @@
     <string name="favoritesCountZero">Favoritos: 0</string>
     <string name="favoritesCount">Favoritos: %d</string>
     <string name="deleteFavorite">Eliminar de favoritos</string>
+    <string name="favoritesConnectionError">Error de conexión</string>
 
 </resources>
