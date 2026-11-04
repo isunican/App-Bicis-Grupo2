@@ -5,11 +5,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import es.unican.bicis.common.Utils;
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
@@ -104,14 +106,18 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
-     * @see IMainContract.Presenter#onCountrySelected(Country) 
-     * @param country the selected country, or null if none was selected
+     * @see IMainContract.Presenter#onNetworkInfoClicked(Network)
+     * @param network the selected network
      */
     @Override
     public void onNetworkInfoClicked(Network network) {
         view.showNetworkDetails(network);
     }
 
+    /**
+     * @see IMainContract.Presenter#onCountrySelected(Country)
+     * @param country the selected country, or null if none was selected
+     */
     @Override
     public void onCountrySelected(Country country) {
         // country spinner might be selected before it was asynchronously initialized
@@ -137,6 +143,8 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Network> networks) {
+                Collections.sort(networks, (n1, n2) -> Utils.compareNames(n1.getName(), n2.getName()));
+
                 if (countryIdAPI == null) {
                     if (city == null) {
                         view.showNetworks(networks);
@@ -287,17 +295,7 @@ public class MainPresenter implements IMainContract.Presenter {
         Map<String, Country> allCountries = new CountriesList(context).getMap();
         List<Country> countries = new ArrayList<>();
         for (String countryIdAPI : countriesStrings) {
-            Country country = allCountries.get(countryIdAPI);
-            if (country != null) {
-                countries.add(country);
-            } else {
-                Country unknownCountry = new Country();
-                unknownCountry.setName(countryIdAPI);
-                unknownCountry.setIdISO(countryIdAPI);
-                unknownCountry.setIdAPI(countryIdAPI);
-                unknownCountry.setFlag(Country.WHITE_FLAG);
-                countries.add(unknownCountry);
-            }
+            countries.add(Country.find(allCountries, countryIdAPI));
         }
         return countries;
     }

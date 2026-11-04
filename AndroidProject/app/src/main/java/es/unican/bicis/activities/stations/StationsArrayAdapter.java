@@ -84,13 +84,12 @@ public class StationsArrayAdapter extends BaseAdapter {
         TextView tvName = convertView.findViewById(R.id.tvStationName);
         tvName.setText(station.getName());
 
-        TextView tvUpdate = convertView.findViewById(R.id.tvUpdateDate);
-        tvUpdate.setText(context.getString(R.string.last_update_date, formatDate(station.getTimestamp())));
+        TextView tv = convertView.findViewById(R.id.tvUpdateDate);
+        tv.setText("Últ. actualización: " + formatDate(station.getTimestamp()));
 
         ImageView ivAv = convertView.findViewById(R.id.ivAvailability);
         Availability availability = Availability.bikesAvailability(station.getFreeBikes());
         ivAv.setColorFilter(ContextCompat.getColor(context, getAvailabilityColor(availability)));
-
         ImageView ivStar = convertView.findViewById(R.id.ivFavorite);
         if (ivStar != null) {
             boolean isFav = favoriteStationsRepository.isFavorite(station.getId());
@@ -106,7 +105,6 @@ public class StationsArrayAdapter extends BaseAdapter {
                 }
             });
         }
-
         return convertView;
     }
 

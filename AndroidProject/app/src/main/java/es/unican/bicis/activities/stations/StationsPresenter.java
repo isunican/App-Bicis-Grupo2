@@ -3,10 +3,17 @@ package es.unican.bicis.activities.stations;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
+import es.unican.bicis.activities.main.IMainContract;
+import es.unican.bicis.common.Utils;
+import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
@@ -50,6 +57,9 @@ public class StationsPresenter implements IStationsContract.Presenter {
         load();
     }
 
+    /**
+     * Handles clicks on the info menu option by navigating to the info screen.
+     */
     @Override
     public void onMenuInfoClicked() {
         view.showInfoActivity();
@@ -127,6 +137,8 @@ public class StationsPresenter implements IStationsContract.Presenter {
                     stations = new ArrayList<>();
                 }
 
+                Collections.sort(stations, (s1, s2) -> Utils.compareNames(s1.getName(), s2.getName()));
+
                 Location networkLocation = network.getLocation();
                 if (networkLocation == null) {
                     networkLocation = new Location();
@@ -134,8 +146,15 @@ public class StationsPresenter implements IStationsContract.Presenter {
 
                 currentNetworkLocation = networkLocation;
 
+                Map<String, Country> countries = null;
+                ICountriesList countriesList = view.getCountriesList();
+                if (countriesList != null) {
+                    countries = countriesList.getMap();
+                }
+
                 view.showNetworkLocation(networkLocation);
                 view.showStations(stations);
+                view.showCountryFlag(Country.getCountryFlag(countries, networkLocation.getCountry()));
                 view.showLoadCorrect(stations.size());
             }
 

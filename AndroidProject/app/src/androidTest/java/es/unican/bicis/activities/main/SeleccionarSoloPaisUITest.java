@@ -43,9 +43,9 @@ public class SeleccionarSoloPaisUITest {
         onView(withId(R.id.tvResults)).check(matches(withText(containsString("3"))));
 
         onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(0)
-                .onChildView(withId(R.id.tvName)).check(matches(withText("Bicing")));
-        onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(1)
                 .onChildView(withId(R.id.tvName)).check(matches(withText("BiciMAD")));
+        onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(1)
+                .onChildView(withId(R.id.tvName)).check(matches(withText("Bicing")));
         onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(2)
                 .onChildView(withId(R.id.tvName)).check(matches(withText("TUeBICI")));
     }

@@ -6,6 +6,7 @@ import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.INetworksRepository;
+import es.unican.bicis.repository.ICountriesList;
 
 
 /**
@@ -51,7 +52,6 @@ public interface IStationsContract {
          */
         void onConfirmAddFavorite(Station station, String alias);
     }
-
 
     /**
      * Methods that must be implemented by the Stations View.
@@ -147,5 +147,15 @@ public interface IStationsContract {
          * @param isFavorite true if marked as favorite
          */
         void updateFavoriteIcon(String stationId, boolean isFavorite);
+
+        /**
+         * Displays the flag of the network's country.
+         *
+         * @param flag flag emoji to display
+         */
+        public void showCountryFlag(String flag);
+
+
+        ICountriesList getCountriesList();
     }
 }
