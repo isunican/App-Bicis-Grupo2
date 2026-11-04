@@ -147,5 +147,11 @@ public interface IStationsContract {
          * @param isFavorite true if marked as favorite
          */
         void updateFavoriteIcon(String stationId, boolean isFavorite);
+
+        /** Checks whether the device has an active internet connection. */
+        boolean isOnline();
+
+        /** Shows an error message indicating that the favorite stations cannot be opened without connection. */
+        void showFavoritesConnectionError();
     }
 }

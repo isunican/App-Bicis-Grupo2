@@ -7,6 +7,8 @@ import java.util.List;
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
+import es.unican.bicis.repository.INetworksRepository;
 
 /**
  * The Presenter-View contract for the Main activity.
@@ -162,5 +164,11 @@ public interface IMainContract {
          * @param cities the list of cities
          */
         public void showCities(List<String> cities);
+
+        /** Gets the repository of favorite stations. */
+        public IFavoriteStationsRepository getFavoriteStationsRepository();
+
+        /** Shows an error message indicating that the persistence system could not be accessed. */
+        public void showPersistenceError();
     }
 }

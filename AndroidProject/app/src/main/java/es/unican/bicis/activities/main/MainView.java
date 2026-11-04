@@ -34,6 +34,9 @@ import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.activities.favorites.FavoriteStationsView;
+import es.unican.bicis.repository.FavoriteStationsRepository;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
+import es.unican.bicis.repository.INetworksRepository;
 
 /**
  * The main view of the application. It shows a list of bike sharing networks.
@@ -271,5 +274,21 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         Spinner spinner = findViewById(R.id.spCity);
         HintArrayAdapter<String> adapter = new HintArrayAdapter<>(this, cities, getString(R.string.cityHint), city -> city);
         spinner.setAdapter(adapter);
+    }
+
+    /**
+     * @see IMainContract.View#getFavoriteStationsRepository()
+     */
+    @Override
+    public IFavoriteStationsRepository getFavoriteStationsRepository() {
+        return new FavoriteStationsRepository(getApplicationContext());
+    }
+
+    /**
+     * @see IMainContract.View#showPersistenceError()
+     */
+    @Override
+    public void showPersistenceError() {
+        Toast.makeText(this, R.string.favorite_error_persistence, Toast.LENGTH_SHORT).show();
     }
 }
