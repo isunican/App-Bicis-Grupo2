@@ -74,7 +74,7 @@ public class ErrorAccesoDatosUITest {
         @Override
         public boolean isFavorite(String stationId) { return false; }
         @Override
-        public Map<String, String> getFavorites() { return Map.of(); }
+        public Map<String, String> getFavorites() { return Collections.emptyMap(); }
         @Override
         public List<FavoriteStation> getFavoriteStations() { return Collections.emptyList(); }
     };

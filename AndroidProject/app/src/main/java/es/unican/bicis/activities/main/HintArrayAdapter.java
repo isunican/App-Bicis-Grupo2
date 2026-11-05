@@ -15,7 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Class used to adapt the functionality of an interface spinner, configuring
@@ -25,6 +24,16 @@ import java.util.function.Function;
  */
 public class HintArrayAdapter<T> extends BaseAdapter {
 
+    /**
+     * Returns the label to display for an item. This replaces
+     * {@link java.util.function.Function}, which is not available on API levels below 24.
+     *
+     * @param <T> type of the items in the spinner
+     */
+    public interface LabelProvider<T> {
+        String getLabel(T item);
+    }
+
     /** Position for the placeholder item */
     private static final int HINT_POSITION = 0;
 
@@ -33,7 +42,7 @@ public class HintArrayAdapter<T> extends BaseAdapter {
 
     private final Context context;
     private final List<T> items;
-    private final Function<T, String> labelOf;
+    private final LabelProvider<T> labelOf;
 
     /**
      * Constructs an adapter to handle the spinner of objects
@@ -42,7 +51,7 @@ public class HintArrayAdapter<T> extends BaseAdapter {
      * @param hint text to display at the placeholder item
      * @param labelOf data structure to hold the labels in relation to their corresponding object
      */
-    public HintArrayAdapter(@NonNull Context context, @NonNull List<T> items, @Nullable String hint, @NonNull Function<T, String> labelOf) {
+    public HintArrayAdapter(@NonNull Context context, @NonNull List<T> items, @Nullable String hint, @NonNull LabelProvider<T> labelOf) {
         this.context = context;
         this.items = items;
         this.hint = hint;
@@ -101,7 +110,7 @@ public class HintArrayAdapter<T> extends BaseAdapter {
         if (hasHint() && position == HINT_POSITION) {
             tv.setText(styledHint());
         } else {
-            tv.setText(labelOf.apply(itemAt(position)));
+            tv.setText(labelOf.getLabel(itemAt(position)));
         }
         return convertView;
     }

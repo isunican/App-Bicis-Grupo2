@@ -2,6 +2,7 @@ package es.unican.bicis.activities.details;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -80,7 +81,7 @@ public class DetailsView extends AppCompatActivity {
 
             String[] companies = network.getCompany();
             if (companies != null && companies.length > 0) {
-                tvCompany.setText(String.join(", ", companies));
+                tvCompany.setText(TextUtils.join(", ", companies));
             } else {
                 tvCompany.setText("Desconocida");
             }

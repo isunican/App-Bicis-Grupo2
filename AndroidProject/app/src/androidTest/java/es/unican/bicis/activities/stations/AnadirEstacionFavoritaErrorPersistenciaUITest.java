@@ -140,7 +140,7 @@ public class AnadirEstacionFavoritaErrorPersistenciaUITest {
 
         @Override
         public Map<String, String> getFavorites() {
-            return Map.of();
+            return Collections.emptyMap();
         }
 
         @Override

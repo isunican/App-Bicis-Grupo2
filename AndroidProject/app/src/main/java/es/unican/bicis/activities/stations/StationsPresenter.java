@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.common.Utils;
