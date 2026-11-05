@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.unican.bicis.common.DataAccessException;
 import es.unican.bicis.model.FavoriteStation;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Station;
@@ -77,14 +78,20 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
     }
 
     @Override
-    public Map<String, String> getFavorites() {
+    public Map<String, String> getFavorites() throws DataAccessException {
         Map<String, ?> allEntries = prefs.getAll();
         Map<String, String> result = new HashMap<>();
 
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             Object val = entry.getValue();
-            if (val instanceof String) {
-                String strVal = (String) val;
+            if ((val instanceof String) || (val == null)) {
+                // value may be null if the favorite has no set alias
+                String strVal = null;
+
+                if (val != null) {
+                    strVal = (String) val;
+                }
+
                 try {
                     FavoriteStation fav = gson.fromJson(strVal, FavoriteStation.class);
                     if (fav != null && fav.getAlias() != null && !fav.getAlias().isEmpty()) {
@@ -97,6 +104,9 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
                 } catch (JsonSyntaxException e) {
                     result.put(entry.getKey(), strVal);
                 }
+            } else {
+                // value is of an unexpected type due to mishandling or corruption
+                throw new DataAccessException();
             }
         }
         return result;

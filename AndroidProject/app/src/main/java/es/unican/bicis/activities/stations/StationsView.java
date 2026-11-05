@@ -33,6 +33,7 @@ import es.unican.bicis.activities.info.InfoView;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -51,6 +52,9 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     @Inject
     INetworksRepository repository;
 
+    @Inject
+    IFavoriteStationsRepository favoriteStationsRepository;
+
     /**
      * Initializes the activity, unpacks the selected network from intent extras, and initializes the presenter.
      *
@@ -64,7 +68,11 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         network = Parcels.unwrap(getIntent().getParcelableExtra("INTENT_NETWORK"));
 
         // Instantiate presenter and launch initial business logic
-        presenter = new StationsPresenter();
+        if (favoriteStationsRepository != null) {
+            presenter = new StationsPresenter(favoriteStationsRepository);
+        } else {
+            presenter = new StationsPresenter();
+        }
         presenter.init(this);
     }
 

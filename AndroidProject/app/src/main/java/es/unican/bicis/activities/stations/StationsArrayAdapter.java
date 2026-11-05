@@ -96,8 +96,10 @@ public class StationsArrayAdapter extends BaseAdapter {
             boolean isFav = favoriteStationsRepository.isFavorite(station.getId());
             if (isFav) {
                 ivStar.setImageResource(android.R.drawable.btn_star_big_on);
+                ivStar.setTag(android.R.drawable.btn_star_big_on);
             } else {
                 ivStar.setImageResource(android.R.drawable.btn_star_big_off);
+                ivStar.setTag(android.R.drawable.btn_star_big_off);
             }
 
             ivStar.setOnClickListener(v -> {
