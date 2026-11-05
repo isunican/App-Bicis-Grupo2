@@ -1,11 +1,16 @@
 package es.unican.bicis.activities.stations;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import android.content.Context;
+import android.content.Intent;
 
 import org.parceler.Parcels;
 
@@ -24,12 +31,18 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.bicis.R;
+import es.unican.bicis.activities.favorites.FavoriteStationsView;
 import es.unican.bicis.activities.info.InfoView;
-import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
+import es.unican.bicis.repository.CountriesList;
+import es.unican.bicis.repository.ICountriesList;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
+import es.unican.bicis.activities.favorites.FavoriteStationsView;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 
 /**
  * View layer for the stations activity. Displays the list of bike stations for a given network.
@@ -42,8 +55,13 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     private ListView lvStations;
     private TextView tvResults;
     private TextView tvNetworkLocation;
+    private StationsArrayAdapter adapter;
+
     @Inject
     INetworksRepository repository;
+
+    @Inject
+    IFavoriteStationsRepository favoriteStationsRepository;
 
     /**
      * Initializes the activity, unpacks the selected network from intent extras, and initializes the presenter.
@@ -57,8 +75,12 @@ public class StationsView extends AppCompatActivity implements IStationsContract
 
         network = Parcels.unwrap(getIntent().getParcelableExtra("INTENT_NETWORK"));
 
-        // instantiate presenter and launch initial business logic
-        presenter = new StationsPresenter();
+        // Instantiate presenter and launch initial business logic
+        if (favoriteStationsRepository != null) {
+            presenter = new StationsPresenter(favoriteStationsRepository);
+        } else {
+            presenter = new StationsPresenter();
+        }
         presenter.init(this);
     }
 
@@ -86,6 +108,10 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         int itemId = item.getItemId();
         if (itemId == R.id.menuItemInfo) {
             presenter.onMenuInfoClicked();
+            return true;
+        }
+        if (itemId == R.id.menuItemFavoriteStations) {
+            presenter.onMenuFavoriteStationsClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -134,8 +160,8 @@ public class StationsView extends AppCompatActivity implements IStationsContract
      */
     @Override
     public void showStations(List<Station> stations) {
-        StationsArrayAdapter adapter = new StationsArrayAdapter(this, stations);
-        lvStations.setAdapter(adapter);
+        this.adapter = new StationsArrayAdapter(this, stations, station -> presenter.onFavoriteIconClicked(station));
+        lvStations.setAdapter(this.adapter);
     }
 
     /**
@@ -185,6 +211,91 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         startActivity(intent);
     }
 
+    @Override
+    public void showCountryFlag(String flag) {
+        TextView text = findViewById(R.id.tvFlag);
+        text.setText(flag);
+    }
+
+    @Override
+    public ICountriesList getCountriesList() {
+        return new CountriesList(this);
+    }
+
+    /**
+     * @see IStationsContract.View#showFavoriteStationsActivity()
+     */
+    @Override
+    public void showFavoriteStationsActivity() {
+        Intent intent = new Intent(this, FavoriteStationsView.class);
+        startActivity(intent);
+    }
+
+    /**
+     * @see IStationsContract.View#showAddFavoriteDialog(Station)
+     */
+    @Override
+    public void showAddFavoriteDialog(Station station) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_favorite, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        EditText input = dialogView.findViewById(R.id.etAlias);
+        ImageButton ibClose = dialogView.findViewById(R.id.ibCloseDialog);
+        Button btnAccept = dialogView.findViewById(R.id.btnAccept);
+
+        if (ibClose != null) {
+            ibClose.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        if (btnAccept != null) {
+            btnAccept.setOnClickListener(v -> {
+                String alias = input != null ? input.getText().toString() : "";
+                presenter.onConfirmAddFavorite(station, alias);
+                dialog.dismiss();
+            });
+        }
+
+        dialog.show();
+    }
+
+    /**
+     * @see IStationsContract.View#showFavoriteAddedSuccess()
+     */
+    @Override
+    public void showFavoriteAddedSuccess() {
+        Toast.makeText(this, R.string.favorite_added_success, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IStationsContract.View#showConnectionError()
+     */
+    @Override
+    public void showConnectionError() {
+        Toast.makeText(this, R.string.favorite_error_connection, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IStationsContract.View#showPersistenceError()
+     */
+    @Override
+    public void showPersistenceError() {
+        Toast.makeText(this, R.string.favorite_error_persistence, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IStationsContract.View#updateFavoriteIcon(String, boolean)
+     */
+    @Override
+    public void updateFavoriteIcon(String stationId, boolean isFavorite) {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     /**
      * Navigates back when clicking the UP button on the action bar.
      *
@@ -194,5 +305,36 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    /**
+     * @see IStationsContract.View#isOnline()
+     */
+    @Override
+    public boolean isOnline() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+        android.net.Network network = manager.getActiveNetwork();
+        if (network == null) {
+            return false;
+        }
+        NetworkCapabilities capabilities = manager.getNetworkCapabilities(network);
+        return capabilities != null
+                && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+
+    /**
+     * @see IStationsContract.View#showFavoritesConnectionError()
+     */
+    @Override
+    public void showFavoritesConnectionError() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.errorTitulo)
+                .setMessage(R.string.loadErrorLocal)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

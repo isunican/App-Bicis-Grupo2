@@ -1,9 +1,13 @@
 package es.unican.bicis.injection;
 
+import android.app.Application;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
+import es.unican.bicis.repository.FavoriteStationsRepository;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.ApiNetworksRepository;
 
@@ -21,9 +25,18 @@ import es.unican.bicis.repository.ApiNetworksRepository;
 @InstallIn(ActivityComponent.class)
 public abstract class RepositoriesModule {
 
+    private RepositoriesModule() {
+        throw new UnsupportedOperationException("Clase de utilidad");
+    }
+
     @Provides
     public static INetworksRepository provideRepository() {
         return ApiNetworksRepository.INSTANCE;
+    }
+
+    @Provides
+    public static IFavoriteStationsRepository provideFavoriteRepository(Application application) {
+        return new FavoriteStationsRepository(application);
     }
 
 }

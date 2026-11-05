@@ -21,7 +21,7 @@
       "ebikes": null,
       "location": {
         "city": "Northampton",
-        "country": "UK",
+        "country": "GB",
         "latitude": 52.2381,
         "longitude": -0.8947
       }
@@ -34,7 +34,7 @@
       "ebikes": true,
       "location": {
         "city": "Southampton",
-        "country": "UK",
+        "country": "GB",
         "latitude": 50.9160,
         "longitude": -1.3925
       }

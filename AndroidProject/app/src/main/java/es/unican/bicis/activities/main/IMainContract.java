@@ -7,6 +7,8 @@ import java.util.List;
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
+import es.unican.bicis.repository.INetworksRepository;
 
 /**
  * The Presenter-View contract for the Main activity.
@@ -49,6 +51,13 @@ public interface IMainContract {
          * Only the View should call this method
          */
         public void onMenuInfoClicked();
+
+        /**
+         * The presenter is informed that the "Ver estaciones favoritas" item in the
+         * menu has been clicked.
+         * Only the View should call this method
+         */
+        public void onMenuFavoriteStationsClicked();
 
         public void onNetworkInfoClicked(Network network);
 
@@ -141,6 +150,12 @@ public interface IMainContract {
          */
         public void showInfoActivity();
 
+        /**
+         * The view is requested to open the favorite stations activity.
+         * Only the Presenter should call this method
+         */
+        public void showFavoriteStationsActivity();
+
         public void showNetworkDetails(Network network);
 
         /**
@@ -149,5 +164,11 @@ public interface IMainContract {
          * @param cities the list of cities
          */
         public void showCities(List<String> cities);
+
+        /** Gets the repository of favorite stations. */
+        public IFavoriteStationsRepository getFavoriteStationsRepository();
+
+        /** Shows an error message indicating that the persistence system could not be accessed. */
+        public void showPersistenceError();
     }
 }

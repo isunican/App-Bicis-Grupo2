@@ -9,6 +9,8 @@ MainPresenter ..|> IMainContract.Presenter
 MainView --> IMainContract.Presenter : presenter
 MainPresenter --> IMainContract.View : view
 MainView --> INetworksRepository : repository
+MainView --> NetworksArrayAdapter : adapter
+MainView --> HintArrayAdapter : adapter
 
 ' --- VISTA DE ESTACIONES (STATIONS) ---
 StationsView ..|> IStationsContract.View
@@ -16,15 +18,33 @@ StationsPresenter ..|> IStationsContract.Presenter
 StationsView --> IStationsContract.Presenter : presenter
 StationsPresenter --> IStationsContract.View : view
 StationsView --> INetworksRepository : repository
+StationsView --> ICountriesList : countriesList
+StationsView --> StationsArrayAdapter : adapter
+
+' --- VISTA DE FAVORITOS (FAVORITES) ---
+FavoriteStationsView ..|> IFavoriteStationsContract.View
+FavoriteStationsPresenter ..|> IFavoriteStationsContract.Presenter
+FavoriteStationsView --> IFavoriteStationsContract.Presenter : presenter
+FavoriteStationsPresenter --> IFavoriteStationsContract.View : view
+FavoriteStationsView --> INetworksRepository : repository
+FavoriteStationsView --> IFavoriteStationsRepository : repository
+FavoriteStationsView --> FavoriteStationsArrayAdapter : adapter
 
 ' Implementaciones de Repositorio
 ApiNetworksRepository ..|> INetworksRepository
 JsonNetworksRepository ..|> INetworksRepository
 
-' Relaciones de uso
+' Relaciones de uso entre vistas
 MainView ..> InfoView : <<use>>
 MainView ..> DetailsView : <<use>>
 MainView ..> StationsView : <<use>>
+MainView ..> FavoriteStationsView : <<use>>
+
+StationsView ..> InfoView : <<use>>
+StationsView ..> FavoriteStationsView : <<use>>
+
+FavoriteStationsView ..> InfoView : <<use>>
+
 INetworksRepository ..> NetworksCallback : <<use>>
 INetworksRepository ..> NetworkDetailsCallback : <<use>>
 
@@ -32,33 +52,54 @@ class MainView
 class MainPresenter {
 - load()
 }
+class NetworksArrayAdapter
+class HintArrayAdapter
 
 class StationsView
 class StationsPresenter {
 - load()
 }
+class StationsArrayAdapter
+
+class FavoriteStationsView
+class FavoriteStationsPresenter {
+- load()
+}
+class FavoriteStationsArrayAdapter
 
 class InfoView
 class DetailsView
 class ApiNetworksRepository
 class JsonNetworksRepository
 
+' --- CONTRATO MAIN ---
 interface IMainContract.View {
     + init()
     + getNetworksRepository() : INetworksRepository
     + showNetworks(networks : List<Network>)
+    + showCountries(countries : List<Country>)
+    + showConnectionError()
     + showLoadCorrect(networks : int)
+    + showCountryFlag(flag : String)
     + showLoadError()
-    + showNetworkDetails(network : Network)
+    + showStations(network : Network)
     + showInfoActivity()
+    + showFavoriteStationsActivity()
+    + showNetworkDetails(network : Network)
+    + showCities(cities : List<String>)
 }
 
 interface IMainContract.Presenter {
-    + init(view : View)
+    + init(view : View, applicationContext : Context)
+    + onSearchClicked(country : Country, city : String)
     + onNetworkClicked(network : Network)
     + onMenuInfoClicked()
+    + onMenuFavoriteStationsClicked()
+    + onNetworkInfoClicked(network : Network)
+    + onCountrySelected(country : Country)
 }
 
+' --- CONTRATO STATIONS ---
 interface IStationsContract.View {
     + init()
     + getNetworksRepository() : INetworksRepository
@@ -68,17 +109,47 @@ interface IStationsContract.View {
     + showLoadError(reason : String)
     + showLoadCorrect(stations : int)
     + showInfoActivity()
+    + showFavoriteStationsActivity()
+    + showAddFavoriteDialog(station : Station)
+    + showFavoriteAddedSuccess()
+    + showConnectionError()
+    + showPersistenceError()
+    + updateFavoriteIcon(stationId : String, isFavorite : boolean)
+    + showCountryFlag(flag : String)
+    + getCountriesList() : ICountriesList
 }
 
 interface IStationsContract.Presenter {
     + init(view : View)
     + onMenuInfoClicked()
+    + onMenuFavoriteStationsClicked()
+    + onFavoriteIconClicked(station : Station)
+    + onConfirmAddFavorite(station : Station, alias : String)
 }
 
+' --- CONTRATO FAVORITE STATIONS ---
+interface IFavoriteStationsContract.View {
+    + init()
+    + getFavoriteStationsRepository() : IFavoriteStationsRepository
+    + showFavoriteStations(favorites : List<FavoriteStation>)
+    + showPersistenceError()
+    + getNetworksRepository() : INetworksRepository
+    + showAvailabilities(availabilities : Map<String, Availability>)
+    + showConnectionError()
+}
+
+interface IFavoriteStationsContract.Presenter {
+    + init(view : View)
+}
+
+' --- REPOSITORIOS Y CALLBACKS ---
 interface INetworksRepository {
     + requestNetworks(cb : NetworksCallback)
     + requestNetwork(cb : NetworkDetailsCallback, networkId : String)
 }
+
+interface IFavoriteStationsRepository
+interface ICountriesList
 
 interface NetworksCallback {
     + onSuccess(networks : List<Network>)

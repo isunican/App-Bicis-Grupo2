@@ -26,6 +26,44 @@ class Station {
     - timestamp : String
 }
 
+class Country {
+    - name : String
+    - idISO : String
+    - idAPI : String
+    - flag : String
+    --
+    + Country:find(Map<String, Country> all, String idAPI)
+    + String:getCountryFlag(Map<String, Country> all, String idAPI)
+    - Country:unknown(String idAPI)
+}
+
+enum Availability {
+    HIGH
+    LOW
+    NONE
+    UNKNOWN
+    --
+    +bikesAvailability(Integer freeBikes): Availability
+}
+
+class CountryResponse {
+}
+
+class FavoriteStation {
+    - stationId : String
+    - networkId : String
+    - alias : String
+    - stationName : String
+    - country: String
+    - city: String
+    --
+    +FavoriteStation()
+    +FavoriteStation(stationId : String, networkId : String, alias : String, 
+    stationName : String, country: String, city: String)
+}
+
+
+
 class NetworksResponse {
 
 }
@@ -42,5 +80,6 @@ Network *--> "1" Location : location
 Network *--> "*" Station : stations
 NetworksResponse *--> "*" Network : networks
 NetworkResponse *--> "1" Network : network
+CountryResponse *--> "*" Country : country
 
 @enduml

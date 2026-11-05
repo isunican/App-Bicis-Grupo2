@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".activities.stations.StationsView">
 
     <androidx.appcompat.widget.Toolbar
@@ -13,27 +14,46 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.Bicis.Toolbar"
-        app:layout_constraintBottom_toTopOf="@+id/tvNetworkLocation"
+        app:layout_constraintBottom_toTopOf="@+id/llLocation"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <TextView
-        android:id="@+id/tvNetworkLocation"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/llLocation"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="10dp"
+        android:background="@color/colorPrimaryTranslucent"
         android:gravity="center_vertical|start"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:drawableStartCompat="@drawable/ic_location"
-        android:drawablePadding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintBottom_toTopOf="@+id/lvStations"
-        tools:text="España, Santander" />
+        app:layout_constraintBottom_toTopOf="@+id/lvStations">
+
+        <TextView
+            android:id="@+id/tvFlag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flagPlaceholder"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tvNetworkLocation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/colorTitle"
+            tools:text="España, Santander" />
+
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/lvStations"
@@ -42,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tvResults"
-        app:layout_constraintTop_toBottomOf="@+id/tvNetworkLocation"
+        app:layout_constraintTop_toBottomOf="@+id/llLocation"
         tools:listitem="@layout/activity_stations_list_item"/>
 
     <TextView
@@ -53,6 +73,7 @@
         android:gravity="center"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/colorTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

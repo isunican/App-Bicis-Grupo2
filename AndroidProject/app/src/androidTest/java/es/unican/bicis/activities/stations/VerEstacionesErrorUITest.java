@@ -17,7 +17,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import dagger.hilt.android.testing.BindValue;
 import dagger.hilt.android.testing.HiltAndroidRule;
@@ -27,8 +29,11 @@ import dagger.hilt.android.testing.UninstallModules;
 import es.unican.bicis.R;
 import es.unican.bicis.activities.main.MainView;
 import es.unican.bicis.injection.RepositoriesModule;
+import es.unican.bicis.model.FavoriteStation;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.model.Station;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 import es.unican.bicis.repository.NetworksCallback;
@@ -72,6 +77,25 @@ public class VerEstacionesErrorUITest {
         public void requestNetwork(NetworkDetailsCallback cb, String networkId) {
             cb.onFailure(new Throwable(mensajeError));
         }
+    };
+
+    /**
+     * Repositorio de estaciones favoritas simulado (vacio)
+     * (Incluido ya que ahora inyectamos tambien este repositorio, a pesar de que no sea necesarios
+     * para estos tests.
+     */
+    @BindValue
+    IFavoriteStationsRepository favoriteStationsRepository = new IFavoriteStationsRepository() {
+        @Override
+        public boolean addFavorite(Station station, String networkId, Location location, String alias) { return true; }
+        @Override
+        public boolean addFavorite(String stationId, String alias) { return true; }
+        @Override
+        public boolean isFavorite(String stationId) { return false; }
+        @Override
+        public Map<String, String> getFavorites() { return Map.of(); }
+        @Override
+        public List<FavoriteStation> getFavoriteStations() { return Collections.emptyList(); }
     };
 
     /**

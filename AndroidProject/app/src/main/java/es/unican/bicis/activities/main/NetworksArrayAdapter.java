@@ -65,26 +65,29 @@ public class NetworksArrayAdapter extends BaseAdapter {
                     .inflate(R.layout.activity_main_list_item, parent, false);
         }
 
-        // name
-        {
-            TextView tv = convertView.findViewById(R.id.tvName);
-            tv.setText(network.getName());
-        }
-
-        // location (city)
-        {
-            TextView tv = convertView.findViewById(R.id.tvCity);
-            String city = network.getLocation() != null ? network.getLocation().getCity() : "";
-            tv.setText(city);
-        }
-
-        // info
-        {
-            ImageView ivNetworkInfo = convertView.findViewById(R.id.ivNetworkInfo);
-            ivNetworkInfo.setOnClickListener(v -> listener.onInfoClick(network));
-        }
+        bindName(convertView, network);
+        bindCity(convertView, network);
+        bindInfo(convertView, network);
 
         return convertView;
+    }
+
+    private void bindName(View itemView, Network network) {
+        TextView tvName = itemView.findViewById(R.id.tvName);
+        tvName.setText(network.getName());
+    }
+
+    private void bindCity(View itemView, Network network) {
+        TextView tvCity = itemView.findViewById(R.id.tvCity);
+        String city = network.getLocation() != null
+                ? network.getLocation().getCity()
+                : "";
+        tvCity.setText(city);
+    }
+
+    private void bindInfo(View itemView, Network network) {
+        ImageView ivNetworkInfo = itemView.findViewById(R.id.ivNetworkInfo);
+        ivNetworkInfo.setOnClickListener(v -> listener.onInfoClick(network));
     }
 
     public interface OnInfoClickListener {

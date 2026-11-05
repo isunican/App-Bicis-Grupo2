@@ -26,6 +26,7 @@
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
+        android:textColor="@color/colorTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
@@ -35,8 +36,9 @@
         android:id="@+id/tvCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:textSize="20sp"
+        android:textColor="@color/colorTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvName"
@@ -46,8 +48,9 @@
         android:id="@+id/tvCountry"
         android:layout_width="111dp"
         android:layout_height="34dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="6dp"
         android:textAlignment="center"
+        android:textColor="@color/colorTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCity"
@@ -68,10 +71,12 @@
         android:id="@+id/tvCompany"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorTitle"
         tools:text="Company"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCountry" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

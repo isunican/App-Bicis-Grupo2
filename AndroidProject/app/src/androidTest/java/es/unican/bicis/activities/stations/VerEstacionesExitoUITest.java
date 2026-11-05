@@ -13,13 +13,11 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-
 import org.junit.Rule;
 import org.junit.Test;
 
 import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
-
 import es.unican.bicis.R;
 import es.unican.bicis.activities.main.MainView;
 import es.unican.bicis.model.Network;
@@ -34,8 +32,8 @@ public class VerEstacionesExitoUITest {
     public ActivityScenarioRule<MainView> activityRule = new ActivityScenarioRule<>(MainView.class);
 
     /**
-     * Matcher personalizado para buscar una red por su atributo name
-     * dentro del adapter, evitando problemas con toString().
+     * Comprueba el nombre, la fecha de actualización y el color de disponibilidad
+     * de la estación en una posición de la lista.
      */
     private static Matcher<Object> withNetworkName(String name) {
         return new TypeSafeMatcher<Object>() {
@@ -65,7 +63,7 @@ public class VerEstacionesExitoUITest {
                 .check(matches(withText(nombre)));
         onData(anything()).inAdapterView(withId(R.id.lvStations)).atPosition(posicion)
                 .onChildView(withId(R.id.tvUpdateDate))
-                .check(matches(withText("Última fecha de actualización: " + fecha)));
+                .check(matches(withText("Últ. actualización: " + fecha)));
     }
 
     /**
@@ -82,10 +80,10 @@ public class VerEstacionesExitoUITest {
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
 
         comprobarEstacion(0, "Capitol Complex", "16/10/2026 09:15");
-        comprobarEstacion(1, "Lincoln Home Visitor Center", "16/10/2026 09:14");
-        comprobarEstacion(2, "Union Station", "16/10/2026 09:15");
-        comprobarEstacion(3, "Washington Park", "16/10/2026 09:12");
-        comprobarEstacion(4, "Lake Springfield Marina", "16/10/2026 09:13");
+        comprobarEstacion(1, "Lake Springfield Marina", "16/10/2026 09:13");
+        comprobarEstacion(2, "Lincoln Home Visitor Center", "16/10/2026 09:14");
+        comprobarEstacion(3, "Union Station", "16/10/2026 09:15");
+        comprobarEstacion(4, "Washington Park", "16/10/2026 09:12");
     }
 
     /**
