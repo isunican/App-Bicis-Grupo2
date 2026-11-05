@@ -65,7 +65,7 @@ public class DetailsViewUITest {
 
         onView(withId(R.id.tvName)).check(matches(withText("NorthCycle")));
         onView(withId(R.id.tvCity)).check(matches(withText("Northampton")));
-        onView(withId(R.id.tvCountry)).check(matches(withText("UK")));
+        onView(withId(R.id.tvCountry)).check(matches(withText("GB")));
         onView(withId(R.id.tvCompany)).check(matches(withText("Northampton Council Management Co. Ltd")));
     }
 
@@ -82,7 +82,7 @@ public class DetailsViewUITest {
 
         onView(withId(R.id.tvName)).check(matches(withText("SouthCycle")));
         onView(withId(R.id.tvCity)).check(matches(withText("Southampton")));
-        onView(withId(R.id.tvCountry)).check(matches(withText("UK")));
+        onView(withId(R.id.tvCountry)).check(matches(withText("GB")));
         onView(withId(R.id.tvCompany)).check(matches(withText("JCDecaux SE, Grundon Waste Management Ltd")));
     }
 
