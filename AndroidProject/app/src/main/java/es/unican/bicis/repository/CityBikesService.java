@@ -1,5 +1,9 @@
 package es.unican.bicis.repository;
 
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+
+import es.unican.bicis.common.TlsSupport;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -23,7 +27,16 @@ public class CityBikesService {
     public static final ICityBikesAPI api;
 
     static {
-        OkHttpClient client = new OkHttpClient.Builder()
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+
+        // Use the trust manager that includes the roots missing from old Android versions.
+        SSLSocketFactory sslSocketFactory = TlsSupport.getSslSocketFactory();
+        X509TrustManager trustManager = TlsSupport.getTrustManager();
+        if (sslSocketFactory != null && trustManager != null) {
+            clientBuilder.sslSocketFactory(sslSocketFactory, trustManager);
+        }
+
+        OkHttpClient client = clientBuilder
                 .addInterceptor(chain -> chain.proceed(chain.request().newBuilder()
                         .header("User-Agent", "Bicis-2026/1.0")
                         .build()))
