@@ -38,5 +38,4 @@ public abstract class RepositoriesModule {
     public static IFavoriteStationsRepository provideFavoriteRepository(Application application) {
         return new FavoriteStationsRepository(application);
     }
-
 }
