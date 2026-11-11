@@ -18,5 +18,11 @@ public class Station {
     @SerializedName("timestamp")    protected String timestamp;
     @SerializedName("free_bikes")    protected Integer freeBikes;
     @SerializedName("empty_slots")   protected Integer emptySlots;
+    @SerializedName("free_ebikes")  protected Integer freeEbikes;
+
+    /** @return true if the station has any electric bikes available. */
+    public boolean hasElectricBikes() {
+        return freeBikes > 0 && freeEbikes > 0;
+    }
 
 }
