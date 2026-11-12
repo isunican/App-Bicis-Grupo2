@@ -2,16 +2,21 @@ package es.unican.bicis.activities.stations;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +61,7 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     private TextView tvResults;
     private TextView tvNetworkLocation;
     private StationsArrayAdapter adapter;
+    private PopupWindow filtersPopup;
 
     @Inject
     INetworksRepository repository;
@@ -93,7 +99,7 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
+        menuInflater.inflate(R.menu.menu_stations, menu);
         return true;
     }
 
@@ -112,6 +118,10 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         }
         if (itemId == R.id.menuItemFavoriteStations) {
             presenter.onMenuFavoriteStationsClicked();
+            return true;
+        }
+        if (itemId == R.id.menuItemFilter) {
+            presenter.onMenuFiltersClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -209,6 +219,80 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
         startActivity(intent);
+    }
+
+    /**
+     * @see IStationsContract.View#showFilterMenu(boolean, boolean, boolean)
+     * @param ebikesAvailable  false if the network provides no e-bike data (option disabled)
+     * @param availableChecked state of the "Disponible" checkbox
+     * @param notAvailableChecked state of the "No disponible" checkbox
+     */
+    @Override
+    public void showFilterMenu(boolean ebikesAvailable, boolean availableChecked, boolean notAvailableChecked) {
+        View menu = getLayoutInflater().inflate(R.layout.popup_filters, null);
+        TextView tvFilter = menu.findViewById(R.id.tvFilterEbikes);
+        View submenu = menu.findViewById(R.id.llFilterEbikesSubmenu);
+        CheckBox cbAvailable = menu.findViewById(R.id.cbEbikesAvailable);
+        CheckBox cbNotAvailable = menu.findViewById(R.id.cbEbikesNotAvailable);
+
+        // Establecemos el estado de las casillas
+        cbAvailable.setChecked(availableChecked);
+        cbNotAvailable.setChecked(notAvailableChecked);
+
+        // Primero se muestran los filtros disponiles (actualmente tan solo el de bicis electricas)
+        if (ebikesAvailable) {
+            tvFilter.setOnClickListener(v -> {
+                if (submenu.getVisibility() == View.VISIBLE) {
+                    submenu.setVisibility(View.GONE);
+                } else {
+                    submenu.setVisibility(View.VISIBLE);
+                }
+            });
+        } else {
+            // La red no tiene datos de bicis eléctricas (se deshabilita la opción)
+            tvFilter.setEnabled(false);
+            tvFilter.setAlpha(0.4f);
+        }
+
+        // Tras seleccionar el filtro, se muestra el submenu con los checkboxes
+        cbAvailable.setOnCheckedChangeListener((b, checked) ->
+                presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, checked));
+        cbNotAvailable.setOnCheckedChangeListener((b, checked) ->
+                presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.NOT_AVAILABLE, checked));
+
+        if (filtersPopup != null && filtersPopup.isShowing()) {
+            filtersPopup.dismiss();
+        }
+        filtersPopup = new PopupWindow(menu,
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                true); // con focusable a true se cierra al pulsar fuera
+        filtersPopup.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        filtersPopup.setOutsideTouchable(true);
+        filtersPopup.setElevation(8f);
+
+        View anchor = findViewById(R.id.menuItemFilters);
+        if (anchor == null) {
+            anchor = findViewById(R.id.toolbar);
+        }
+        filtersPopup.showAsDropDown(anchor);
+
+    }
+
+    /**
+     * @see IStationsContract.View#showFilterIndicator(boolean)
+     * @param active true if any filter is currently applied.
+     */
+    @Override
+    public void showFilterIndicator(boolean active) {
+        ImageView ivEbike = findViewById(R.id.ivEbike);
+
+        if (active) {
+            ivEbike.setVisibility(View.VISIBLE);
+        } else {
+            ivEbike.setVisibility(View.GONE);
+        }
+        
     }
 
     @Override
