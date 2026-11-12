@@ -37,7 +37,7 @@ public class Network {
             return false;
         }
         for (Station s : stations) {
-            if (s.getExtra() != null && s.getExtra().getEbikes() != null) {
+            if (s.hasElectricBikes()) {
                 return true;
             }
         }
