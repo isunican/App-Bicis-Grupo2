@@ -20,5 +20,7 @@
 
     <item
         android:id="@+id/menuItemInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:title="@string/info" />
 </menu>

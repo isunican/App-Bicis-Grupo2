@@ -29,19 +29,7 @@ public class Network {
     @SerializedName("href")                 protected String href;
     @SerializedName("company")              protected String[] company;
     @SerializedName("gbfs_href")            protected String gbfsHref;
+    @SerializedName("ebikes")               protected boolean ebikes;
     @SerializedName("stations")             protected List<Station> stations;
-
-    /** @return true if any station has information about the availability of electric bikes. */
-    public boolean providesEbikesInfo() {
-        if (stations == null) {
-            return false;
-        }
-        for (Station s : stations) {
-            if (s.hasElectricBikes()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 }
