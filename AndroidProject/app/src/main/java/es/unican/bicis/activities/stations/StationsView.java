@@ -62,6 +62,8 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     private TextView tvNetworkLocation;
     private StationsArrayAdapter adapter;
     private PopupWindow filtersPopup;
+    private boolean ebikesFilterEnabled = false;
+
 
     @Inject
     INetworksRepository repository;
@@ -101,6 +103,15 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_stations, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.menuItemFilter);
+        if (item != null) {
+            item.setEnabled(ebikesFilterEnabled);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     /**
@@ -222,16 +233,14 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     }
 
     /**
-     * @see IStationsContract.View#showFilterMenu(boolean, boolean, boolean)
-     * @param ebikesAvailable  false if the network provides no e-bike data (option disabled)
+     * @see IStationsContract.View#showFilterMenu(boolean, boolean)
+     *
      * @param availableChecked state of the "Disponible" checkbox
      * @param notAvailableChecked state of the "No disponible" checkbox
      */
     @Override
-    public void showFilterMenu(boolean ebikesAvailable, boolean availableChecked, boolean notAvailableChecked) {
+    public void showFilterMenu(boolean availableChecked, boolean notAvailableChecked) {
         View menu = getLayoutInflater().inflate(R.layout.popup_filters, null);
-        TextView tvFilter = menu.findViewById(R.id.tvFilterEbikes);
-        View submenu = menu.findViewById(R.id.llFilterEbikesSubmenu);
         CheckBox cbAvailable = menu.findViewById(R.id.cbEbikesAvailable);
         CheckBox cbNotAvailable = menu.findViewById(R.id.cbEbikesNotAvailable);
 
@@ -239,22 +248,7 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         cbAvailable.setChecked(availableChecked);
         cbNotAvailable.setChecked(notAvailableChecked);
 
-        // Primero se muestran los filtros disponiles (actualmente tan solo el de bicis electricas)
-        if (ebikesAvailable) {
-            tvFilter.setOnClickListener(v -> {
-                if (submenu.getVisibility() == View.VISIBLE) {
-                    submenu.setVisibility(View.GONE);
-                } else {
-                    submenu.setVisibility(View.VISIBLE);
-                }
-            });
-        } else {
-            // La red no tiene datos de bicis eléctricas (se deshabilita la opción)
-            tvFilter.setEnabled(false);
-            tvFilter.setAlpha(0.4f);
-        }
-
-        // Tras seleccionar el filtro, se muestra el submenu con los checkboxes
+        // Tras seleccionar el filtro, se muestra los checkboxes
         cbAvailable.setOnCheckedChangeListener((b, checked) ->
                 presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, checked));
         cbNotAvailable.setOnCheckedChangeListener((b, checked) ->
@@ -277,6 +271,12 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         }
         filtersPopup.showAsDropDown(anchor);
 
+    }
+
+    @Override
+    public void enableEbikesFilter(boolean enabled) {
+        ebikesFilterEnabled = enabled;
+        invalidateOptionsMenu();   // fuerza a recalcular el menú
     }
 
     /**

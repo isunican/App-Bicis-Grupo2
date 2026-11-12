@@ -27,7 +27,7 @@
         <menu>
             <item
                 android:id="@+id/menuItemFilter"
-                android:title="@string/availableFilters" />
+                android:title="@string/filterEbikes" />
         </menu>
     </item>
 

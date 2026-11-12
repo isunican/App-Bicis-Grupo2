@@ -95,12 +95,21 @@ public class StationsPresenter implements IStationsContract.Presenter {
         view.showFavoriteStationsActivity();
     }
 
+    /**
+     * @see IStationsContract.Presenter#onMenuFiltersClicked()
+     */
     @Override
     public void onMenuFiltersClicked() {
-        view.showFilterMenu(ebikesAvailable, ebikesFilter.isAvailable(),
+        view.showFilterMenu(ebikesFilter.isAvailable(),
                 ebikesFilter.isNotAvailable());
     }
 
+    /**
+     * @see IStationsContract.Presenter#onEbikesFilterOptionToggled(IStationsContract.FilterOption, boolean)
+     *
+     * @param option  the option that was modified
+     * @param checked new state of the option's checkbox
+     */
     @Override
     public void onEbikesFilterOptionToggled(IStationsContract.FilterOption option, boolean checked) {
 
@@ -117,7 +126,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
         List<Station> filtered = ebikesFilter.applyFilter(allStations);
         view.showStations(filtered);
         view.showLoadCorrect(filtered.size());
-        view.showFilterIndicator(ebikesFilter.isAvailable() && !ebikesFilter.isNotAvailable());
+        view.showFilterIndicator(ebikesFilter.isAvailable() || ebikesFilter.isNotAvailable());
     }
 
 
@@ -189,6 +198,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
                 Collections.sort(stations, (s1, s2) -> Utils.compareNames(s1.getName(), s2.getName()));
                 allStations.addAll(stations);
                 ebikesAvailable = network.providesEbikesInfo();
+                view.enableEbikesFilter(ebikesAvailable);
 
                 Location networkLocation = network.getLocation();
                 if (networkLocation == null) {

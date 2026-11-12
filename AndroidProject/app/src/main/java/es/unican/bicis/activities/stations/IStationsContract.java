@@ -184,11 +184,17 @@ public interface IStationsContract {
         /**
          * Shows the electric bikes filter menu.
          *
-         * @param ebikesAvailable  false if the network provides no ebike data
          * @param availableChecked state of the "Disponible" checkbox
          * @param notAvailableChecked state of the "No disponible" checkbox
          */
-        public void showFilterMenu(boolean ebikesAvailable, boolean availableChecked, boolean notAvailableChecked);
+        public void showFilterMenu(boolean availableChecked, boolean notAvailableChecked);
+
+        /**
+         * Enables or disables the "Bicis eléctricas" menu option.
+         *
+         * @param enabled false if the network provides no electric bikes data
+         */
+        public void enableEbikesFilter(boolean enabled);
 
         /**
          * Shows an indicator of the applied filters currently in the bottom bar.
