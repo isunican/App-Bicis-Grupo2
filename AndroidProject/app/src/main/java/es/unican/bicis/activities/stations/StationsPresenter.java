@@ -6,20 +6,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.common.Utils;
 import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
+import es.unican.bicis.model.StationEbikesFilter;
 import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 import es.unican.bicis.repository.FavoriteStationsRepository;
-import es.unican.bicis.activities.favorites.FavoriteStationsView;
 import es.unican.bicis.common.DataAccessException;
 
 /**
@@ -30,6 +28,14 @@ public class StationsPresenter implements IStationsContract.Presenter {
     private IStationsContract.View view;
     private IFavoriteStationsRepository favoriteStationsRepository;
     private Location currentNetworkLocation;
+
+    /**
+     * List of all the stations in the current network.
+     */
+    private List<Station> allStations = new ArrayList<>();
+
+    private final StationEbikesFilter ebikesFilter = new StationEbikesFilter();
+    private boolean ebikesAvailable = false;
 
     /**
      * Constructs presenter with custom favorite repository (useful for testing/injection).
@@ -88,6 +94,41 @@ public class StationsPresenter implements IStationsContract.Presenter {
         }
         view.showFavoriteStationsActivity();
     }
+
+    /**
+     * @see IStationsContract.Presenter#onMenuFiltersClicked()
+     */
+    @Override
+    public void onMenuFiltersClicked() {
+        view.showFilterMenu(ebikesFilter.isAvailable(),
+                ebikesFilter.isNotAvailable());
+    }
+
+    /**
+     * @see IStationsContract.Presenter#onEbikesFilterOptionToggled(IStationsContract.FilterOption, boolean)
+     *
+     * @param option  the option that was modified
+     * @param checked new state of the option's checkbox
+     */
+    @Override
+    public void onEbikesFilterOptionToggled(IStationsContract.FilterOption option, boolean checked) {
+
+        if (!ebikesAvailable) {
+            return;
+        }
+
+        if (option == IStationsContract.FilterOption.AVAILABLE) {
+            ebikesFilter.setAvailable(checked);
+        } else {
+            ebikesFilter.setNotAvailable(checked);
+        }
+
+        List<Station> filtered = ebikesFilter.applyFilter(allStations);
+        view.showStations(filtered);
+        view.showLoadCorrect(filtered.size());
+        view.showFilterIndicator(ebikesFilter.isAvailable() || ebikesFilter.isNotAvailable());
+    }
+
 
     @Override
     public void onFavoriteIconClicked(Station station) {
@@ -149,11 +190,15 @@ public class StationsPresenter implements IStationsContract.Presenter {
                 }
 
                 List<Station> stations = network.getStations();
+
                 if (stations == null) {
                     stations = new ArrayList<>();
                 }
 
                 Collections.sort(stations, (s1, s2) -> Utils.compareNames(s1.getName(), s2.getName()));
+                allStations.addAll(stations);
+                ebikesAvailable = network.providesEbikesInfo();
+                view.enableEbikesFilter(ebikesAvailable);
 
                 Location networkLocation = network.getLocation();
                 if (networkLocation == null) {

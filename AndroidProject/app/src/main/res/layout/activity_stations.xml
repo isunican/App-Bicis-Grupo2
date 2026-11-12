@@ -61,22 +61,58 @@
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tvResults"
+        app:layout_constraintBottom_toTopOf="@+id/llBottomBar"
         app:layout_constraintTop_toBottomOf="@+id/llLocation"
         tools:listitem="@layout/activity_stations_list_item"/>
 
-    <TextView
-        android:id="@+id/tvResults"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/llBottomBar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:gravity="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/colorPrimaryTranslucent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="Resultados: 12" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lvStations"
+        app:layout_constraintBaseline_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tvFilters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_filter_indicator"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
+            android:text="@string/filtersIndicator"
+            android:textColor="@color/colorTitle"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            />
+
+        <ImageView
+            android:id="@+id/ivEbike"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_ebike"
+            android:visibility="gone"
+            android:contentDescription="@string/filterEbikesDescription"/>
+
+        <TextView
+            android:id="@+id/tvResults"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="@color/colorTitle"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Resultados: 12" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

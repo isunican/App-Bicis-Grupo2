@@ -29,5 +29,12 @@
     <string name="favoritesCount">Favoritos: %d</string>
     <string name="deleteFavorite">Eliminar de favoritos</string>
     <string name="favoritesConnectionError">Error de conexión</string>
+    <string name="filter">Filtro</string>
+    <string name="filtersIndicator">Filtros: </string>
+    <string name="filterEbikes">Bicis eléctricas</string>
+    <string name="filterAvailable">Disponible</string>
+    <string name="filterNotAvailable">No disponible</string>
+    <string name="filterEbikesDescription">Icono representativo del filtro de bicis eléctricas</string>
+    <string name="availableFilters">Filtros </string>
 
 </resources>
