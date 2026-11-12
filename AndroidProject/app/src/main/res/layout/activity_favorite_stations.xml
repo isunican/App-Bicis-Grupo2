@@ -35,6 +35,8 @@
         android:gravity="center"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/colorTitle"
+        android:background="@color/colorPrimaryTranslucent"
         android:text="@string/favoritesCountZero"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
