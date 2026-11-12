@@ -35,7 +35,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
     private List<Station> allStations = new ArrayList<>();
 
     private final StationEbikesFilter ebikesFilter = new StationEbikesFilter();
-    private boolean ebikesFilterEnabled = false;
+    private boolean ebikesAvailable = false;
 
     /**
      * Constructs presenter with custom favorite repository (useful for testing/injection).
@@ -97,15 +97,17 @@ public class StationsPresenter implements IStationsContract.Presenter {
 
     @Override
     public void onMenuFiltersClicked() {
-        view.showFilterMenu(ebikesFilterEnabled, ebikesFilter.isAvailable(),
+        view.showFilterMenu(ebikesAvailable, ebikesFilter.isAvailable(),
                 ebikesFilter.isNotAvailable());
     }
 
     @Override
     public void onEbikesFilterOptionToggled(IStationsContract.FilterOption option, boolean checked) {
-        if (!ebikesFilterEnabled) {
+
+        if (!ebikesAvailable) {
             return;
         }
+
         if (option == IStationsContract.FilterOption.AVAILABLE) {
             ebikesFilter.setAvailable(checked);
         } else {
@@ -115,8 +117,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
         List<Station> filtered = ebikesFilter.applyFilter(allStations);
         view.showStations(filtered);
         view.showLoadCorrect(filtered.size());
-        view.showFilterIndicator(ebikesFilter.isAvailable() ||
-                                    ebikesFilter.isNotAvailable());
+        view.showFilterIndicator(ebikesFilter.isAvailable() && !ebikesFilter.isNotAvailable());
     }
 
 
@@ -180,13 +181,14 @@ public class StationsPresenter implements IStationsContract.Presenter {
                 }
 
                 List<Station> stations = network.getStations();
-                allStations.addAll(stations);
 
                 if (stations == null) {
                     stations = new ArrayList<>();
                 }
 
                 Collections.sort(stations, (s1, s2) -> Utils.compareNames(s1.getName(), s2.getName()));
+                allStations.addAll(stations);
+                ebikesAvailable = network.providesEbikesInfo();
 
                 Location networkLocation = network.getLocation();
                 if (networkLocation == null) {
