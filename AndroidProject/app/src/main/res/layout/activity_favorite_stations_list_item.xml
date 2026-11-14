@@ -43,6 +43,21 @@
         app:layout_constraintTop_toBottomOf="@+id/tvAlias"
         app:srcCompat="@drawable/ic_station_availability" />
 
+    <ImageView
+        android:id="@+id/ivSearchAlternatives"
+        android:translationY="4dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="5dp"
+        android:visibility="gone"
+        android:contentDescription="@string/alternativesTitle"
+        app:tint="@android:color/white"
+        app:layout_constraintStart_toStartOf="@+id/ivAvailability"
+        app:layout_constraintEnd_toEndOf="@+id/ivAvailability"
+        app:layout_constraintTop_toTopOf="@+id/ivAvailability"
+        app:layout_constraintBottom_toBottomOf="@+id/ivAvailability"
+        app:srcCompat="@drawable/ic_search" />
+
     <TextView
         android:id="@+id/tvCity"
         android:layout_width="0dp"

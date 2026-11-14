@@ -14,6 +14,7 @@ import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 import java.util.ArrayList;
 import java.util.Collections;
+import es.unican.bicis.model.AlternativeStation;
 
 import es.unican.bicis.common.Utils;
 
@@ -27,6 +28,12 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
 
     /** Avoids showing the connection error more than once */
     private boolean connectionErrorShown;
+
+    /** Maximum number of alternative stations that are suggested */
+    private static final int MAX_ALTERNATIVES = 5;
+
+    /** Networks loaded from the API, by network id (used to look for alternatives) */
+    private final Map<String, Network> networks = new HashMap<>();
 
     /**
      * @see IFavoriteStationsContract.Presenter#init(IFavoriteStationsContract.View)
@@ -78,6 +85,7 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
             view.getNetworksRepository().requestNetwork(new NetworkDetailsCallback() {
                 @Override
                 public void onSuccess(Network network) {
+                    networks.put(networkId, network);
                     Map<String, Availability> availabilities = new HashMap<>();
                     if (network.getStations() != null) {
                         for (Station station : network.getStations()) {
@@ -97,5 +105,97 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
                 }
             }, networkId);
         }
+
+    }
+
+    /**
+     * @see IFavoriteStationsContract.Presenter#buscarEstacionesAlternativas(FavoriteStation)
+     */
+    @Override
+    public List<AlternativeStation> buscarEstacionesAlternativas(FavoriteStation favorite) {
+        Network network = networks.get(favorite.getNetworkId());
+        if (network == null || network.getStations() == null) {
+            return null;
+        }
+
+        // look for the favorite station among the stations of its network
+        Station origin = null;
+        for (Station station : network.getStations()) {
+            if (station.getId() != null && station.getId().equals(favorite.getStationId())) {
+                origin = station;
+            }
+        }
+        if (origin == null || origin.getLatitude() == null || origin.getLongitude() == null) {
+            return null;
+        }
+
+        double[] user = view.getUserLocation();
+
+        List<AlternativeStation> alternatives = new ArrayList<>();
+        for (Station station : network.getStations()) {
+            if (station == origin) {
+                continue;
+            }
+            Availability availability = Availability.bikesAvailability(station.getFreeBikes());
+            boolean hasBikes = availability == Availability.HIGH || availability == Availability.LOW;
+            if (!hasBikes || station.getLatitude() == null || station.getLongitude() == null) {
+                continue;
+            }
+
+            double toFavorite = Utils.distanceKm(origin.getLatitude(), origin.getLongitude(),
+                    station.getLatitude(), station.getLongitude());
+            Double toUser = null;
+            if (user != null) {
+                toUser = Utils.distanceKm(user[0], user[1],
+                        station.getLatitude(), station.getLongitude());
+            }
+            alternatives.add(new AlternativeStation(station, toFavorite, toUser));
+        }
+
+        // closest first, and keep only the first MAX_ALTERNATIVES
+        Collections.sort(alternatives,
+                (a, b) -> Double.compare(a.getDistanceToFavoriteKm(), b.getDistanceToFavoriteKm()));
+        return new ArrayList<>(alternatives.subList(0, Math.min(MAX_ALTERNATIVES, alternatives.size())));
+    }
+    /**
+     * @see IFavoriteStationsContract.Presenter#onSearchAlternativesClicked(FavoriteStation)
+     */
+    @Override
+    public void onSearchAlternativesClicked(FavoriteStation favorite) {
+        if (!view.isOnline()) {
+            view.showAlternativesConnectionError();
+            return;
+        }
+
+        try {
+            view.getFavoriteStationsRepository().getFavoriteStations();
+        } catch (RuntimeException | DataAccessException e) {
+            view.showAlternativesPersistenceError();
+            return;
+        }
+
+        String networkId = favorite.getNetworkId();
+        if (networkId == null || networkId.isEmpty()) {
+            view.showAlternativesNotPossible();
+            return;
+        }
+
+        view.getNetworksRepository().requestNetwork(new NetworkDetailsCallback() {
+            @Override
+            public void onSuccess(Network network) {
+                networks.put(networkId, network);
+                List<AlternativeStation> alternatives = buscarEstacionesAlternativas(favorite);
+                if (alternatives == null) {
+                    view.showAlternativesNotPossible();
+                } else {
+                    view.showAlternatives(favorite, alternatives);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                view.showAlternativesDataError();
+            }
+        }, networkId);
     }
 }

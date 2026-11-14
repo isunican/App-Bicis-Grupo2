@@ -29,5 +29,14 @@
     <string name="favoritesCount">Favoritos: %d</string>
     <string name="deleteFavorite">Eliminar de favoritos</string>
     <string name="favoritesConnectionError">Error de conexión</string>
+    <string name="alternativesTitle">Estaciones alternativas</string>
+    <string name="alternativesEmpty">No hay estaciones alternativas con disponibilidad</string>
+    <string name="alternativesNotPossible">No es posible obtener estaciones alternativas</string>
+    <string name="alternativesConnectionError">Error de Conexión a Internet</string>
+    <string name="alternativesDataError">Error en el Acceso a los Datos</string>
+    <string name="alternativesPersistenceError">Error en el Sistema de Almacenamiento Local</string>
+    <string name="distanceKm">%.1f km</string>
+    <string name="distanceUnknown">- km</string>
+    <string name="alternativesDistances">A ti: %1$s · A la favorita: %2$s</string>
 
 </resources>
