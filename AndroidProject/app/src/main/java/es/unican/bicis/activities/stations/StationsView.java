@@ -169,18 +169,12 @@ public class StationsView extends AppCompatActivity implements IStationsContract
      */
     @Override
     public void showNetworkLocation(Location networkLocation) {
-        List<String> location = new ArrayList<>();
-
-        String country = networkLocation.getCountry();
         String city = networkLocation.getCity();
-        if (country != null && !country.isEmpty()) {
-            location.add(country);
-        }
+
         if (city != null && !city.isEmpty()) {
-            location.add(city);
+            tvNetworkLocation.setText(city);
         }
 
-        tvNetworkLocation.setText(TextUtils.join(" ", location));
     }
 
     /**
