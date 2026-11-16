@@ -28,6 +28,21 @@ import es.unican.bicis.model.Availability;
  */
 public class FavoriteStationsArrayAdapter extends BaseAdapter {
 
+    /**
+     * Listener interface for the click events of the magnifier icon.
+     */
+    public interface OnSearchAlternativesClickListener {
+
+        /**
+         * Called when the magnifier icon of a favorite station is clicked.
+         * @param favorite the favorite station
+         */
+        void onSearchAlternativesClick(FavoriteStation favorite);
+    }
+
+    /** Listener of the clicks on the magnifier icon */
+    private final OnSearchAlternativesClickListener searchListener;
+
     /** List of favorite stations to be displayed */
     private final List<FavoriteStation> favorites;
 
@@ -42,10 +57,13 @@ public class FavoriteStationsArrayAdapter extends BaseAdapter {
      * Constructs a new adapter instance.
      * @param context application context
      * @param favorites list of favorite stations to display
+     * @param listener listener of the clicks on the magnifier icon
      */
-    public FavoriteStationsArrayAdapter(@NonNull Context context, @NonNull List<FavoriteStation> favorites) {
+    public FavoriteStationsArrayAdapter(@NonNull Context context, @NonNull List<FavoriteStation> favorites,
+                                        OnSearchAlternativesClickListener listener) {
         this.context = context;
         this.favorites = favorites;
+        this.searchListener = listener;
     }
 
     /** @return the number of favorite stations in the list */
@@ -122,6 +140,22 @@ public class FavoriteStationsArrayAdapter extends BaseAdapter {
                 availability = Availability.UNKNOWN;
             }
             iv.setColorFilter(ContextCompat.getColor(context, getAvailabilityColor(availability)));
+        }
+        // magnifier: only shown over the red indicator (station without bikes)
+        {
+            ImageView ivSearch = convertView.findViewById(R.id.ivSearchAlternatives);
+            Availability availability = availabilities.get(favorite.getStationId());
+            if (availability == Availability.NONE) {
+                ivSearch.setVisibility(View.VISIBLE);
+                ivSearch.setOnClickListener(v -> {
+                    if (searchListener != null) {
+                        searchListener.onSearchAlternativesClick(favorite);
+                    }
+                });
+            } else {
+                ivSearch.setVisibility(View.GONE);
+                ivSearch.setOnClickListener(null);
+            }
         }
 
         return convertView;
