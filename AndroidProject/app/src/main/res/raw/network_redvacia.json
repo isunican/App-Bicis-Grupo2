@@ -1,0 +1,27 @@
+{
+  "network": {
+    "id": "redvacia",
+    "name": "Red Vacía",
+    "href": "/v2/networks/redVacia",
+    "location": {
+      "city": "Laredo",
+      "country": "ES"
+    },
+    "stations": [
+      {
+        "id": "Alt_3_1",
+        "name": "Sin Bicis 1",
+        "latitude": 21.0,
+        "longitude": 20.0,
+        "free_bikes": 0
+      },
+      {
+        "id": "Alt_3_2",
+        "name": "Sin Bicis 2",
+        "latitude": 22.0,
+        "longitude": 20.0,
+        "free_bikes": 0
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "networks": [
+    {
+      "id": "redabundante",
+      "name": "Red Abundante",
+      "href": "/v2/networks/redAbundante",
+      "location": {
+        "city": "Santander",
+        "country": "ES"
+      }
+    },
+    {
+      "id": "redescasa",
+      "name": "Red Escasa",
+      "href": "/v2/networks/redEscasa",
+      "location": {
+        "city": "Torrelavega",
+        "country": "ES"
+      }
+    },
+    {
+      "id": "redvacia",
+      "name": "Red Vacía",
+      "href": "/v2/networks/redVacia",
+      "location": {
+        "city": "Laredo",
+        "country": "ES"
+      }
+    },
+    {
+      "id": "redsincoordenadas",
+      "name": "Red Sin Coordenadas",
+      "href": "/v2/networks/redSinCoordenadas",
+      "location": {
+        "city": "Comillas",
+        "country": "ES"
+      }
+    }
+  ]
+}
