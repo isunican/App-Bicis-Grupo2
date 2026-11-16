@@ -139,6 +139,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
             }
         });
         list.setAdapter(adapter);
+
+        TextView tvResults = findViewById(R.id.tvResults);
+        tvResults.setText("Favoritos: " + favorites.size());
     }
 
     /**
