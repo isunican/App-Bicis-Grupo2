@@ -17,6 +17,13 @@
       {
         "id": "Alt_4_2",
         "name": "Alternativa B"
+      },
+      {
+        "id": "Fav_4",
+        "name": "Favorita 4",
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "free_bikes": 0
       }
     ]
   }

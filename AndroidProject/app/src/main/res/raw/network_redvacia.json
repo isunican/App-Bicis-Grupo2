@@ -21,6 +21,13 @@
         "latitude": 22.0,
         "longitude": 20.0,
         "free_bikes": 0
+      },
+      {
+        "id": "Fav_3",
+        "name": "Favorita 3",
+        "latitude": 20.0,
+        "longitude": 20.0,
+        "free_bikes": 0
       }
     ]
   }
