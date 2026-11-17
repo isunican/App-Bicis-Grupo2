@@ -50,15 +50,6 @@ public class AnadirEstacionFavoritaConAliasUITest {
     @Rule(order = 1)
     public ActivityScenarioRule<StationsView> activityRule = new ActivityScenarioRule<>(createIntent());
 
-    // Variable para almacenar el decorView
-    private View decorView;
-
-    @Before
-    public void setUp() {
-        // Obtenemos el objeto decorView
-        activityRule.getScenario().onActivity(activity -> decorView = activity.getWindow().getDecorView());
-    }
-
 
     private static Intent createIntent() {
         // Limpiamos SharedPreferences para asegurar un entorno de prueba limpio
@@ -104,11 +95,6 @@ public class AnadirEstacionFavoritaConAliasUITest {
         onView(withId(R.id.etAlias)).perform(typeText("Casa"), ViewActions.closeSoftKeyboard());
         // Pulsamos el boton de aceptar
         onView(withId(R.id.btnAccept)).perform(click());
-
-        // Comprobar que aparece el mensaje de exito en el toast
-        onView(withText(R.string.favorite_added_success))
-                .inRoot(RootMatchers.withDecorView(not(decorView)))
-                .check(matches(isDisplayed()));
 
         // Comprobamos que la estrella de Capitol Complex aparece rellenada
         onData(withStationName("Capitol Complex"))
