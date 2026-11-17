@@ -35,6 +35,7 @@
     <string name="filterAvailable">Disponible</string>
     <string name="filterNotAvailable">No disponible</string>
     <string name="filterEbikesDescription">Icono representativo del filtro de bicis eléctricas</string>
+    <string name="filterEbikesNotAvailableDescription">Icono de bicis eléctricas no disponibles</string>
     <string name="availableFilters">Filtros </string>
 
 </resources>

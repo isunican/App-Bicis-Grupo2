@@ -55,6 +55,7 @@ android {
     }
 
     testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
         unitTests {
             includeAndroidResources = true
         }
@@ -75,6 +76,7 @@ android {
         // I need a custom test runner to support Hilt
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner
         testInstrumentationRunner "es.unican.bicis.utils.CustomTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     buildTypes {
@@ -107,6 +109,7 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    androidTestUtil 'androidx.test:orchestrator:1.5.1'
 
     // Parceler (automatically implements methods to create parcels)
     implementation libs.parceler.api

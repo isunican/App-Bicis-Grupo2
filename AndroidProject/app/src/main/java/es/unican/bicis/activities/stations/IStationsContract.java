@@ -198,9 +198,10 @@ public interface IStationsContract {
 
         /**
          * Shows an indicator of the applied filters currently in the bottom bar.
-         * @param active true if any filter is currently applied.
+         * @param availableActive true if "Disponible" filter option is active.
+         * @param notAvailableActive true if "No disponible" filter option is active.
          */
-        public void showFilterIndicator(boolean active);
+        public void showFilterIndicator(boolean availableActive, boolean notAvailableActive);
 
     }
 }
