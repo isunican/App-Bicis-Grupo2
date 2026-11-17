@@ -142,4 +142,7 @@ dependencies {
 
     // Dependencia de OSMDroid
     implementation("org.osmdroid:osmdroid-android:6.1.20")
+
+    // interface test permissions utility
+    androidTestImplementation 'androidx.test:rules:1.5.0'
 }
