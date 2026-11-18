@@ -1,0 +1,44 @@
+{
+    "network": {
+        "id": "bike4funly",
+        "name": "Bike4fun",
+        "location": {
+            "latitude": 0.0,
+            "longitude": 0.0,
+            "city": "Tripoli",
+            "country": null
+        },
+        "href": null,
+        "company": null,
+        "ebikes": null,
+        "stations": [
+            {
+                "id": "b4f-001",
+                "name": "Estación Plaza Mayor",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "timestamp": "2026-09-24T11:11:30.548463+00:00Z",
+                "free_bikes": 5,
+                "empty_slots": 7
+            },
+            {
+                "id": "b4f-002",
+                "name": "Estación Puerto",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "timestamp": "2026-09-24T11:09:10.100000+00:00Z",
+                "free_bikes": 0,
+                "empty_slots": 12
+            },
+            {
+                "id": "b4f-003",
+                "name": "Estación sin datos",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "timestamp": null,
+                "free_bikes": null,
+                "empty_slots": null
+            }
+        ]
+    }
+}

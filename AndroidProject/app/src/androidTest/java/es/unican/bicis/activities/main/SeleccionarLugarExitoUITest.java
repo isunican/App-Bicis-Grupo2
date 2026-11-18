@@ -50,9 +50,8 @@ public class SeleccionarLugarExitoUITest {
 
         onView(withId(R.id.btnBuscar)).perform(click());
 
-        onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(0)
+        onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(1)
                 .onChildView(withId(R.id.tvName))
                 .check(matches(withText("TUeBICI")));
     }
-
 }
