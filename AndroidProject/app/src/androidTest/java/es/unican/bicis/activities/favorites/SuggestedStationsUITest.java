@@ -299,10 +299,35 @@ public class SuggestedStationsUITest {
     }
 
     /**
+     * Test UI-08:
+     * "Error de persistencia (Criterio A1-09)"
+     */
+    @Test
+    public void testUI_08_estacionesAlternativasErrorPersistenciaLocal() {
+        onView(withId(R.id.menuItemFavorites)).perform(click());
+        onView(withText(R.string.viewFavoriteStations)).perform(click());
+
+        onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(3)
+                .onChildView(withId(R.id.tvAlias)).check(matches(withText("Trabajo")));
+        onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(3)
+                .onChildView(withId(R.id.tvOriginalName)).check(matches(withText("Favorita 1")));
+        onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(3)
+                .check(matches(hasDescendant(withId(R.id.ivSearchAlternatives))));
+
+        // the local data becomes corrupted before clicking on the magnifier
+        setLocalInvalidData();
+        onData(anything()).inAdapterView(withId(R.id.lvFavoriteStations)).atPosition(3)
+                .onChildView(withId(R.id.ivSearchAlternatives)).perform(click());
+
+        // message toast is assumed for technical reasons
+        onView(withId(R.id.tvAlternativesTitle)).check(doesNotExist());
+    }
+
+    /**
      * Auxiliary method to clean the user data cache and fill it with example favorite stations
      * as specified in the test plan for this user story.
      */
-    private void setLocalData() {
+    protected static void setLocalData() {
         String PREF_NAME = "favorite_stations_prefs";
 
         // clear the user data
@@ -327,6 +352,28 @@ public class SuggestedStationsUITest {
         editor.putString(fav2.getStationId(), new Gson().toJson(fav2));
         editor.putString(fav3.getStationId(), new Gson().toJson(fav3));
         editor.putString(fav4.getStationId(), new Gson().toJson(fav4));
+        editor.commit();
+    }
+
+    /**
+     * Auxiliary method to clean the user data cache and fill it with invalid or corrupted
+     * favorite stations data in order to test special edge cases.
+     */
+    private static void setLocalInvalidData() {
+        String PREF_NAME = "favorite_stations_prefs";
+
+        // clear the user data
+        Context context = ApplicationProvider.getApplicationContext();
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+                .edit().clear().commit();
+
+        // add invalid or corrupted favorite stations to the user data
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("Fav_1", true);
+        editor.putBoolean("Fav_2", true);
+        editor.putBoolean("Fav_3", true);
+        editor.putBoolean("Fav_4", true);
         editor.commit();
     }
 
