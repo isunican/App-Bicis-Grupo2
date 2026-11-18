@@ -1,0 +1,55 @@
+{
+    "network": {
+        "id": "northcycleuk",
+        "name": "NorthCycle",
+        "location": {
+            "latitude": 52.2381,
+            "longitude": -0.8947,
+            "city": "Northampton",
+            "country": "UK"
+        },
+        "href": "/v2/networks/northcycleuk",
+        "company": [
+            "Northampton Council Management Co. Ltd"
+        ],
+        "ebikes": null,
+        "stations": [
+            {
+                "id": "nc-001",
+                "name": "Abington Street",
+                "latitude": 52.2399,
+                "longitude": -0.8995,
+                "timestamp": "2026-10-17T07:45:12.100000+00:00Z",
+                "free_bikes": 8,
+                "empty_slots": 4
+            },
+            {
+                "id": "nc-002",
+                "name": "Northampton Railway Station",
+                "latitude": 52.237,
+                "longitude": -0.9068,
+                "timestamp": "2026-10-17T07:44:50.220000+00:00Z",
+                "free_bikes": 2,
+                "empty_slots": 10
+            },
+            {
+                "id": "nc-003",
+                "name": "University of Northampton, Waterside Campus, Avenue Entrance and Visitor Parking",
+                "latitude": 52.2312,
+                "longitude": -0.884,
+                "timestamp": "2026-10-17T07:46:03.900000+00:00Z",
+                "free_bikes": 5,
+                "empty_slots": 7
+            },
+            {
+                "id": "nc-004",
+                "name": "Delapre Abbey",
+                "latitude": 52.2208,
+                "longitude": -0.8874,
+                "timestamp": "2026-10-17T07:43:21.000000+00:00Z",
+                "free_bikes": 0,
+                "empty_slots": 8
+            }
+        ]
+    }
+}
