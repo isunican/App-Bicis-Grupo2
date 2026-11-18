@@ -125,9 +125,14 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
                 origin = station;
             }
         }
-        if (origin == null || origin.getLatitude() == null || origin.getLongitude() == null) {
+
+        if (origin == null) {
+            return null;
+        } else if (origin.getLatitude() == null || origin.getLongitude() == null
+                || (origin.getLatitude() == 0.0 && origin.getLongitude() == 0.0)) {
             return null;
         }
+
 
         double[] user = view.getUserLocation();
 
@@ -138,7 +143,8 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
             }
             Availability availability = Availability.bikesAvailability(station.getFreeBikes());
             boolean hasBikes = availability == Availability.HIGH || availability == Availability.LOW;
-            if (!hasBikes || station.getLatitude() == null || station.getLongitude() == null) {
+            if (!hasBikes || station.getLatitude() == null || station.getLongitude() == null
+            || (station.getLatitude() == 0.0 && station.getLongitude() == 0.0))  {
                 continue;
             }
 

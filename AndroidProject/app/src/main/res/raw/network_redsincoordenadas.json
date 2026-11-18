@@ -1,0 +1,30 @@
+{
+  "network": {
+    "id": "redsincoordenadas",
+    "name": "Red Sin Coordenadas",
+    "href": "/v2/networks/redSinCoordenadas",
+    "location": {
+      "city": "Comillas",
+      "country": "ES"
+    },
+    "stations": [
+      {
+        "id": "Alt_4_1",
+        "name": "Alternativa A",
+        "latitude": 0.0,
+        "longitude": 0.0
+      },
+      {
+        "id": "Alt_4_2",
+        "name": "Alternativa B"
+      },
+      {
+        "id": "Fav_4",
+        "name": "Favorita 4",
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "free_bikes": 0
+      }
+    ]
+  }
+}
