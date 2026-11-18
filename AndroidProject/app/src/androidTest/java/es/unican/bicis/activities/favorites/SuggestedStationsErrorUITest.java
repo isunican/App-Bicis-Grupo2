@@ -40,7 +40,7 @@ import es.unican.bicis.utils.FeatureManager;
 
 @UninstallModules(RepositoriesModule.class)
 @HiltAndroidTest
-public class SuggestedStationsSpecialUITest {
+public class SuggestedStationsErrorUITest {
 
     @Rule(order = 0)
     public HiltAndroidRule hiltRule = new HiltAndroidRule(this);
