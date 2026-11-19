@@ -1,13 +1,13 @@
 package es.unican.bicis.activities.favorites;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ListView;
@@ -17,8 +17,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,61 +53,8 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     /** The favorite stations currently shown (used to look up aliases) */
     private List<FavoriteStation> favoriteStations = new ArrayList<>();
 
-    /** Request code of the location permission */
-    private static final int REQUEST_LOCATION = 1;
-
-    /** Last location received from the system */
-    private android.location.Location currentLocation;
-
-    /** Favorite whose search is waiting for the answer to the permission dialog */
-    private FavoriteStation pendingFavorite;
-
-    /** Listener that keeps currentLocation updated */
-    private final android.location.LocationListener locationListener =
-            new android.location.LocationListener() {
-
-                /**
-                 * Stores the latest device location received from the location provider.
-                 *
-                 * @param location updated device location
-                 */
-                @Override
-                public void onLocationChanged(android.location.Location location) {
-                    currentLocation = location;
-                }
-
-                /**
-                 * Starts location updates when the provider becomes enabled.
-                 *
-                 * @param provider location provider that was enabled
-                 */
-                @Override
-                public void onProviderEnabled(String provider) {
-                    // No se requiere ninguna acción
-                }
-
-                /**
-                 * Stops location updates when the provider becomes disabled.
-                 *
-                 * @param provider location provider that was disabled
-                 */
-                @Override
-                public void onProviderDisabled(String provider) {
-                    // No se requiere ninguna acción
-                }
-
-                /**
-                 * Handles a location-provider status change. No additional action is required.
-                 *
-                 * @param provider location provider whose status changed
-                 * @param status new provider status
-                 * @param extras additional status information
-                 */
-                @Override
-                public void onStatusChanged(String provider, int status, android.os.Bundle extras) {
-                    // No se requiere ninguna acción
-                }
-            };
+    private static final double DEMO_LATITUDE = 43.4716;
+    private static final double DEMO_LONGITUDE = -3.8007;
 
     /**
      * Creates the favorites screen, initializes its toolbar, location support and presenter.
@@ -165,17 +110,8 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     public void showFavoriteStations(List<FavoriteStation> favorites) {
         this.favoriteStations = favorites;
         ListView list = findViewById(R.id.lvFavoriteStations);
-        adapter = new FavoriteStationsArrayAdapter(this, favorites, favorite -> {
-            if (hasLocationPermission()) {
-                presenter.onSearchAlternativesClicked(favorite);
-            } else {
-                // wait for the user's answer before opening the alternatives
-                pendingFavorite = favorite;
-                ActivityCompat.requestPermissions(this, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
-            }
-        });
+        adapter = new FavoriteStationsArrayAdapter(this, favorites,
+                favorite -> presenter.onSearchAlternativesClicked(favorite));
         list.setAdapter(adapter);
 
         TextView tvResults = findViewById(R.id.tvResults);
@@ -228,7 +164,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showConnectionError() {
-        Toast.makeText(this, R.string.favorite_error_connection, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, R.string.favorite_error_connection, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -252,35 +188,23 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public double[] getUserLocation() {
-        if (!hasLocationPermission()) {
-            return new double[0];
-        }
-        if (currentLocation != null) {
-            return new double[]{currentLocation.getLatitude(), currentLocation.getLongitude()};
-        }
-
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (manager == null) {
+        if (!isLocationEnabled(manager)) {
             return new double[0];
         }
 
-        // the most recent location among all the enabled providers
-        android.location.Location best = null;
-        for (String provider : manager.getProviders(true)) {
-            try {
-                android.location.Location location = manager.getLastKnownLocation(provider);
-                if (location != null && (best == null || location.getTime() > best.getTime())) {
-                    best = location;
-                }
-            } catch (SecurityException e) {
-                // the permission was revoked in the meantime: ignore this provider
-            }
-        }
+        return new double[]{DEMO_LATITUDE, DEMO_LONGITUDE};
+    }
 
-        if (best == null) {
-            return new double[0];
+    @SuppressWarnings("deprecation")
+    private boolean isLocationEnabled(LocationManager manager) {
+        if (manager != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                && manager.isLocationEnabled()) {
+            return true;
         }
-        return new double[]{best.getLatitude(), best.getLongitude()};
+        int mode = Settings.Secure.getInt(getContentResolver(),
+                Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF);
+        return mode != Settings.Secure.LOCATION_MODE_OFF;
     }
 
     /**
@@ -349,7 +273,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showAlternativesNotPossible() {
-        Toast.makeText(this, R.string.alternativesNotPossible, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, R.string.alternativesNotPossible, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -360,7 +284,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showAlternativesConnectionError() {
-        Toast.makeText(this, R.string.alternativesConnectionError, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, R.string.alternativesConnectionError, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -371,7 +295,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showAlternativesDataError() {
-        Toast.makeText(this, R.string.alternativesDataError, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, R.string.alternativesDataError, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -382,90 +306,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showAlternativesPersistenceError() {
-        Toast.makeText(this, R.string.alternativesPersistenceError, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, R.string.alternativesPersistenceError, Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * @return true if the app has any of the two location permissions
-     */
-    private boolean hasLocationPermission() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-    /**
-     * Starts listening to location updates (if the permission is granted).
-     */
-    private void startLocationUpdates() {
-        if (!hasLocationPermission()) {
-            return;
-        }
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (manager == null) {
-            return;
-        }
-        try {
-            for (String provider : manager.getProviders(true)) {
-                manager.requestLocationUpdates(provider, 2000, 0, locationListener);
-            }
-        } catch (SecurityException e) {
-            // permission revoked in the meantime: no location available
-        }
-    }
-
-    /**
-     * Stops listening to location updates.
-     */
-    private void stopLocationUpdates() {
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (manager != null) {
-            manager.removeUpdates(locationListener);
-        }
-    }
-
-    /**
-     * Starts location updates when the activity enters the foreground.
-     *
-     * @see AppCompatActivity#onResume()
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startLocationUpdates();
-    }
-
-    /**
-     * Stops location updates when the activity leaves the foreground.
-     *
-     * @see AppCompatActivity#onPause()
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        stopLocationUpdates();
-    }
-
-    /**
-     * Handles the result of a location permission request and resumes location updates
-     * when permission is granted.
-     *
-     * @param requestCode request code associated with the permission request
-     * @param permissions permissions included in the request
-     * @param grantResults grant results corresponding to the requested permissions
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_LOCATION) {
-            startLocationUpdates();
-            if (pendingFavorite != null) {
-                FavoriteStation favorite = pendingFavorite;
-                pendingFavorite = null;
-                // granted or denied, the alternatives window is opened
-                presenter.onSearchAlternativesClicked(favorite);
-            }
-        }
-    }
 }
