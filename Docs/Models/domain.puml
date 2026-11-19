@@ -17,13 +17,33 @@ class Location {
 }
 
 class Station {
-    - id : String
-    - name : String
-    - latitude : double
-    - longitude : double
-    - freeBikes : Integer
-    - emptySlots : Integer
-    - timestamp : String
+    # id : String
+    # name : String
+    # latitude : Double
+    # longitude : Double
+    # freeBikes : Integer
+    # emptySlots : Integer
+    # timestamp : String
+    --
+    + hasElectricBikes() : boolean
+    + ebikes() : int
+}
+
+class StationExtra {
+    # ebikes : Integer
+    # hasEbikes : Boolean
+}
+
+class AlternativeStation {
+    - distanceToFavoriteKm : double
+    - distanceToUserKm : Double
+}
+
+class StationEbikesFilter {
+    # available : boolean
+    # notAvailable : boolean
+    --
+    + applyFilter(stations : List<Station>) : List<Station>
 }
 
 class Country {
@@ -43,10 +63,10 @@ enum Availability {
     NONE
     UNKNOWN
     --
-    +bikesAvailability(Integer freeBikes): Availability
+    + bikesAvailability(Integer freeBikes) : Availability
 }
 
-class CountryResponse {
+class CountriesResponse {
 }
 
 class FavoriteStation {
@@ -54,32 +74,36 @@ class FavoriteStation {
     - networkId : String
     - alias : String
     - stationName : String
-    - country: String
-    - city: String
+    - country : String
+    - city : String
     --
-    +FavoriteStation()
-    +FavoriteStation(stationId : String, networkId : String, alias : String, 
-    stationName : String, country: String, city: String)
+    + FavoriteStation()
+    + FavoriteStation(stationId : String, networkId : String, alias : String, stationName : String, country : String, city : String)
 }
 
-
-
 class NetworksResponse {
-
 }
 
 class NetworkResponse {
-
 }
 
-note "Se incluyen las clases wrapper NetworksResponse y NetworkResponse\npara reflejar la estructura del paquete model implementado\npara el consumo de la API CityBikes" as NoteWrapper
+note "Se incluyen las clases wrapper NetworksResponse, NetworkResponse y CountriesResponse\npara reflejar la estructura del paquete model implementado\npara el consumo de la API" as NoteWrapper
 NetworksResponse .. NoteWrapper
 NetworkResponse .. NoteWrapper
+CountriesResponse .. NoteWrapper
 
+' Relaciones estructurales
 Network *--> "1" Location : location
 Network *--> "*" Station : stations
+Station *--> "0..1" StationExtra : extra
+AlternativeStation --> "1" Station : station
+
+' Wrappers de respuesta
 NetworksResponse *--> "*" Network : networks
 NetworkResponse *--> "1" Network : network
-CountryResponse *--> "*" Country : country
+CountriesResponse *--> "*" Country : countries
+
+' Dependencias de comportamiento
+StationEbikesFilter ..> Station : filters
 
 @enduml

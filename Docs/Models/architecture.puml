@@ -9,6 +9,7 @@ MainPresenter ..|> IMainContract.Presenter
 MainView --> IMainContract.Presenter : presenter
 MainPresenter --> IMainContract.View : view
 MainView --> INetworksRepository : repository
+MainView --> IFavoriteStationsRepository : repository
 MainView --> NetworksArrayAdapter : adapter
 MainView --> HintArrayAdapter : adapter
 
@@ -17,9 +18,13 @@ StationsView ..|> IStationsContract.View
 StationsPresenter ..|> IStationsContract.Presenter
 StationsView --> IStationsContract.Presenter : presenter
 StationsPresenter --> IStationsContract.View : view
+StationsPresenter --> IFavoriteStationsRepository : favoriteStationsRepository
+StationsPresenter --> StationEbikesFilter : ebikesFilter
 StationsView --> INetworksRepository : repository
+StationsView --> IFavoriteStationsRepository : favoriteStationsRepository
 StationsView --> ICountriesList : countriesList
 StationsView --> StationsArrayAdapter : adapter
+StationsArrayAdapter --> IFavoriteStationsRepository : favoriteStationsRepository
 
 ' --- VISTA DE FAVORITOS (FAVORITES) ---
 FavoriteStationsView ..|> IFavoriteStationsContract.View
@@ -29,10 +34,13 @@ FavoriteStationsPresenter --> IFavoriteStationsContract.View : view
 FavoriteStationsView --> INetworksRepository : repository
 FavoriteStationsView --> IFavoriteStationsRepository : repository
 FavoriteStationsView --> FavoriteStationsArrayAdapter : adapter
+FavoriteStationsView ..> AlternativeStationsArrayAdapter : <<use>>
 
 ' Implementaciones de Repositorio
 ApiNetworksRepository ..|> INetworksRepository
 JsonNetworksRepository ..|> INetworksRepository
+FavoriteStationsRepository ..|> IFavoriteStationsRepository
+CountriesList ..|> ICountriesList
 
 ' Relaciones de uso entre vistas
 MainView ..> InfoView : <<use>>
@@ -45,32 +53,42 @@ StationsView ..> FavoriteStationsView : <<use>>
 
 FavoriteStationsView ..> InfoView : <<use>>
 
+' Relaciones de Repositorios y Callbacks
 INetworksRepository ..> NetworksCallback : <<use>>
 INetworksRepository ..> NetworkDetailsCallback : <<use>>
+ApiNetworksRepository --> ICityBikesAPI : api
+ApiNetworksRepository ..> CityBikesService : <<use>>
 
 class MainView
 class MainPresenter {
-- load()
+    - load()
 }
 class NetworksArrayAdapter
 class HintArrayAdapter
 
 class StationsView
 class StationsPresenter {
-- load()
+    - load()
 }
 class StationsArrayAdapter
+class StationEbikesFilter
 
 class FavoriteStationsView
 class FavoriteStationsPresenter {
-- load()
+    - load()
+    - loadAvailabilities(favorites : List<FavoriteStation>)
 }
 class FavoriteStationsArrayAdapter
+class AlternativeStationsArrayAdapter
 
 class InfoView
 class DetailsView
 class ApiNetworksRepository
 class JsonNetworksRepository
+class FavoriteStationsRepository
+class CountriesList
+class CityBikesService
+interface ICityBikesAPI
 
 ' --- CONTRATO MAIN ---
 interface IMainContract.View {
@@ -87,6 +105,8 @@ interface IMainContract.View {
     + showFavoriteStationsActivity()
     + showNetworkDetails(network : Network)
     + showCities(cities : List<String>)
+    + getFavoriteStationsRepository() : IFavoriteStationsRepository
+    + showPersistenceError()
 }
 
 interface IMainContract.Presenter {
@@ -100,6 +120,11 @@ interface IMainContract.Presenter {
 }
 
 ' --- CONTRATO STATIONS ---
+enum IStationsContract.FilterOption {
+    AVAILABLE
+    NOT_AVAILABLE
+}
+
 interface IStationsContract.View {
     + init()
     + getNetworksRepository() : INetworksRepository
@@ -117,12 +142,19 @@ interface IStationsContract.View {
     + updateFavoriteIcon(stationId : String, isFavorite : boolean)
     + showCountryFlag(flag : String)
     + getCountriesList() : ICountriesList
+    + showFilterMenu(availableChecked : boolean, notAvailableChecked : boolean)
+    + enableEbikesFilter(enabled : boolean)
+    + showFilterIndicator(active : boolean)
+    + isOnline() : boolean
+    + showFavoritesConnectionError()
 }
 
 interface IStationsContract.Presenter {
     + init(view : View)
     + onMenuInfoClicked()
     + onMenuFavoriteStationsClicked()
+    + onMenuFiltersClicked()
+    + onEbikesFilterOptionToggled(option : FilterOption, checked : boolean)
     + onFavoriteIconClicked(station : Station)
     + onConfirmAddFavorite(station : Station, alias : String)
 }
@@ -136,19 +168,34 @@ interface IFavoriteStationsContract.View {
     + getNetworksRepository() : INetworksRepository
     + showAvailabilities(availabilities : Map<String, Availability>)
     + showConnectionError()
+    + getUserLocation() : double[]
+    + isOnline() : boolean
+    + showAlternatives(favorite : FavoriteStation, alternatives : List<AlternativeStation>)
+    + showAlternativesNotPossible()
+    + showAlternativesConnectionError()
+    + showAlternativesDataError()
+    + showAlternativesPersistenceError()
 }
 
 interface IFavoriteStationsContract.Presenter {
     + init(view : View)
+    + buscarEstacionesAlternativas(favorite : FavoriteStation) : List<AlternativeStation>
+    + onSearchAlternativesClicked(favorite : FavoriteStation)
 }
 
-' --- REPOSITORIOS Y CALLBACKS ---
 interface INetworksRepository {
     + requestNetworks(cb : NetworksCallback)
     + requestNetwork(cb : NetworkDetailsCallback, networkId : String)
 }
 
-interface IFavoriteStationsRepository
+interface IFavoriteStationsRepository {
+    + addFavorite(station : Station, networkId : String, location : Location, alias : String) : boolean
+    + addFavorite(stationId : String, alias : String) : boolean
+    + isFavorite(stationId : String) : boolean
+    + getFavorites() : Map<String, String>
+    + getFavoriteStations() : List<FavoriteStation>
+}
+
 interface ICountriesList
 
 interface NetworksCallback {
