@@ -5,7 +5,7 @@
     <string name="loadCorrect">Se han cargado %d redes</string>
     <string name="loadError">Ha habido un error cargando las redes</string>
     <string name="loadErrorLocal">Ha habido un error en la persistencia local de los datos</string>
-    <string name="info_text">Bicity</string>
+    <string name="info_text">Bicity versión %1$s</string>
     <string name="noDate">Sin fecha</string>
     <string name="countryHint">País</string>
     <string name="cityHint">Ciudad</string>
@@ -29,5 +29,22 @@
     <string name="favoritesCount">Favoritos: %d</string>
     <string name="deleteFavorite">Eliminar de favoritos</string>
     <string name="favoritesConnectionError">Error de conexión</string>
+    <string name="filter">Filtro</string>
+    <string name="filtersIndicator">Filtros: </string>
+    <string name="filterEbikes">Bicis eléctricas</string>
+    <string name="filterAvailable">Disponible</string>
+    <string name="filterNotAvailable">No disponible</string>
+    <string name="filterEbikesDescription">Icono representativo del filtro de bicis eléctricas</string>
+    <string name="filterEbikesNotAvailableDescription">Icono de bicis eléctricas no disponibles</string>
+    <string name="availableFilters">Filtros </string>
+    <string name="alternativesTitle">Estaciones alternativas</string>
+    <string name="alternativesEmpty">No hay estaciones alternativas con disponibilidad</string>
+    <string name="alternativesNotPossible">No es posible obtener estaciones alternativas</string>
+    <string name="alternativesConnectionError">Error de Conexión a Internet</string>
+    <string name="alternativesDataError">Error en el Acceso a los Datos</string>
+    <string name="alternativesPersistenceError">Error en el Sistema de Almacenamiento Local</string>
+    <string name="distanceKm">%.1f km</string>
+    <string name="distanceUnknown">- km</string>
+    <string name="alternativesDistances">A ti: %1$s · A la favorita: %2$s</string>
 
 </resources>

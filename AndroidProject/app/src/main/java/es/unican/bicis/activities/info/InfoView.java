@@ -1,6 +1,8 @@
 package es.unican.bicis.activities.info;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,12 @@ import es.unican.bicis.R;
  */
 public class InfoView extends AppCompatActivity {
 
+    /**
+     * Creates the information screen and configures the toolbar with an Up button.
+     *
+     * @param savedInstanceState previously saved activity state, or {@code null}
+     * @see AppCompatActivity#onCreate(Bundle)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +35,27 @@ public class InfoView extends AppCompatActivity {
         ActionBar bar = getSupportActionBar();
         assert bar != null;  // to avoid warning in the line below
         bar.setDisplayHomeAsUpEnabled(true);  // show back button in action bar
+
+        // set application version name
+        try {
+            String versionName = getPackageManager()
+                    .getPackageInfo(getPackageName(), 0)
+                    .versionName;
+
+            TextView infoText = findViewById(R.id.textView);
+            infoText.setText(getString(R.string.info_text, versionName));
+
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    /**
+     * Finishes this activity when the Up button is pressed.
+     *
+     * @return {@code true} to indicate that the navigation event was handled
+     * @see AppCompatActivity#onSupportNavigateUp()
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();

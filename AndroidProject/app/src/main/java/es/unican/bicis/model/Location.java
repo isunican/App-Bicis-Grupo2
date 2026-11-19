@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter
 public class Location {
 
-    @SerializedName("city")                     protected String city;
+    @SerializedName("city")         protected String city;
     @SerializedName("country")      protected String country;
     @SerializedName("latitude")     protected double latitude;
     @SerializedName("longitude")    protected double longitude;

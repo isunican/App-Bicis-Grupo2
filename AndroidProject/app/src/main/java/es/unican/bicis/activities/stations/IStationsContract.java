@@ -2,7 +2,6 @@ package es.unican.bicis.activities.stations;
 
 import java.util.List;
 
-import es.unican.bicis.activities.main.IMainContract;
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.INetworksRepository;
@@ -14,6 +13,11 @@ import es.unican.bicis.repository.ICountriesList;
  * The stations activity displays the list of bike stations for a selected network.
  */
 public interface IStationsContract {
+
+    /**
+     * Options of the electric bikes filter.
+     */
+    enum FilterOption { AVAILABLE, NOT_AVAILABLE }
 
     /**
      * Methods that must be implemented by the Stations Presenter.
@@ -36,6 +40,19 @@ public interface IStationsContract {
          * The presenter is informed that the favorite stations menu item has been clicked.
          */
         public void onMenuFavoriteStationsClicked();
+
+        /**
+         * Notifies the presenter that the filter menu option was clicked.
+         */
+        public void onMenuFiltersClicked();
+
+        /**
+         * Notifies the presenter that the user checked/unchecked an electric bikes filter option.
+         *
+         * @param option  the option modified
+         * @param checked new state of the checkbox
+         */
+        public void onEbikesFilterOptionToggled(FilterOption option, boolean checked);
 
         /**
          * Notifies presenter that a station's star icon was clicked.
@@ -155,7 +172,11 @@ public interface IStationsContract {
          */
         public void showCountryFlag(String flag);
 
-
+        /**
+         * Provides the country list used to resolve a network's country code and flag.
+         *
+         * @return the country list provider
+         */
         ICountriesList getCountriesList();
 
         /** Checks whether the device has an active internet connection. */
@@ -163,5 +184,28 @@ public interface IStationsContract {
 
         /** Shows an error message indicating that the favorite stations cannot be opened without connection. */
         void showFavoritesConnectionError();
+
+        /**
+         * Shows the electric bikes filter menu.
+         *
+         * @param availableChecked state of the "Disponible" checkbox
+         * @param notAvailableChecked state of the "No disponible" checkbox
+         */
+        public void showFilterMenu(boolean availableChecked, boolean notAvailableChecked);
+
+        /**
+         * Enables or disables the "Bicis eléctricas" menu option.
+         *
+         * @param enabled false if the network provides no electric bikes data
+         */
+        public void enableEbikesFilter(boolean enabled);
+
+        /**
+         * Shows an indicator of the applied filters currently in the bottom bar.
+         * @param availableActive true if "Disponible" filter option is active.
+         * @param notAvailableActive true if "No disponible" filter option is active.
+         */
+        public void showFilterIndicator(boolean availableActive, boolean notAvailableActive);
+
     }
 }

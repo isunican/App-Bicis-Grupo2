@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,15 +19,18 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import es.unican.bicis.model.Location;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
+import es.unican.bicis.model.StationExtra;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 
+@SuppressWarnings("java:S5976")
 public class StationsPresenterTest {
 
     private AutoCloseable closeable;
@@ -54,7 +58,7 @@ public class StationsPresenterTest {
         closeable.close();
     }
 
-    /**
+    /*
      * PRUEBAS UNITARIAS DE StationsPresenter.init(IStationsContract.View view)
      */
 
@@ -201,7 +205,7 @@ public class StationsPresenterTest {
         verify(view, never()).showLoadCorrect(anyInt());
     }
 
-    /**
+    /*
      * PRUEBAS UNITARIAS DE StationsPresenter.onConfirmAddFavorite(Station station, String alias)
      */
 
@@ -488,4 +492,270 @@ public class StationsPresenterTest {
         verify(view, never()).showPersistenceError();
     }
 
+    /**
+     * PRUEBAS UNITARIAS DE StationsPresenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption option, boolean checked)
+     */
+
+    private Station createStation(String id, String name, int ebikes) {
+        Station station = new Station();
+        station.setId(id);
+        station.setName(name);
+        StationExtra extra = new StationExtra();
+        extra.setEbikes(ebikes);
+        station.setExtra(extra);
+        return station;
+    }
+
+    /**
+     * U2-01: Filtrar estaciones con bicicletas eléctricas disponibles en red SpringBike.
+     */
+    @Test
+    public void testU2_01_filtrarDisponibles() {
+        // Arrange
+        String networkId = "springbike";
+        when(view.getSelectedNetworkId()).thenReturn(networkId);
+
+        Station sp1 = createStation("sp-001", "Capitol Complex", 4);
+        Station sp2 = createStation("sp-002", "Lincoln Home Visitor Center", 0);
+        Station sp3 = createStation("sp-003", "Union Station", 2);
+        Station sp4 = createStation("sp-004", "Washington Park", 0);
+
+        Network network = new Network();
+        network.setStations(Arrays.asList(sp1, sp2, sp3, sp4));
+
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
+
+        presenter.init(view);
+        Mockito.reset(view);
+
+        // Act
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, true);
+
+        // Assert
+        verify(view).showStations(Arrays.asList(sp1, sp3));
+        verify(view).showLoadCorrect(2);
+        verify(view).showFilterIndicator(true, false);
+    }
+
+    /**
+     * U2-02: Filtrar estaciones sin bicicletas eléctricas disponibles en red SpringBike.
+     */
+    @Test
+    public void testU2_02_filtrarNoDisponibles() {
+        // Arrange
+        String networkId = "springbike";
+        when(view.getSelectedNetworkId()).thenReturn(networkId);
+
+        Station sp1 = createStation("sp-001", "Capitol Complex", 4);
+        Station sp2 = createStation("sp-002", "Lincoln Home Visitor Center", 0);
+        Station sp3 = createStation("sp-003", "Union Station", 2);
+        Station sp4 = createStation("sp-004", "Washington Park", 0);
+
+        Network network = new Network();
+        network.setStations(Arrays.asList(sp1, sp2, sp3, sp4));
+
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
+
+        presenter.init(view);
+        Mockito.reset(view);
+
+        // Act
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.NOT_AVAILABLE, true);
+
+        // Assert
+        verify(view).showStations(Arrays.asList(sp2, sp4));
+        verify(view).showLoadCorrect(2);
+        verify(view).showFilterIndicator(false, true);
+    }
+
+    /**
+     * U2-03: Combinar ambas opciones de filtro (disponibles y no disponibles).
+     */
+    @Test
+    public void testU2_03_combinarAmbasOpciones() {
+        // Arrange
+        String networkId = "springbike";
+        when(view.getSelectedNetworkId()).thenReturn(networkId);
+
+        Station sp1 = createStation("sp-001", "Capitol Complex", 4);
+        Station sp2 = createStation("sp-002", "Lincoln Home Visitor Center", 0);
+        Station sp3 = createStation("sp-003", "Union Station", 2);
+        Station sp4 = createStation("sp-004", "Washington Park", 0);
+
+        Network network = new Network();
+        network.setStations(Arrays.asList(sp1, sp2, sp3, sp4));
+
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
+
+        presenter.init(view);
+        Mockito.reset(view);
+
+        // Act
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, true);
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.NOT_AVAILABLE, true);
+
+        // Assert
+        verify(view).showStations(Arrays.asList(sp1, sp2, sp3, sp4));
+        verify(view).showLoadCorrect(4);
+        verify(view).showFilterIndicator(false, false);
+    }
+
+    /**
+     * U2-04: Marcar y desmarcar ambas opciones de filtro.
+     */
+    @Test
+    public void testU2_04_marcarYDesmarcarAmbasOpciones() {
+        // Arrange
+        String networkId = "springbike";
+        when(view.getSelectedNetworkId()).thenReturn(networkId);
+
+        Station sp1 = createStation("sp-001", "Capitol Complex", 4);
+        Station sp2 = createStation("sp-002", "Lincoln Home Visitor Center", 0);
+        Station sp3 = createStation("sp-003", "Union Station", 2);
+        Station sp4 = createStation("sp-004", "Washington Park", 0);
+
+        Network network = new Network();
+        network.setStations(Arrays.asList(sp1, sp2, sp3, sp4));
+
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
+
+        presenter.init(view);
+        Mockito.reset(view);
+
+        // Act & Assert 1: Marcar ambas
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, true);
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.NOT_AVAILABLE, true);
+
+        verify(view).showStations(Arrays.asList(sp1, sp2, sp3, sp4));
+        verify(view).showLoadCorrect(4);
+        verify(view).showFilterIndicator(false, false);
+
+        Mockito.reset(view);
+
+        // Act & Assert 2: Desmarcar ambas
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, false);
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.NOT_AVAILABLE, false);
+
+        verify(view).showStations(Arrays.asList(sp1, sp2, sp3, sp4));
+        verify(view).showLoadCorrect(4);
+        verify(view).showFilterIndicator(false, false);
+    }
+
+    /**
+     * U2-05: Red RiverCycle sin estaciones con bicis disponibles devuelve resultado vacío.
+     */
+    @Test
+    public void testU2_05_redSinDisponiblesResultadoVacio() {
+        // Arrange
+        String networkId = "rivercycle";
+        when(view.getSelectedNetworkId()).thenReturn(networkId);
+
+        Station rv1 = createStation("rv-001", "Station 1", 0);
+        Station rv2 = createStation("rv-002", "Station 2", 0);
+
+        Network network = new Network();
+        network.setStations(Arrays.asList(rv1, rv2));
+
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
+
+        presenter.init(view);
+        Mockito.reset(view);
+
+        // Act
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, true);
+
+        // Assert
+        verify(view).showStations(Collections.emptyList());
+        verify(view).showLoadCorrect(0);
+        verify(view).showFilterIndicator(true, false);
+    }
+
+    /**
+     * U2-06: Red cargada sin estaciones pero con soporte activo de bicis eléctricas.
+     */
+    @Test
+    public void testU2_06_redSinEstacionesConSoporteActivo() {
+        // Arrange
+        String networkId = "red-vacia-ebikes";
+        when(view.getSelectedNetworkId()).thenReturn(networkId);
+
+        Network network = spy(new Network());
+        network.setStations(new ArrayList<>());
+        when(network.providesEbikesInfo()).thenReturn(true);
+
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
+
+        presenter.init(view);
+        Mockito.reset(view);
+
+        // Act
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, true);
+
+        // Assert
+        verify(view).showStations(Collections.emptyList());
+        verify(view).showLoadCorrect(0);
+        verify(view).showFilterIndicator(true, false);
+    }
+
+    /**
+     * U2-07: Red sin información de bicicletas eléctricas deshabilita la opción de filtro.
+     */
+    @Test
+    public void testU2_07_redSinInformacionEbikes() {
+        // Arrange
+        String networkId = "northcycleuk";
+        when(view.getSelectedNetworkId()).thenReturn(networkId);
+
+        Station nc1 = new Station();
+        nc1.setId("nc-001");
+        nc1.setName("North Station 1");
+        // extra es null -> providesEbikesInfo() retorna false
+
+        Network network = new Network();
+        network.setStations(Collections.singletonList(nc1));
+
+        Mockito.doAnswer(invocation -> {
+            NetworkDetailsCallback callback = invocation.getArgument(0);
+            callback.onSuccess(network);
+            return null;
+        }).when(repository).requestNetwork(any(NetworkDetailsCallback.class), eq(networkId));
+
+        // Act 1: Init
+        presenter.init(view);
+
+        // Assert 1: view.enableEbikesFilter(false) es invocado
+        verify(view).enableEbikesFilter(false);
+
+        Mockito.reset(view);
+
+        // Act 2: Toggled filter when ebikes not available
+        presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.NOT_AVAILABLE, true);
+
+        // Assert 2: no se vuelve a llamar a view.showStations()
+        verify(view, never()).showStations(any());
+    }
 }

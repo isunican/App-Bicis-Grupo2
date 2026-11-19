@@ -8,7 +8,6 @@ import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
-import es.unican.bicis.repository.INetworksRepository;
 
 /**
  * The Presenter-View contract for the Main activity.
@@ -59,6 +58,12 @@ public interface IMainContract {
          */
         public void onMenuFavoriteStationsClicked();
 
+        /**
+         * Notifies the presenter that the information icon of a network was clicked.
+         * Only the View should call this method.
+         *
+         * @param network the network whose details were requested
+         */
         public void onNetworkInfoClicked(Network network);
 
         /**
@@ -156,6 +161,12 @@ public interface IMainContract {
          */
         public void showFavoriteStationsActivity();
 
+        /**
+         * Opens the details screen for the given bike-sharing network.
+         * Only the Presenter should call this method.
+         *
+         * @param network the network whose details must be displayed
+         */
         public void showNetworkDetails(Network network);
 
         /**
@@ -165,10 +176,17 @@ public interface IMainContract {
          */
         public void showCities(List<String> cities);
 
-        /** Gets the repository of favorite stations. */
+        /**
+         * Provides the repository used to access the locally stored favorite stations.
+         *
+         * @return repository for favorite-station persistence
+         */
         public IFavoriteStationsRepository getFavoriteStationsRepository();
 
-        /** Shows an error message indicating that the persistence system could not be accessed. */
+        /**
+         * Requests the view to display a message indicating that local favorite-station data
+         * could not be accessed.
+         */
         public void showPersistenceError();
     }
 }

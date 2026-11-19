@@ -18,18 +18,32 @@ public class ApiNetworksRepository implements INetworksRepository {
     /** Since this class does not have any state, it can be a singleton */
     public static final INetworksRepository INSTANCE = new ApiNetworksRepository();
 
-    /** Singleton pattern with private constructor */
+    /**
+     * Creates the singleton repository instance.
+     */
     private ApiNetworksRepository() {}
 
     /**
-     * Request the list of bike networks from the CityBikes real API.
+     * Requests the list of bike-sharing networks from the CityBikes API and forwards the
+     * response to the callback. A successful HTTP response with a non-null body triggers
+     * {@code onSuccess}; otherwise the callback receives a failure.
+     *
+     * @param cb callback that receives the result
      * @see INetworksRepository#requestNetworks(NetworksCallback)
-     * @param cb the callback that will asynchronously process the returned networks
      */
     @Override
     public void requestNetworks(NetworksCallback cb) {
         Call<NetworksResponse> call = CityBikesService.api.networks();
         call.enqueue(new Callback<NetworksResponse>() {
+
+            /**
+             * Processes the API response and forwards the list of networks when the response
+             * is successful and its body is available.
+             *
+             * @param call Retrofit request that produced the response
+             * @param response HTTP response received from the API
+             * @see Callback#onResponse(Call, Response)
+             */
             @Override
             public void onResponse(@Nonnull Call<NetworksResponse> call, @Nonnull Response<NetworksResponse> response) {
                 NetworksResponse body = response.body();
@@ -40,6 +54,13 @@ public class ApiNetworksRepository implements INetworksRepository {
                 }
             }
 
+            /**
+             * Forwards the network-list request failure to the repository callback.
+             *
+             * @param call Retrofit request that failed
+             * @param t cause of the failure
+             * @see Callback#onFailure(Call, Throwable)
+             */
             @Override
             public void onFailure(@Nonnull Call<NetworksResponse> call, @Nonnull Throwable t) {
                 cb.onFailure(t);
@@ -48,15 +69,27 @@ public class ApiNetworksRepository implements INetworksRepository {
     }
 
     /**
-     * Request the details of a single network from the CityBikes real API.
+     * Requests the details and stations of a specific bike-sharing network. A successful
+     * response containing a network triggers {@code onSuccess}; unsuccessful or incomplete
+     * responses trigger {@code onFailure}.
+     *
+     * @param cb callback that receives the result
+     * @param networkId ID of the requested network
      * @see INetworksRepository#requestNetwork(NetworkDetailsCallback, String)
-     * @param cb the callback that will asynchronously process the returned network
-     * @param networkId id of the network
      */
     @Override
     public void requestNetwork(NetworkDetailsCallback cb, String networkId) {
         Call<NetworkResponse> call = CityBikesService.api.network(networkId);
         call.enqueue(new Callback<NetworkResponse>() {
+
+            /**
+             * Processes the API response and forwards the retrieved network if the response is
+             * successful and contains a network object.
+             *
+             * @param call Retrofit request that produced the response
+             * @param response HTTP response received from the API
+             * @see Callback#onResponse(Call, Response)
+             */
             @Override
             public void onResponse(@Nonnull Call<NetworkResponse> call, @Nonnull Response<NetworkResponse> response) {
                 NetworkResponse body = response.body();
@@ -67,6 +100,13 @@ public class ApiNetworksRepository implements INetworksRepository {
                 }
             }
 
+            /**
+             * Forwards the network-details request failure to the repository callback.
+             *
+             * @param call Retrofit request that failed
+             * @param t cause of the failure
+             * @see Callback#onFailure(Call, Throwable)
+             */
             @Override
             public void onFailure(@Nonnull Call<NetworkResponse> call, @Nonnull Throwable t) {
                 cb.onFailure(t);

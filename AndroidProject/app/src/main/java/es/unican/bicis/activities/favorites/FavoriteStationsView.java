@@ -1,7 +1,15 @@
 package es.unican.bicis.activities.favorites;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -9,20 +17,23 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import es.unican.bicis.R;
-import es.unican.bicis.model.FavoriteStation;
-import es.unican.bicis.repository.FavoriteStationsRepository;
-import es.unican.bicis.repository.IFavoriteStationsRepository;
-
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import es.unican.bicis.R;
+import es.unican.bicis.model.AlternativeStation;
 import es.unican.bicis.model.Availability;
+import es.unican.bicis.model.FavoriteStation;
+import es.unican.bicis.repository.FavoriteStationsRepository;
+import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 
 /**
@@ -41,10 +52,70 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     /** The presenter of this view */
     private IFavoriteStationsContract.Presenter presenter;
 
+    /** The favorite stations currently shown (used to look up aliases) */
+    private List<FavoriteStation> favoriteStations = new ArrayList<>();
+
+    /** Request code of the location permission */
+    private static final int REQUEST_LOCATION = 1;
+
+    /** Last location received from the system */
+    private android.location.Location currentLocation;
+
+    /** Favorite whose search is waiting for the answer to the permission dialog */
+    private FavoriteStation pendingFavorite;
+
+    /** Listener that keeps currentLocation updated */
+    private final android.location.LocationListener locationListener =
+            new android.location.LocationListener() {
+
+                /**
+                 * Stores the latest device location received from the location provider.
+                 *
+                 * @param location updated device location
+                 */
+                @Override
+                public void onLocationChanged(android.location.Location location) {
+                    currentLocation = location;
+                }
+
+                /**
+                 * Starts location updates when the provider becomes enabled.
+                 *
+                 * @param provider location provider that was enabled
+                 */
+                @Override
+                public void onProviderEnabled(String provider) {
+                    // No se requiere ninguna acción
+                }
+
+                /**
+                 * Stops location updates when the provider becomes disabled.
+                 *
+                 * @param provider location provider that was disabled
+                 */
+                @Override
+                public void onProviderDisabled(String provider) {
+                    // No se requiere ninguna acción
+                }
+
+                /**
+                 * Handles a location-provider status change. No additional action is required.
+                 *
+                 * @param provider location provider whose status changed
+                 * @param status new provider status
+                 * @param extras additional status information
+                 */
+                @Override
+                public void onStatusChanged(String provider, int status, android.os.Bundle extras) {
+                    // No se requiere ninguna acción
+                }
+            };
+
     /**
-     * Called when the activity is created. Instantiates the presenter and starts the
-     * initial business logic.
-     * @param savedInstanceState saved state of the activity, or null
+     * Creates the favorites screen, initializes its toolbar, location support and presenter.
+     *
+     * @param savedInstanceState previously saved activity state, or {@code null}
+     * @see AppCompatActivity#onCreate(Bundle)
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +128,8 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Initializes the toolbar and screen title.
+     *
      * @see IFavoriteStationsContract.View#init()
      */
     @Override
@@ -72,6 +145,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Creates and returns the repository used to access locally saved favorite stations.
+     *
+     * @return favorite-stations repository
      * @see IFavoriteStationsContract.View#getFavoriteStationsRepository()
      */
     @Override
@@ -80,19 +156,35 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays the saved favorite stations in the list and updates the empty-state display.
+     *
+     * @param favorites saved favorite stations to display
      * @see IFavoriteStationsContract.View#showFavoriteStations(List)
      */
     @Override
     public void showFavoriteStations(List<FavoriteStation> favorites) {
+        this.favoriteStations = favorites;
         ListView list = findViewById(R.id.lvFavoriteStations);
-        adapter = new FavoriteStationsArrayAdapter(this, favorites);
+        adapter = new FavoriteStationsArrayAdapter(this, favorites, favorite -> {
+            if (hasLocationPermission()) {
+                presenter.onSearchAlternativesClicked(favorite);
+            } else {
+                // wait for the user's answer before opening the alternatives
+                pendingFavorite = favorite;
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
+            }
+        });
         list.setAdapter(adapter);
 
         TextView tvResults = findViewById(R.id.tvResults);
-        tvResults.setText(getString(R.string.favoritesCount, favorites.size()));
+        tvResults.setText("Favoritos: " + favorites.size());
     }
 
     /**
+     * Displays a message indicating that favorite stations could not be read or saved.
+     *
      * @see IFavoriteStationsContract.View#showPersistenceError()
      */
     @Override
@@ -106,6 +198,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Returns the repository used to request bike-network information.
+     *
+     * @return networks repository
      * @see IFavoriteStationsContract.View#getNetworksRepository()
      */
     @Override
@@ -114,6 +209,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Updates the availability indicators for the saved stations.
+     *
+     * @param availabilities map of station IDs to their availability
      * @see IFavoriteStationsContract.View#showAvailabilities(Map)
      */
     @Override
@@ -124,6 +222,8 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays a message indicating that the network request failed.
+     *
      * @see IFavoriteStationsContract.View#showConnectionError()
      */
     @Override
@@ -132,12 +232,240 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
-     * Closes this screen when the back button of the action bar is pressed.
-     * @return true, since the navigation has been handled
+     * Finishes this activity when the Up button is pressed.
+     *
+     * @return {@code true} to indicate that the navigation action was handled
+     * @see AppCompatActivity#onSupportNavigateUp()
      */
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    /**
+     * Returns the last known device coordinates when location access is available.
+     *
+     * @return array containing latitude and longitude in decimal degrees, or {@code null}
+     *         if location is unavailable
+     * @see IFavoriteStationsContract.View#getUserLocation()
+     */
+    @Override
+    public double[] getUserLocation() {
+        if (!hasLocationPermission()) {
+            return new double[0];
+        }
+        if (currentLocation != null) {
+            return new double[]{currentLocation.getLatitude(), currentLocation.getLongitude()};
+        }
+
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (manager == null) {
+            return new double[0];
+        }
+
+        // the most recent location among all the enabled providers
+        android.location.Location best = null;
+        for (String provider : manager.getProviders(true)) {
+            try {
+                android.location.Location location = manager.getLastKnownLocation(provider);
+                if (location != null && (best == null || location.getTime() > best.getTime())) {
+                    best = location;
+                }
+            } catch (SecurityException e) {
+                // the permission was revoked in the meantime: ignore this provider
+            }
+        }
+
+        if (best == null) {
+            return new double[0];
+        }
+        return new double[]{best.getLatitude(), best.getLongitude()};
+    }
+
+    /**
+     * Checks whether the device currently has an active internet connection.
+     *
+     * @return {@code true} if connected, {@code false} otherwise
+     * @see IFavoriteStationsContract.View#isOnline()
+     */
+    @Override
+    public boolean isOnline() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+        android.net.Network network = manager.getActiveNetwork();
+        if (network == null) {
+            return false;
+        }
+        NetworkCapabilities capabilities = manager.getNetworkCapabilities(network);
+        return capabilities != null
+                && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+
+    /**
+     * Displays the alternative stations found for the selected favorite station.
+     *
+     * @param favorite favorite station for which alternatives were searched
+     * @param alternatives list of alternatives to display
+     * @see IFavoriteStationsContract.View#showAlternatives(FavoriteStation, List)
+     */
+    @Override
+    public void showAlternatives(FavoriteStation favorite, List<AlternativeStation> alternatives) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_alternatives, null);
+        ListView list = dialogView.findViewById(R.id.lvAlternatives);
+        TextView empty = dialogView.findViewById(R.id.tvAlternativesEmpty);
+
+        if (alternatives.isEmpty()) {
+            list.setVisibility(View.GONE);
+            empty.setVisibility(View.VISIBLE);
+        } else {
+            Map<String, String> aliases = new HashMap<>();
+            for (FavoriteStation f : favoriteStations) {
+                aliases.put(f.getStationId(), f.getAlias());
+            }
+            list.setAdapter(new AlternativeStationsArrayAdapter(this, alternatives,
+                    FavoriteStationsArrayAdapter.flagFromCountryCode(favorite.getCountry()),
+                    aliases));
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogView).create();
+        dialog.show();
+
+        // the window takes a good part of the screen
+        if (dialog.getWindow() != null) {
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
+            dialog.getWindow().setLayout((int) (metrics.widthPixels * 0.9),
+                    (int) (metrics.heightPixels * 0.7));
+        }
+    }
+
+    /**
+     * Displays a message indicating that alternative stations cannot be determined
+     * for the selected favorite.
+     *
+     * @see IFavoriteStationsContract.View#showAlternativesNotPossible()
+     */
+    @Override
+    public void showAlternativesNotPossible() {
+        Toast.makeText(this, R.string.alternativesNotPossible, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Displays a message indicating that alternative stations could not be loaded
+     * because of a connection error.
+     *
+     * @see IFavoriteStationsContract.View#showAlternativesConnectionError()
+     */
+    @Override
+    public void showAlternativesConnectionError() {
+        Toast.makeText(this, R.string.alternativesConnectionError, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Displays a message indicating that the network data required to find alternatives
+     * could not be retrieved or processed.
+     *
+     * @see IFavoriteStationsContract.View#showAlternativesDataError()
+     */
+    @Override
+    public void showAlternativesDataError() {
+        Toast.makeText(this, R.string.alternativesDataError, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Displays a message indicating that favorite-station data could not be accessed
+     * from local storage while searching for alternatives.
+     *
+     * @see IFavoriteStationsContract.View#showAlternativesPersistenceError()
+     */
+    @Override
+    public void showAlternativesPersistenceError() {
+        Toast.makeText(this, R.string.alternativesPersistenceError, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @return true if the app has any of the two location permissions
+     */
+    private boolean hasLocationPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Starts listening to location updates (if the permission is granted).
+     */
+    private void startLocationUpdates() {
+        if (!hasLocationPermission()) {
+            return;
+        }
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (manager == null) {
+            return;
+        }
+        try {
+            for (String provider : manager.getProviders(true)) {
+                manager.requestLocationUpdates(provider, 2000, 0, locationListener);
+            }
+        } catch (SecurityException e) {
+            // permission revoked in the meantime: no location available
+        }
+    }
+
+    /**
+     * Stops listening to location updates.
+     */
+    private void stopLocationUpdates() {
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (manager != null) {
+            manager.removeUpdates(locationListener);
+        }
+    }
+
+    /**
+     * Starts location updates when the activity enters the foreground.
+     *
+     * @see AppCompatActivity#onResume()
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startLocationUpdates();
+    }
+
+    /**
+     * Stops location updates when the activity leaves the foreground.
+     *
+     * @see AppCompatActivity#onPause()
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    /**
+     * Handles the result of a location permission request and resumes location updates
+     * when permission is granted.
+     *
+     * @param requestCode request code associated with the permission request
+     * @param permissions permissions included in the request
+     * @param grantResults grant results corresponding to the requested permissions
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_LOCATION) {
+            startLocationUpdates();
+            if (pendingFavorite != null) {
+                FavoriteStation favorite = pendingFavorite;
+                pendingFavorite = null;
+                // granted or denied, the alternatives window is opened
+                presenter.onSearchAlternativesClicked(favorite);
+            }
+        }
     }
 }

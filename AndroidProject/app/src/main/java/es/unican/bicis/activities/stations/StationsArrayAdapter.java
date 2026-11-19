@@ -29,9 +29,15 @@ import es.unican.bicis.repository.FavoriteStationsRepository;
 public class StationsArrayAdapter extends BaseAdapter {
 
     /**
-     * Listener interface for star icon click events.
+     * Listener notified when the favorite icon of a station row is clicked.
      */
     public interface OnFavoriteClickListener {
+
+        /**
+         * Notifies the listener that the favorite icon for a station was clicked.
+         *
+         * @param station station associated with the clicked icon
+         */
         void onFavoriteClick(Station station);
     }
     /** List of stations to be displayed */
@@ -57,21 +63,51 @@ public class StationsArrayAdapter extends BaseAdapter {
         this.favoriteStationsRepository = new FavoriteStationsRepository(context);
     }
 
+    /**
+     * Returns the number of stations displayed by the adapter.
+     *
+     * @return number of stations
+     * @see BaseAdapter#getCount()
+     */
     @Override
     public int getCount() {
         return stations.size();
     }
 
+    /**
+     * Returns the station at the specified adapter position.
+     *
+     * @param position adapter position
+     * @return station at that position
+     * @see BaseAdapter#getItem(int)
+     */
     @Override
     public Object getItem(int position) {
         return stations.get(position);
     }
 
+    /**
+     * Uses the adapter position as the station item identifier.
+     *
+     * @param position adapter position
+     * @return position as item ID
+     * @see BaseAdapter#getItemId(int)
+     */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+    /**
+     * Creates or reuses a station row and displays its name, bike availability,
+     * last-update information and favorite state.
+     *
+     * @param position station position
+     * @param convertView row view that may be reused, or {@code null}
+     * @param parent parent view
+     * @return populated station row
+     * @see BaseAdapter#getView(int, View, ViewGroup)
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Station station = (Station) getItem(position);

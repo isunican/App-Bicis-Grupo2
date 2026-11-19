@@ -26,6 +26,12 @@ import es.unican.bicis.model.NetworksResponse;
  */
 public class Utils {
 
+    /** Mean radius of the Earth in kilometers */
+    private static final double EARTH_RADIUS_KM = 6371.0;
+
+    /**
+     * Prevents instantiation of this utility class.
+     */
     private Utils() {
         throw new UnsupportedOperationException("Clase de utilidad");
     }
@@ -33,7 +39,8 @@ public class Utils {
     /**
      * Parses a list of bike networks from a json resource file.
      * The json must contain a serialized NetworksResponse object.
-     * It uses GSON to parse the json file
+     * It uses JSON to parse the json file
+     *
      * @param context the application context
      * @param jsonId the resource id of the json file
      * @return list of networks parsed from the file
@@ -54,7 +61,8 @@ public class Utils {
      * Parses a single bike network (with its stations) from a json resource file.
      * The json must contain a serialized NetworkResponse object, as returned by the
      * GET /v2/networks/{network_id} endpoint.
-     * It uses GSON to parse the json file
+     * It uses JSON to parse the json file
+     *
      * @param context the application context
      * @param jsonId the resource id of the json file
      * @return the network parsed from the file, or null if it cannot be parsed
@@ -72,7 +80,8 @@ public class Utils {
     /**
      * Parses a list of countries from a json resource file.
      * The json must contain a serialized CountriesResponse object.
-     * It uses GSON to parse the json file
+     * It uses JSON to parse the json file
+     *
      * @param context the application context
      * @param jsonId the resource id of the json file
      * @return a linked hash map with all the countries, keyed by country ID as per the API
@@ -124,12 +133,35 @@ public class Utils {
         return a.compareToIgnoreCase(b);
     }
 
-    /** Returns the number at the beginning of a text, e.g. "12 Plaza" -> 12 */
+    /**
+     * Extracts the leading numeric sequence from a string.
+     *
+     * @param text text to inspect
+     * @return the leading number, or {@code Long.MAX_VALUE} if no leading digits exist
+     */
     private static long leadingNumber(String text) {
         int end = 0;
         while (end < text.length() && Character.isDigit(text.charAt(end))) {
             end++;
         }
         return Long.parseLong(text.substring(0, end));
+    }
+
+    /**
+     * Calculates the distance between two geographic points using the Haversine formula.
+     * @param lat1 latitude of the first point, in degrees
+     * @param lon1 longitude of the first point, in degrees
+     * @param lat2 latitude of the second point, in degrees
+     * @param lon2 longitude of the second point, in degrees
+     * @return the distance between both points, in kilometers
+     */
+    public static double distanceKm(double lat1, double lon1, double lat2, double lon2) {
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return EARTH_RADIUS_KM * c;
     }
 }

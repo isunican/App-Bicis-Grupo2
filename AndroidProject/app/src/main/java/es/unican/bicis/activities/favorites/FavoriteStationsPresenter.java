@@ -1,5 +1,7 @@
 package es.unican.bicis.activities.favorites;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,15 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 import es.unican.bicis.common.DataAccessException;
+import es.unican.bicis.common.Utils;
+import es.unican.bicis.model.AlternativeStation;
 import es.unican.bicis.model.Availability;
 import es.unican.bicis.model.FavoriteStation;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.NetworkDetailsCallback;
-import java.util.ArrayList;
-import java.util.Collections;
-
-import es.unican.bicis.common.Utils;
 
 /**
  * The presenter of the favorite stations activity. It controls {@link FavoriteStationsView}
@@ -28,7 +28,16 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
     /** Avoids showing the connection error more than once */
     private boolean connectionErrorShown;
 
+    /** Maximum number of alternative stations that are suggested */
+    private static final int MAX_ALTERNATIVES = 5;
+
+    /** Networks loaded from the API, by network id (used to look for alternatives) */
+    private final Map<String, Network> networks = new HashMap<>();
+
     /**
+     * Attaches the presenter to the view and loads the saved favorite stations.
+     *
+     * @param view view controlled by this presenter
      * @see IFavoriteStationsContract.Presenter#init(IFavoriteStationsContract.View)
      */
     @Override
@@ -63,6 +72,7 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
     /**
      * Requests each distinct network of the favorite stations (one request per network)
      * and passes the availability of the favorite stations to the view.
+     *
      * @param favorites the favorite stations
      */
     private void loadAvailabilities(List<FavoriteStation> favorites) {
@@ -76,8 +86,17 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
 
         for (String networkId : networkIds) {
             view.getNetworksRepository().requestNetwork(new NetworkDetailsCallback() {
+
+                /**
+                 * Stores the retrieved network and collects availability information for its stations
+                 * so the favorite-stations view can update the displayed availability indicators.
+                 *
+                 * @param network retrieved network
+                 * @see NetworkDetailsCallback#onSuccess(Network)
+                 */
                 @Override
                 public void onSuccess(Network network) {
+                    networks.put(networkId, network);
                     Map<String, Availability> availabilities = new HashMap<>();
                     if (network.getStations() != null) {
                         for (Station station : network.getStations()) {
@@ -88,6 +107,12 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
                     view.showAvailabilities(availabilities);
                 }
 
+                /**
+                 * Handles a failed network-details request while loading favorite-station availability.
+                 *
+                 * @param e cause of the request failure
+                 * @see NetworkDetailsCallback#onFailure(Throwable)
+                 */
                 @Override
                 public void onFailure(Throwable e) {
                     if (!connectionErrorShown) {
@@ -97,5 +122,118 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
                 }
             }, networkId);
         }
+    }
+
+    /**
+     * When a station has no ebikes available, this method searches for alternative stations
+     * neary (5 at max.)
+     *
+     * @param favorite favorite station with no availability.
+     * @see IFavoriteStationsContract.Presenter#buscarEstacionesAlternativas(FavoriteStation)
+     */
+    @Override
+    public List<AlternativeStation> buscarEstacionesAlternativas(FavoriteStation favorite) {
+        Network network = networks.get(favorite.getNetworkId());
+        if (network == null || network.getStations() == null) {
+            return null;
+        }
+
+        // look for the favorite station among the stations of its network
+        Station origin = null;
+        for (Station station : network.getStations()) {
+            if (station.getId() != null && station.getId().equals(favorite.getStationId())) {
+                origin = station;
+            }
+        }
+
+        if (origin == null
+                || origin.getLatitude() == null
+                || origin.getLongitude() == null
+                || (origin.getLatitude() == 0.0 && origin.getLongitude() == 0.0)) {
+            return null;
+        }
+
+        double[] user = view.getUserLocation();
+        boolean hasUserLocation = user != null && user.length >= 2;
+
+        List<AlternativeStation> alternatives = new ArrayList<>();
+        for (Station station : network.getStations()) {
+            Availability availability = Availability.bikesAvailability(station.getFreeBikes());
+            boolean hasBikes = availability == Availability.HIGH || availability == Availability.LOW;
+            if (station == origin || !hasBikes || station.getLatitude() == null || station.getLongitude() == null
+                    || (station.getLatitude() == 0.0 && station.getLongitude() == 0.0)) {
+                continue;
+            }
+
+            double toFavorite = Utils.distanceKm(origin.getLatitude(), origin.getLongitude(),
+                    station.getLatitude(), station.getLongitude());
+            Double toUser = null;
+            if (hasUserLocation) {
+                toUser = Utils.distanceKm(user[0], user[1],
+                        station.getLatitude(), station.getLongitude());
+            }
+            alternatives.add(new AlternativeStation(station, toFavorite, toUser));
+        }
+
+        // closest first, and keep only the first MAX_ALTERNATIVES
+        Collections.sort(alternatives,
+                (a, b) -> Double.compare(a.getDistanceToFavoriteKm(), b.getDistanceToFavoriteKm()));
+        return new ArrayList<>(alternatives.subList(0, Math.min(MAX_ALTERNATIVES, alternatives.size())));
+    }
+
+    /**
+     * @see IFavoriteStationsContract.Presenter#onSearchAlternativesClicked(FavoriteStation)
+     */
+    @Override
+    public void onSearchAlternativesClicked(FavoriteStation favorite) {
+        if (!view.isOnline()) {
+            view.showAlternativesConnectionError();
+            return;
+        }
+
+        try {
+            view.getFavoriteStationsRepository().getFavoriteStations();
+        } catch (RuntimeException | DataAccessException e) {
+            view.showAlternativesPersistenceError();
+            return;
+        }
+
+        String networkId = favorite.getNetworkId();
+        if (networkId == null || networkId.isEmpty()) {
+            view.showAlternativesNotPossible();
+            return;
+        }
+
+        view.getNetworksRepository().requestNetwork(new NetworkDetailsCallback() {
+
+            /**
+             * Processes the network response and asks the view to display alternative stations
+             * for the selected favorite, or reports that alternatives cannot be found.
+             *
+             * @param network retrieved network
+             * @see NetworkDetailsCallback#onSuccess(Network)
+             */
+            @Override
+            public void onSuccess(Network network) {
+                networks.put(networkId, network);
+                List<AlternativeStation> alternatives = buscarEstacionesAlternativas(favorite);
+                if (alternatives == null) {
+                    view.showAlternativesNotPossible();
+                } else {
+                    view.showAlternatives(favorite, alternatives);
+                }
+            }
+
+            /**
+             * Reports the failed network request to the view as an alternatives-connection error.
+             *
+             * @param e cause of the request failure
+             * @see NetworkDetailsCallback#onFailure(Throwable)
+             */
+            @Override
+            public void onFailure(Throwable e) {
+                view.showAlternativesDataError();
+            }
+        }, networkId);
     }
 }
