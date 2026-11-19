@@ -164,7 +164,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showConnectionError() {
-        //Toast.makeText(this, R.string.favorite_error_connection, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.favorite_error_connection, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -273,7 +273,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showAlternativesNotPossible() {
-        //Toast.makeText(this, R.string.alternativesNotPossible, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.alternativesNotPossible, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -284,7 +284,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showAlternativesConnectionError() {
-        //Toast.makeText(this, R.string.alternativesConnectionError, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.alternativesConnectionError, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -295,7 +295,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showAlternativesDataError() {
-        //Toast.makeText(this, R.string.alternativesDataError, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.alternativesDataError, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -306,7 +306,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
      */
     @Override
     public void showAlternativesPersistenceError() {
-        //Toast.makeText(this, R.string.alternativesPersistenceError, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.alternativesPersistenceError, Toast.LENGTH_SHORT).show();
     }
 
 }
