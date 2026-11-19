@@ -2,6 +2,7 @@ package es.unican.bicis.activities.stations;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -190,18 +191,12 @@ public class StationsView extends AppCompatActivity implements IStationsContract
      */
     @Override
     public void showNetworkLocation(Location networkLocation) {
-        List<String> location = new ArrayList<>();
-
-        String country = networkLocation.getCountry();
         String city = networkLocation.getCity();
-        if (country != null && !country.isEmpty()) {
-            location.add(country);
-        }
+
         if (city != null && !city.isEmpty()) {
-            location.add(city);
+            tvNetworkLocation.setText(city);
         }
 
-        tvNetworkLocation.setText(TextUtils.join(" ", location));
     }
 
     /**
@@ -258,10 +253,10 @@ public class StationsView extends AppCompatActivity implements IStationsContract
             filtersPopup.dismiss();
         }
         filtersPopup = new PopupWindow(menu,
-                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 true); // con focusable a true se cierra al pulsar fuera
-        filtersPopup.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        filtersPopup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         filtersPopup.setOutsideTouchable(true);
         filtersPopup.setElevation(8f);
 
@@ -280,19 +275,35 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     }
 
     /**
-     * @see IStationsContract.View#showFilterIndicator(boolean)
-     * @param active true if any filter is currently applied.
+     * @see IStationsContract.View#showFilterIndicator(boolean, boolean)
      */
     @Override
-    public void showFilterIndicator(boolean active) {
+    public void showFilterIndicator(boolean availableActive, boolean notAvailableActive) {
         ImageView ivEbike = findViewById(R.id.ivEbike);
+        ImageView ivEbikeNotAvailable = findViewById(R.id.ivEbikeNotAvailable);
 
-        if (active) {
-            ivEbike.setVisibility(View.VISIBLE);
+        if (availableActive) {
+            if (ivEbike != null) {
+                ivEbike.setVisibility(View.VISIBLE);
+            }
+            if (ivEbikeNotAvailable != null) {
+                ivEbikeNotAvailable.setVisibility(View.GONE);
+            }
+        } else if (notAvailableActive) {
+            if (ivEbike != null) {
+                ivEbike.setVisibility(View.VISIBLE);
+            }
+            if (ivEbikeNotAvailable != null) {
+                ivEbikeNotAvailable.setVisibility(View.VISIBLE);
+            }
         } else {
-            ivEbike.setVisibility(View.GONE);
+            if (ivEbike != null) {
+                ivEbike.setVisibility(View.GONE);
+            }
+            if (ivEbikeNotAvailable != null) {
+                ivEbikeNotAvailable.setVisibility(View.GONE);
+            }
         }
-        
     }
 
     @Override
@@ -389,6 +400,14 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (filtersPopup != null && filtersPopup.isShowing()) {
+            filtersPopup.dismiss();
+        }
+        super.onDestroy();
     }
 
     /**

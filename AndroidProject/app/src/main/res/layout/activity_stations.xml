@@ -102,6 +102,15 @@
             android:visibility="gone"
             android:contentDescription="@string/filterEbikesDescription"/>
 
+        <ImageView
+            android:id="@+id/ivEbikeNotAvailable"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="2dp"
+            android:src="@drawable/ic_ebike_off"
+            android:visibility="gone"
+            android:contentDescription="@string/filterEbikesNotAvailableDescription"/>
+
         <TextView
             android:id="@+id/tvResults"
             android:layout_width="0dp"

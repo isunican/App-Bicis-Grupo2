@@ -126,7 +126,9 @@ public class StationsPresenter implements IStationsContract.Presenter {
         List<Station> filtered = ebikesFilter.applyFilter(allStations);
         view.showStations(filtered);
         view.showLoadCorrect(filtered.size());
-        view.showFilterIndicator(ebikesFilter.isAvailable() || ebikesFilter.isNotAvailable());
+        boolean onlyAvailable = ebikesFilter.isAvailable() && !ebikesFilter.isNotAvailable();
+        boolean onlyNotAvailable = !ebikesFilter.isAvailable() && ebikesFilter.isNotAvailable();
+        view.showFilterIndicator(onlyAvailable, onlyNotAvailable);
     }
 
 
