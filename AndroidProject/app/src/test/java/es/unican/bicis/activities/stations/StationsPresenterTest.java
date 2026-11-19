@@ -29,6 +29,7 @@ import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 
+@SuppressWarnings("java:S5976")
 public class StationsPresenterTest {
 
     private AutoCloseable closeable;
@@ -56,7 +57,7 @@ public class StationsPresenterTest {
         closeable.close();
     }
 
-    /**
+    /*
      * PRUEBAS UNITARIAS DE StationsPresenter.init(IStationsContract.View view)
      */
 
@@ -203,7 +204,7 @@ public class StationsPresenterTest {
         verify(view, never()).showLoadCorrect(anyInt());
     }
 
-    /**
+    /*
      * PRUEBAS UNITARIAS DE StationsPresenter.onConfirmAddFavorite(Station station, String alias)
      */
 

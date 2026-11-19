@@ -32,7 +32,7 @@ public class StationsPresenter implements IStationsContract.Presenter {
     /**
      * List of all the stations in the current network.
      */
-    private List<Station> allStations = new ArrayList<>();
+    private final List<Station> allStations = new ArrayList<>();
 
     private final StationEbikesFilter ebikesFilter = new StationEbikesFilter();
     private boolean ebikesAvailable = false;

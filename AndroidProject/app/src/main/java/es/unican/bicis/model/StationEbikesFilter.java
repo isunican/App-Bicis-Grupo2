@@ -23,14 +23,8 @@ public class StationEbikesFilter {
         }
         List<Station> result = new ArrayList<>();
         for (Station s : stations) {
-            if (available) {
-                if (s.ebikes() > 0) {
-                    result.add(s);
-                }
-            } else if (notAvailable) {
-                if (s.ebikes() <= 0) {
-                    result.add(s);
-                }
+            if ((available && s.ebikes() > 0) || (!available && notAvailable && s.ebikes() <= 0)) {
+                result.add(s);
             }
         }
         return result;

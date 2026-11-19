@@ -73,13 +73,19 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
                 }
 
                 @Override
-                public void onProviderEnabled(String provider) { }
+                public void onProviderEnabled(String provider) {
+                    // No se requiere ninguna acción
+                }
 
                 @Override
-                public void onProviderDisabled(String provider) { }
+                public void onProviderDisabled(String provider) {
+                    // No se requiere ninguna acción
+                }
 
                 @Override
-                public void onStatusChanged(String provider, int status, android.os.Bundle extras) { }
+                public void onStatusChanged(String provider, int status, android.os.Bundle extras) {
+                    // No se requiere ninguna acción
+                }
             };
 
     /**
@@ -199,7 +205,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     @Override
     public double[] getUserLocation() {
         if (!hasLocationPermission()) {
-            return null;
+            return new double[0];
         }
         if (currentLocation != null) {
             return new double[]{currentLocation.getLatitude(), currentLocation.getLongitude()};
@@ -207,7 +213,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
 
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (manager == null) {
-            return null;
+            return new double[0];
         }
 
         // the most recent location among all the enabled providers
@@ -224,7 +230,7 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
         }
 
         if (best == null) {
-            return null;
+            return new double[0];
         }
         return new double[]{best.getLatitude(), best.getLongitude()};
     }

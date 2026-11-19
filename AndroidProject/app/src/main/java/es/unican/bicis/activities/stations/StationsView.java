@@ -419,11 +419,11 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         if (manager == null) {
             return false;
         }
-        android.net.Network network = manager.getActiveNetwork();
-        if (network == null) {
+        android.net.Network activeNetwork = manager.getActiveNetwork();
+        if (activeNetwork == null) {
             return false;
         }
-        NetworkCapabilities capabilities = manager.getNetworkCapabilities(network);
+        NetworkCapabilities capabilities = manager.getNetworkCapabilities(activeNetwork);
         return capabilities != null
                 && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }

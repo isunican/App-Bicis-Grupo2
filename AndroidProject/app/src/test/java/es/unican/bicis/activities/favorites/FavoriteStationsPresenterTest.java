@@ -28,6 +28,7 @@ import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.NetworkDetailsCallback;
 
+@SuppressWarnings("java:S3415")
 public class FavoriteStationsPresenterTest {
 
     private FavoriteStationsPresenter presenter;

@@ -30,6 +30,8 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.regex.Pattern;
+
 import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
 import es.unican.bicis.R;
@@ -52,6 +54,9 @@ public class SuggestedStationsUITest {
 
     // manually manage the activity
     private ActivityScenario<MainView> activityScenario;
+
+    private static final Pattern KM_PATTERN = Pattern.compile("\\d+ km");
+    private static final Pattern METERS_PATTERN = Pattern.compile("\\d+ m");
 
     @BeforeClass
     public static void setupClass() {
@@ -383,6 +388,8 @@ public class SuggestedStationsUITest {
         editor.commit();
     }
 
+
+
     /**
      * Auxiliary method to allow checking if a string contains a valid distance value in kilometers
      * @return the matcher handler
@@ -393,7 +400,7 @@ public class SuggestedStationsUITest {
             protected boolean matchesSafely(String text) {
                 // regex for dummies: the string contains a number, followed by " km"
                 // the dot is a delimiter, not the presence of an actual dot in the string
-                return text.matches(".*\\d+ km.*");
+                return KM_PATTERN.matcher(text).find();
             }
         };
     }
@@ -408,7 +415,7 @@ public class SuggestedStationsUITest {
             protected boolean matchesSafely(String text) {
                 // regex for dummies: the string contains a number, followed by " m"
                 // the dot is a delimiter, not the presence of an actual dot in the string
-                return text.matches(".*\\d+ m.*");
+                return METERS_PATTERN.matcher(text).find();
             }
         };
     }

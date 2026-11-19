@@ -8,16 +8,26 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.wifi.WifiManager;
 import android.os.ParcelFileDescriptor;
+import android.os.SystemClock;
 import android.provider.Settings;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import java.io.IOException;
+import java.util.function.BooleanSupplier;
 
 public class FeatureManager {
 
+    private static final long TIMEOUT_MS = 10_000L;
+    private static final long POLL_INTERVAL_MS = 100L;
+
+    private FeatureManager() {
+        // Utility class
+    }
+
     /**
      * Auxiliary method to allow changing the GPS setting in the tested device
+     *
      * @param option true to enable the setting, false to disable it
      */
     public static void setGPS(boolean option) {
@@ -25,42 +35,24 @@ public class FeatureManager {
                 .getInstrumentation().getTargetContext().getSystemService(Context.LOCATION_SERVICE);
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        if ((gpsEnabled && !option) || (!gpsEnabled && option)) {
-            String command;
+        if (gpsEnabled != option) {
+            String command = option
+                    ? "settings put secure location_mode 3"
+                    : "settings put secure location_mode 0";
 
-            if (option) {
-                command = "settings put secure location_mode 3";
-            } else {
-                command = "settings put secure location_mode 0";
-            }
-
-            UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-            try (ParcelFileDescriptor pfd = automation.executeShellCommand(command)) {
-                pfd.checkError();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            executeShellCommand(command);
 
             // wait for the GPS service to be effectively enabled/disabled
-            boolean set = false;
-            while (!set) {
-                gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-                if (gpsEnabled == option) {
-                    set = true;
-                } else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
+            waitUntil(
+                    () -> locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) == option,
+                    "Timeout waiting for GPS provider to become " + option
+            );
         }
     }
 
     /**
      * Auxiliary method to allow changing the networking setting in the tested device
+     *
      * @param option true to enable the setting, false to disable it
      */
     public static void setNetworking(boolean option) {
@@ -68,83 +60,27 @@ public class FeatureManager {
                 .getInstrumentation().getTargetContext().getSystemService(Context.WIFI_SERVICE);
         boolean wifiEnabled = wifiManager.isWifiEnabled();
 
-        if ((wifiEnabled && !option) || (!wifiEnabled && option)) {
-            String command;
-
-            if (option) {
-                command = "svc wifi enable";
-            } else {
-                command = "svc wifi disable";
-            }
-
-            UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-            try (ParcelFileDescriptor pfd = automation.executeShellCommand(command)) {
-                pfd.checkError();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if (wifiEnabled != option) {
+            String command = option ? "svc wifi enable" : "svc wifi disable";
+            executeShellCommand(command);
 
             // wait for the Wi-Fi service to be effectively enabled/disabled
-            boolean set = false;
-            while (!set) {
-                wifiEnabled = wifiManager.isWifiEnabled();
-
-                if (wifiEnabled == option) {
-                    set = true;
-                } else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
+            waitUntil(
+                    () -> wifiManager.isWifiEnabled() == option,
+                    "Timeout waiting for Wi-Fi service to become " + option
+            );
 
             // wait for the Wi-Fi service to be effectively connected/disconnected from a network
-            boolean ready = false;
-            while (!ready) {
-                ConnectivityManager connectivityManager = (ConnectivityManager) InstrumentationRegistry
-                        .getInstrumentation().getTargetContext()
-                        .getSystemService(Context.CONNECTIVITY_SERVICE);
-                Network activeNetwork = connectivityManager.getActiveNetwork();
-
-                if (!option) {
-                    if (activeNetwork == null) {
-                        ready = true;
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                } else {
-                    NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
-
-                    if (capabilities != null) {
-                        if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
-                            ready = true;
-                        } else {
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-            }
+            waitUntil(
+                    () -> isNetworkReady(option, false),
+                    "Timeout waiting for Wi-Fi network connection state: " + option
+            );
         }
     }
 
     /**
      * Auxiliary method to allow changing the airplane mode setting in the tested device
+     *
      * @param option true to enable the setting, false to disable it
      */
     public static void setAirplaneMode(boolean option) {
@@ -155,63 +91,59 @@ public class FeatureManager {
 
         // might as well run tests in airplane mode than deal with the non-standardized
         // and frankly overcomplicated way of checking carrier data mode on android
-        if ((!airplaneEnabled && option) || (airplaneEnabled && !option)) {
-            String command;
+        if (airplaneEnabled != option) {
+            String command = option
+                    ? "cmd connectivity airplane-mode enable"
+                    : "cmd connectivity airplane-mode disable";
 
-            if (option) {
-                command = "cmd connectivity airplane-mode enable";
-            } else {
-                command = "cmd connectivity airplane-mode disable";
-            }
-
-            UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-            try (ParcelFileDescriptor pfd = automation.executeShellCommand(command)) {
-                pfd.checkError();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            executeShellCommand(command);
 
             // wait for networking to be effectively available/unavailable
-            boolean ready = false;
-            while (!ready) {
-                ConnectivityManager connectivityManager = (ConnectivityManager) InstrumentationRegistry
-                        .getInstrumentation().getTargetContext()
-                        .getSystemService(Context.CONNECTIVITY_SERVICE);
-                Network activeNetwork = connectivityManager.getActiveNetwork();
+            waitUntil(
+                    () -> isNetworkReady(!option, true),
+                    "Timeout waiting for airplane mode network state: " + option
+            );
+        }
+    }
 
-                if (option) {
-                    if (activeNetwork == null) {
-                        ready = true;
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                } else {
-                    NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
+    private static boolean isNetworkReady(boolean expectedConnected, boolean requireValidated) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) InstrumentationRegistry
+                .getInstrumentation().getTargetContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network activeNetwork = connectivityManager.getActiveNetwork();
 
-                    if (capabilities != null) {
-                        if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                                && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
-                            ready = true;
-                        } else {
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
+        if (!expectedConnected) {
+            return activeNetwork == null;
+        }
+
+        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
+        if (capabilities == null) {
+            return false;
+        }
+
+        boolean hasInternet = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        if (requireValidated) {
+            return hasInternet && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+        }
+        return hasInternet;
+    }
+
+    private static void executeShellCommand(String command) {
+        UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        try (ParcelFileDescriptor pfd = automation.executeShellCommand(command)) {
+            pfd.checkError();
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to execute shell command: " + command, e);
+        }
+    }
+
+    private static void waitUntil(BooleanSupplier condition, String timeoutMessage) {
+        long deadline = SystemClock.elapsedRealtime() + TIMEOUT_MS;
+        while (!condition.getAsBoolean()) {
+            if (SystemClock.elapsedRealtime() >= deadline) {
+                throw new IllegalStateException(timeoutMessage);
             }
+            SystemClock.sleep(POLL_INTERVAL_MS);
         }
     }
 }

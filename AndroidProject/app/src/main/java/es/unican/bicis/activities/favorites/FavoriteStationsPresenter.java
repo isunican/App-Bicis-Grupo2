@@ -1,5 +1,7 @@
 package es.unican.bicis.activities.favorites;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,16 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 import es.unican.bicis.common.DataAccessException;
+import es.unican.bicis.common.Utils;
+import es.unican.bicis.model.AlternativeStation;
 import es.unican.bicis.model.Availability;
 import es.unican.bicis.model.FavoriteStation;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.model.Station;
 import es.unican.bicis.repository.NetworkDetailsCallback;
-import java.util.ArrayList;
-import java.util.Collections;
-import es.unican.bicis.model.AlternativeStation;
-
-import es.unican.bicis.common.Utils;
 
 /**
  * The presenter of the favorite stations activity. It controls {@link FavoriteStationsView}
@@ -70,6 +69,7 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
     /**
      * Requests each distinct network of the favorite stations (one request per network)
      * and passes the availability of the favorite stations to the view.
+     *
      * @param favorites the favorite stations
      */
     private void loadAvailabilities(List<FavoriteStation> favorites) {
@@ -105,7 +105,6 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
                 }
             }, networkId);
         }
-
     }
 
     /**
@@ -126,15 +125,15 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
             }
         }
 
-        if (origin == null) {
-            return null;
-        } else if (origin.getLatitude() == null || origin.getLongitude() == null
+        if (origin == null
+                || origin.getLatitude() == null
+                || origin.getLongitude() == null
                 || (origin.getLatitude() == 0.0 && origin.getLongitude() == 0.0)) {
             return null;
         }
 
-
         double[] user = view.getUserLocation();
+        boolean hasUserLocation = user != null && user.length >= 2;
 
         List<AlternativeStation> alternatives = new ArrayList<>();
         for (Station station : network.getStations()) {
@@ -144,14 +143,14 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
             Availability availability = Availability.bikesAvailability(station.getFreeBikes());
             boolean hasBikes = availability == Availability.HIGH || availability == Availability.LOW;
             if (!hasBikes || station.getLatitude() == null || station.getLongitude() == null
-            || (station.getLatitude() == 0.0 && station.getLongitude() == 0.0))  {
+                    || (station.getLatitude() == 0.0 && station.getLongitude() == 0.0)) {
                 continue;
             }
 
             double toFavorite = Utils.distanceKm(origin.getLatitude(), origin.getLongitude(),
                     station.getLatitude(), station.getLongitude());
             Double toUser = null;
-            if (user != null) {
+            if (hasUserLocation) {
                 toUser = Utils.distanceKm(user[0], user[1],
                         station.getLatitude(), station.getLongitude());
             }
@@ -163,6 +162,7 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
                 (a, b) -> Double.compare(a.getDistanceToFavoriteKm(), b.getDistanceToFavoriteKm()));
         return new ArrayList<>(alternatives.subList(0, Math.min(MAX_ALTERNATIVES, alternatives.size())));
     }
+
     /**
      * @see IFavoriteStationsContract.Presenter#onSearchAlternativesClicked(FavoriteStation)
      */
