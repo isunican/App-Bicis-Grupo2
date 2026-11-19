@@ -66,15 +66,23 @@ public class FavoriteStationsArrayAdapter extends BaseAdapter {
         this.searchListener = listener;
     }
 
-    /** @return the number of favorite stations in the list */
+    /**
+     * Returns the number of favorite stations displayed by the adapter.
+     *
+     * @return number of favorites
+     * @see BaseAdapter#getCount()
+     */
     @Override
     public int getCount() {
         return favorites.size();
     }
 
     /**
-     * @param position position of the item in the list
-     * @return the favorite station at the given position
+     * Returns the favorite station at the specified position.
+     *
+     * @param position adapter position
+     * @return favorite station at that position
+     * @see BaseAdapter#getItem(int)
      */
     @Override
     public Object getItem(int position) {
@@ -82,8 +90,11 @@ public class FavoriteStationsArrayAdapter extends BaseAdapter {
     }
 
     /**
-     * @param position position of the item in the list
-     * @return the position itself, used as item identifier
+     * Uses the adapter position as the favorite item identifier.
+     *
+     * @param position adapter position
+     * @return position as item ID
+     * @see BaseAdapter#getItemId(int)
      */
     @Override
     public long getItemId(int position) {
@@ -92,12 +103,14 @@ public class FavoriteStationsArrayAdapter extends BaseAdapter {
 
 
     /**
-     * Builds the row of a favorite station: flag, alias, availability color,
-     * city, original station name and delete icon.
-     * @param position position of the item in the list
-     * @param convertView row view to reuse, or null
-     * @param parent parent view the row will be attached to
-     * @return the view of the row
+     * Creates or reuses a favorite-station row and displays its flag, alias, city,
+     * original station name, availability and alternative-search control.
+     *
+     * @param position favorite position
+     * @param convertView row view that may be reused, or {@code null}
+     * @param parent parent view
+     * @return populated favorite-station row
+     * @see BaseAdapter#getView(int, View, ViewGroup)
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

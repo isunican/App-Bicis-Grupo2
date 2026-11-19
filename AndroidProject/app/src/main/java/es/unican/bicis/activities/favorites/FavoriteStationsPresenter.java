@@ -35,6 +35,9 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
     private final Map<String, Network> networks = new HashMap<>();
 
     /**
+     * Attaches the presenter to the view and loads the saved favorite stations.
+     *
+     * @param view view controlled by this presenter
      * @see IFavoriteStationsContract.Presenter#init(IFavoriteStationsContract.View)
      */
     @Override
@@ -83,6 +86,14 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
 
         for (String networkId : networkIds) {
             view.getNetworksRepository().requestNetwork(new NetworkDetailsCallback() {
+
+                /**
+                 * Stores the retrieved network and collects availability information for its stations
+                 * so the favorite-stations view can update the displayed availability indicators.
+                 *
+                 * @param network retrieved network
+                 * @see NetworkDetailsCallback#onSuccess(Network)
+                 */
                 @Override
                 public void onSuccess(Network network) {
                     networks.put(networkId, network);
@@ -96,6 +107,12 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
                     view.showAvailabilities(availabilities);
                 }
 
+                /**
+                 * Handles a failed network-details request while loading favorite-station availability.
+                 *
+                 * @param e cause of the request failure
+                 * @see NetworkDetailsCallback#onFailure(Throwable)
+                 */
                 @Override
                 public void onFailure(Throwable e) {
                     if (!connectionErrorShown) {
@@ -108,6 +125,10 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
     }
 
     /**
+     * When a station has no ebikes available, this method searches for alternative stations
+     * neary (5 at max.)
+     *
+     * @param favorite favorite station with no availability.
      * @see IFavoriteStationsContract.Presenter#buscarEstacionesAlternativas(FavoriteStation)
      */
     @Override
@@ -184,6 +205,14 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
         }
 
         view.getNetworksRepository().requestNetwork(new NetworkDetailsCallback() {
+
+            /**
+             * Processes the network response and asks the view to display alternative stations
+             * for the selected favorite, or reports that alternatives cannot be found.
+             *
+             * @param network retrieved network
+             * @see NetworkDetailsCallback#onSuccess(Network)
+             */
             @Override
             public void onSuccess(Network network) {
                 networks.put(networkId, network);
@@ -195,6 +224,12 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
                 }
             }
 
+            /**
+             * Reports the failed network request to the view as an alternatives-connection error.
+             *
+             * @param e cause of the request failure
+             * @see NetworkDetailsCallback#onFailure(Throwable)
+             */
             @Override
             public void onFailure(Throwable e) {
                 view.showAlternativesDataError();

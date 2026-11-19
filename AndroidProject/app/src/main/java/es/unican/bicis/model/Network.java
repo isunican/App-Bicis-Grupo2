@@ -31,7 +31,12 @@ public class Network {
     @SerializedName("gbfs_href")            protected String gbfsHref;
     @SerializedName("stations")             protected List<Station> stations;
 
-    /** @return true if any station has information about the availability of electric bikes. */
+    /**
+     * Checks whether at least one station in this network reports electric-bike information.
+     *
+     * @return {@code true} if a station has extra data with an electric-bike count;
+     *         {@code false} if stations are absent or no station reports that information
+     */
     public boolean providesEbikesInfo() {
         if (stations == null) {
             return false;

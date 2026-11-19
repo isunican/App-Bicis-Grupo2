@@ -53,6 +53,12 @@ public class StationsPresenter implements IStationsContract.Presenter {
         // Default constructor
     }
 
+    /**
+     * Attaches the presenter to the stations view and loads the selected network's stations.
+     *
+     * @param view view controlled by this presenter
+     * @see IStationsContract.Presenter#init(IStationsContract.View)
+     */
     @Override
     public void init(IStationsContract.View view) {
         this.view = view;
@@ -64,7 +70,9 @@ public class StationsPresenter implements IStationsContract.Presenter {
     }
 
     /**
-     * Handles clicks on the info menu option by navigating to the info screen.
+     * Requests the view to open the information screen.
+     *
+     * @see IStationsContract.Presenter#onMenuInfoClicked()
      */
     @Override
     public void onMenuInfoClicked() {
@@ -75,6 +83,8 @@ public class StationsPresenter implements IStationsContract.Presenter {
      * Handles clicks on the favorite stations menu option. Checks the connection and the
      * persistence system first; the screen is only opened if both are available,
      * otherwise the error is shown and the current screen is kept.
+     *
+     * @see IStationsContract.Presenter#onMenuFavoriteStationsClicked()
      */
     @Override
     public void onMenuFavoriteStationsClicked() {
@@ -96,6 +106,8 @@ public class StationsPresenter implements IStationsContract.Presenter {
     }
 
     /**
+     * Requests the view to display the electric-bike filter options.
+     *
      * @see IStationsContract.Presenter#onMenuFiltersClicked()
      */
     @Override
@@ -105,10 +117,11 @@ public class StationsPresenter implements IStationsContract.Presenter {
     }
 
     /**
-     * @see IStationsContract.Presenter#onEbikesFilterOptionToggled(IStationsContract.FilterOption, boolean)
+     * Updates the selected electric-bike availability filter and refreshes the displayed stations.
      *
-     * @param option  the option that was modified
-     * @param checked new state of the option's checkbox
+     * @param option filter option being changed
+     * @param checked whether the option is selected
+     * @see IStationsContract.Presenter#onEbikesFilterOptionToggled(IStationsContract.FilterOption, boolean)
      */
     @Override
     public void onEbikesFilterOptionToggled(IStationsContract.FilterOption option, boolean checked) {
@@ -131,7 +144,13 @@ public class StationsPresenter implements IStationsContract.Presenter {
         view.showFilterIndicator(onlyAvailable, onlyNotAvailable);
     }
 
-
+    /**
+     * Handles a favorite-star click. If the station is not already saved, asks the view
+     * to display the alias-entry dialog.
+     *
+     * @param station station associated with the clicked favorite icon
+     * @see IStationsContract.Presenter#onFavoriteIconClicked(Station)
+     */
     @Override
     public void onFavoriteIconClicked(Station station) {
         if (station == null) {
@@ -143,6 +162,14 @@ public class StationsPresenter implements IStationsContract.Presenter {
         view.showAddFavoriteDialog(station);
     }
 
+    /**
+     * Saves the station as a favorite using the entered alias, updates the favorite icon,
+     * and informs the view about the result of the persistence operation.
+     *
+     * @param station station to save
+     * @param alias alias entered by the user
+     * @see IStationsContract.Presenter#onConfirmAddFavorite(Station, String)
+     */
     @Override
     public void onConfirmAddFavorite(Station station, String alias) {
         if (station == null) {
@@ -174,6 +201,12 @@ public class StationsPresenter implements IStationsContract.Presenter {
         }
     }
 
+    /**
+     * Requests the selected network's details, sorts its stations, stores them for filtering,
+     * determines whether electric-bike information is available, and updates the view with
+     * the stations, network location, country flag and load result.
+     * Reports an error if no network is selected or the request fails.
+     */
     private void load() {
         String networkId = view.getSelectedNetworkId();
 
@@ -184,6 +217,15 @@ public class StationsPresenter implements IStationsContract.Presenter {
 
         INetworksRepository repository = view.getNetworksRepository();
         repository.requestNetwork(new NetworkDetailsCallback() {
+
+            /**
+             * Processes the successfully retrieved network by storing its stations, determining
+             * electric-bike information availability, and updating the view with station and
+             * network-location data.
+             *
+             * @param network retrieved network
+             * @see NetworkDetailsCallback#onSuccess(Network)
+             */
             @Override
             public void onSuccess(Network network) {
                 if (network == null) {
@@ -221,6 +263,12 @@ public class StationsPresenter implements IStationsContract.Presenter {
                 view.showLoadCorrect(stations.size());
             }
 
+            /**
+             * Reports the network-details request failure to the view.
+             *
+             * @param e request failure
+             * @see NetworkDetailsCallback#onFailure(Throwable)
+             */
             @Override
             public void onFailure(Throwable e) {
                 if (e != null) {

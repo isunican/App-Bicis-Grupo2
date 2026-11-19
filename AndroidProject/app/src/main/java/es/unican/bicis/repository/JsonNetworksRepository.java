@@ -31,9 +31,10 @@ public class JsonNetworksRepository implements INetworksRepository {
     }
 
     /**
-     * Returns the networks stored in the local json resource.
+     * Loads the list of networks from the local JSON resource and delivers it to the callback.
+     *
+     * @param cb callback that receives the loaded networks
      * @see INetworksRepository#requestNetworks(NetworksCallback)
-     * @param cb the callback that will process the returned networks
      */
     @Override
     public void requestNetworks(NetworksCallback cb) {
@@ -42,10 +43,12 @@ public class JsonNetworksRepository implements INetworksRepository {
     }
 
     /**
-     * Returns the network with the given id from its local json detail resource.
+     * Loads the JSON resource corresponding to the requested network and delivers the network
+     * to the callback. If the resource does not exist or cannot be parsed, reports a failure.
+     *
+     * @param cb callback that receives the result
+     * @param networkId ID used to locate the local network-details resource
      * @see INetworksRepository#requestNetwork(NetworkDetailsCallback, String)
-     * @param cb the callback that will process the returned network
-     * @param networkId id of the network
      */
     @Override
     public void requestNetwork(NetworkDetailsCallback cb, String networkId) {

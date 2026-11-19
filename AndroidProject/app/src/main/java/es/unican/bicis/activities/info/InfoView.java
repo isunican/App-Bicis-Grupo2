@@ -14,6 +14,12 @@ import es.unican.bicis.R;
  */
 public class InfoView extends AppCompatActivity {
 
+    /**
+     * Creates the information screen and configures the toolbar with an Up button.
+     *
+     * @param savedInstanceState previously saved activity state, or {@code null}
+     * @see AppCompatActivity#onCreate(Bundle)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +35,12 @@ public class InfoView extends AppCompatActivity {
         bar.setDisplayHomeAsUpEnabled(true);  // show back button in action bar
     }
 
+    /**
+     * Finishes this activity when the Up button is pressed.
+     *
+     * @return {@code true} to indicate that the navigation event was handled
+     * @see AppCompatActivity#onSupportNavigateUp()
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();

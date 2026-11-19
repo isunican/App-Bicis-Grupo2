@@ -172,7 +172,11 @@ public interface IStationsContract {
          */
         public void showCountryFlag(String flag);
 
-
+        /**
+         * Provides the country list used to resolve a network's country code and flag.
+         *
+         * @return the country list provider
+         */
         ICountriesList getCountriesList();
 
         /** Checks whether the device has an active internet connection. */
