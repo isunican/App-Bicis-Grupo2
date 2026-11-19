@@ -2,16 +2,21 @@ package es.unican.bicis.activities.stations;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,11 +25,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
-import android.content.Intent;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,7 +43,6 @@ import es.unican.bicis.repository.CountriesList;
 import es.unican.bicis.repository.ICountriesList;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
 import es.unican.bicis.repository.INetworksRepository;
-import es.unican.bicis.activities.favorites.FavoriteStationsView;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 
@@ -56,6 +58,9 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     private TextView tvResults;
     private TextView tvNetworkLocation;
     private StationsArrayAdapter adapter;
+    private PopupWindow filtersPopup;
+    private boolean ebikesFilterEnabled = false;
+
 
     @Inject
     INetworksRepository repository;
@@ -93,8 +98,17 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
+        menuInflater.inflate(R.menu.menu_stations, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.menuItemFilter);
+        if (item != null) {
+            item.setEnabled(ebikesFilterEnabled);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     /**
@@ -112,6 +126,10 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         }
         if (itemId == R.id.menuItemFavoriteStations) {
             presenter.onMenuFavoriteStationsClicked();
+            return true;
+        }
+        if (itemId == R.id.menuItemFilter) {
+            presenter.onMenuFiltersClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -169,18 +187,12 @@ public class StationsView extends AppCompatActivity implements IStationsContract
      */
     @Override
     public void showNetworkLocation(Location networkLocation) {
-        List<String> location = new ArrayList<>();
-
-        String country = networkLocation.getCountry();
         String city = networkLocation.getCity();
-        if (country != null && !country.isEmpty()) {
-            location.add(country);
-        }
+
         if (city != null && !city.isEmpty()) {
-            location.add(city);
+            tvNetworkLocation.setText(city);
         }
 
-        tvNetworkLocation.setText(TextUtils.join(" ", location));
     }
 
     /**
@@ -209,6 +221,85 @@ public class StationsView extends AppCompatActivity implements IStationsContract
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
         startActivity(intent);
+    }
+
+    /**
+     * @see IStationsContract.View#showFilterMenu(boolean, boolean)
+     *
+     * @param availableChecked state of the "Disponible" checkbox
+     * @param notAvailableChecked state of the "No disponible" checkbox
+     */
+    @Override
+    public void showFilterMenu(boolean availableChecked, boolean notAvailableChecked) {
+        View menu = getLayoutInflater().inflate(R.layout.popup_filters, null);
+        CheckBox cbAvailable = menu.findViewById(R.id.cbEbikesAvailable);
+        CheckBox cbNotAvailable = menu.findViewById(R.id.cbEbikesNotAvailable);
+
+        // Establecemos el estado de las casillas
+        cbAvailable.setChecked(availableChecked);
+        cbNotAvailable.setChecked(notAvailableChecked);
+
+        // Tras seleccionar el filtro, se muestra los checkboxes
+        cbAvailable.setOnCheckedChangeListener((b, checked) ->
+                presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.AVAILABLE, checked));
+        cbNotAvailable.setOnCheckedChangeListener((b, checked) ->
+                presenter.onEbikesFilterOptionToggled(IStationsContract.FilterOption.NOT_AVAILABLE, checked));
+
+        if (filtersPopup != null && filtersPopup.isShowing()) {
+            filtersPopup.dismiss();
+        }
+        filtersPopup = new PopupWindow(menu,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true); // con focusable a true se cierra al pulsar fuera
+        filtersPopup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        filtersPopup.setOutsideTouchable(true);
+        filtersPopup.setElevation(8f);
+
+        View anchor = findViewById(R.id.menuItemFilters);
+        if (anchor == null) {
+            anchor = findViewById(R.id.toolbar);
+        }
+        filtersPopup.showAsDropDown(anchor);
+
+    }
+
+    @Override
+    public void enableEbikesFilter(boolean enabled) {
+        ebikesFilterEnabled = enabled;
+        invalidateOptionsMenu();   // fuerza a recalcular el menú
+    }
+
+    /**
+     * @see IStationsContract.View#showFilterIndicator(boolean, boolean)
+     */
+    @Override
+    public void showFilterIndicator(boolean availableActive, boolean notAvailableActive) {
+        ImageView ivEbike = findViewById(R.id.ivEbike);
+        ImageView ivEbikeNotAvailable = findViewById(R.id.ivEbikeNotAvailable);
+
+        if (availableActive) {
+            if (ivEbike != null) {
+                ivEbike.setVisibility(View.VISIBLE);
+            }
+            if (ivEbikeNotAvailable != null) {
+                ivEbikeNotAvailable.setVisibility(View.GONE);
+            }
+        } else if (notAvailableActive) {
+            if (ivEbike != null) {
+                ivEbike.setVisibility(View.VISIBLE);
+            }
+            if (ivEbikeNotAvailable != null) {
+                ivEbikeNotAvailable.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (ivEbike != null) {
+                ivEbike.setVisibility(View.GONE);
+            }
+            if (ivEbikeNotAvailable != null) {
+                ivEbikeNotAvailable.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -307,6 +398,14 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        if (filtersPopup != null && filtersPopup.isShowing()) {
+            filtersPopup.dismiss();
+        }
+        super.onDestroy();
+    }
+
     /**
      * @see IStationsContract.View#isOnline()
      */
@@ -316,11 +415,11 @@ public class StationsView extends AppCompatActivity implements IStationsContract
         if (manager == null) {
             return false;
         }
-        android.net.Network network = manager.getActiveNetwork();
-        if (network == null) {
+        android.net.Network activeNetwork = manager.getActiveNetwork();
+        if (activeNetwork == null) {
             return false;
         }
-        NetworkCapabilities capabilities = manager.getNetworkCapabilities(network);
+        NetworkCapabilities capabilities = manager.getNetworkCapabilities(activeNetwork);
         return capabilities != null
                 && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }

@@ -205,6 +205,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onFailure(Throwable e) {
+                // No se requiere ninguna acción
             }
         };
 
@@ -226,6 +227,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onFailure(Throwable e) {
+                // No se requiere ninguna acción
             }
         };
 

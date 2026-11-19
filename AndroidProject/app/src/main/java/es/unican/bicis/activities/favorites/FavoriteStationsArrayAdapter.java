@@ -28,6 +28,21 @@ import es.unican.bicis.model.Availability;
  */
 public class FavoriteStationsArrayAdapter extends BaseAdapter {
 
+    /**
+     * Listener interface for the click events of the magnifier icon.
+     */
+    public interface OnSearchAlternativesClickListener {
+
+        /**
+         * Called when the magnifier icon of a favorite station is clicked.
+         * @param favorite the favorite station
+         */
+        void onSearchAlternativesClick(FavoriteStation favorite);
+    }
+
+    /** Listener of the clicks on the magnifier icon */
+    private final OnSearchAlternativesClickListener searchListener;
+
     /** List of favorite stations to be displayed */
     private final List<FavoriteStation> favorites;
 
@@ -42,10 +57,13 @@ public class FavoriteStationsArrayAdapter extends BaseAdapter {
      * Constructs a new adapter instance.
      * @param context application context
      * @param favorites list of favorite stations to display
+     * @param listener listener of the clicks on the magnifier icon
      */
-    public FavoriteStationsArrayAdapter(@NonNull Context context, @NonNull List<FavoriteStation> favorites) {
+    public FavoriteStationsArrayAdapter(@NonNull Context context, @NonNull List<FavoriteStation> favorites,
+                                        OnSearchAlternativesClickListener listener) {
         this.context = context;
         this.favorites = favorites;
+        this.searchListener = listener;
     }
 
     /** @return the number of favorite stations in the list */
@@ -91,37 +109,43 @@ public class FavoriteStationsArrayAdapter extends BaseAdapter {
         }
 
         // country flag
-        {
-            TextView tv = convertView.findViewById(R.id.tvFlag);
-            tv.setText(flagFromCountryCode(favorite.getCountry()));
-        }
+        TextView tvFlag = convertView.findViewById(R.id.tvFlag);
+        tvFlag.setText(flagFromCountryCode(favorite.getCountry()));
+
 
         // alias (in bold in the layout)
-        {
-            TextView tv = convertView.findViewById(R.id.tvAlias);
-            tv.setText(favorite.getAlias());
-        }
+        TextView tvAlias = convertView.findViewById(R.id.tvAlias);
+        tvAlias.setText(favorite.getAlias());
 
         // city
-        {
-            TextView tv = convertView.findViewById(R.id.tvCity);
-            tv.setText(favorite.getCity());
-        }
+        TextView tvCity = convertView.findViewById(R.id.tvCity);
+        tvCity.setText(favorite.getCity());
 
         // original name of the station
-        {
-            TextView tv = convertView.findViewById(R.id.tvOriginalName);
-            tv.setText(favorite.getStationName());
-        }
+        TextView tvOriginalName = convertView.findViewById(R.id.tvOriginalName);
+        tvOriginalName.setText(favorite.getStationName());
 
         // availability: unknown until the real availability has been received
-        {
-            ImageView iv = convertView.findViewById(R.id.ivAvailability);
+        ImageView ivAvailability = convertView.findViewById(R.id.ivAvailability);
             Availability availability = availabilities.get(favorite.getStationId());
             if (availability == null) {
                 availability = Availability.UNKNOWN;
             }
-            iv.setColorFilter(ContextCompat.getColor(context, getAvailabilityColor(availability)));
+        ivAvailability.setColorFilter(ContextCompat.getColor(context, getAvailabilityColor(availability)));
+
+        // magnifier: only shown over the red indicator (station without bikes)
+        ImageView ivSearch = convertView.findViewById(R.id.ivSearchAlternatives);
+        availability = availabilities.get(favorite.getStationId());
+        if (availability == Availability.NONE) {
+            ivSearch.setVisibility(View.VISIBLE);
+            ivSearch.setOnClickListener(v -> {
+                if (searchListener != null) {
+                    searchListener.onSearchAlternativesClick(favorite);
+                }
+            });
+        } else {
+            ivSearch.setVisibility(View.GONE);
+            ivSearch.setOnClickListener(null);
         }
 
         return convertView;

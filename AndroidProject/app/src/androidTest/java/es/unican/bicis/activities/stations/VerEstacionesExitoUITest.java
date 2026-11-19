@@ -76,7 +76,7 @@ public class VerEstacionesExitoUITest {
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
 
-        onView(withId(R.id.tvNetworkLocation)).check(matches(withText("US Springfield, Illinois")));
+        onView(withId(R.id.tvNetworkLocation)).check(matches(withText("Springfield, Illinois")));
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 5")));
 
         comprobarEstacion(0, "Capitol Complex", "16/10/2026 09:15");
@@ -96,7 +96,7 @@ public class VerEstacionesExitoUITest {
                 .inAdapterView(withId(R.id.lvNetworks))
                 .perform(click());
 
-        onView(withId(R.id.tvNetworkLocation)).check(matches(withText("UK Southampton")));
+        onView(withId(R.id.tvNetworkLocation)).check(matches(withText("Southampton")));
         onView(withId(R.id.tvResults)).check(matches(withText("Resultados: 0")));
     }
 

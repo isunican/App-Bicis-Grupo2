@@ -40,13 +40,21 @@ public class SeleccionarSoloPaisUITest {
 
         onView(withId(R.id.btnBuscar)).perform(click());
 
-        onView(withId(R.id.tvResults)).check(matches(withText(containsString("3"))));
+        onView(withId(R.id.tvResults)).check(matches(withText(containsString("7"))));
 
         onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(0)
                 .onChildView(withId(R.id.tvName)).check(matches(withText("BiciMAD")));
         onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(1)
                 .onChildView(withId(R.id.tvName)).check(matches(withText("Bicing")));
         onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(2)
+                .onChildView(withId(R.id.tvName)).check(matches(withText("Red Abundante")));
+        onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(3)
+                .onChildView(withId(R.id.tvName)).check(matches(withText("Red Escasa")));
+        onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(4)
+                .onChildView(withId(R.id.tvName)).check(matches(withText("Red Sin Coordenadas")));
+        onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(5)
+                .onChildView(withId(R.id.tvName)).check(matches(withText("Red Vacía")));
+        onData(anything()).inAdapterView(withId(R.id.lvNetworks)).atPosition(6)
                 .onChildView(withId(R.id.tvName)).check(matches(withText("TUeBICI")));
     }
 }

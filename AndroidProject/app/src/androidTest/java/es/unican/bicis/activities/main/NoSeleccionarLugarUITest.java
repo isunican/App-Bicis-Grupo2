@@ -32,7 +32,7 @@ public class NoSeleccionarLugarUITest {
 
         onView(withId(R.id.btnBuscar)).perform(click());
 
-        onView(withId(R.id.tvResults)).check(matches(withText(containsString("7"))));
+        onView(withId(R.id.tvResults)).check(matches(withText(containsString("11"))));
 
     }
 }
