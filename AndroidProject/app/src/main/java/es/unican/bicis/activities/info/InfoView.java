@@ -1,6 +1,8 @@
 package es.unican.bicis.activities.info;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +29,19 @@ public class InfoView extends AppCompatActivity {
         ActionBar bar = getSupportActionBar();
         assert bar != null;  // to avoid warning in the line below
         bar.setDisplayHomeAsUpEnabled(true);  // show back button in action bar
+
+        // set application version name
+        try {
+            String versionName = getPackageManager()
+                    .getPackageInfo(getPackageName(), 0)
+                    .versionName;
+
+            TextView infoText = findViewById(R.id.textView);
+            infoText.setText(getString(R.string.info_text, versionName));
+
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
