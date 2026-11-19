@@ -54,18 +54,18 @@ jobs:
           emulator-options: -no-window -gpu off -no-snapshot -noaudio -no-boot-anim
           script: ./gradlew clean jacocoTestReport sonar
 
-      - name: Android tests reports
+      - name: Compress and upload test reports
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: test-reports
+          name: test-reports.zip
           path: ./AndroidProject/app/build/reports/
 
-      - name: Android tests outputs
+      - name: Compress and upload test output
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: test-outputs
+          name: test-output.zip
           path: ./AndroidProject/app/build/outputs/
 
   # build:
