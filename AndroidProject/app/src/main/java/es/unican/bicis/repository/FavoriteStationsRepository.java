@@ -35,6 +35,17 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
         this.gson = new Gson();
     }
 
+    /**
+     * Saves a favorite station together with its network, location and display metadata.
+     * The station is serialized as JSON and stored in SharedPreferences under its station ID.
+     *
+     * @param station station to save
+     * @param networkId ID of the network containing the station
+     * @param location network location used to store city and country
+     * @param alias custom alias for the station; {@code null} is stored as the repository's null marker
+     * @return {@code true} if the preferences commit succeeds; {@code false} otherwise
+     * @see IFavoriteStationsRepository#addFavorite(Station, String, Location, String)
+     */
     @Override
     public boolean addFavorite(Station station, String networkId, Location location, String alias) {
         if (alias == null) {
@@ -63,6 +74,15 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
         return editor.commit();
     }
 
+    /**
+     * Saves a station ID and alias in SharedPreferences. This overload stores the alias
+     * directly and is retained for entries without full station metadata.
+     *
+     * @param stationId station ID to save
+     * @param alias alias to associate with the station; {@code null} is stored as the null marker
+     * @return {@code true} if the preferences commit succeeds; {@code false} otherwise
+     * @see IFavoriteStationsRepository#addFavorite(String, String)
+     */
     @Override
     public boolean addFavorite(String stationId, String alias) {
         if (alias == null) {
@@ -78,6 +98,14 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
         return editor.commit(); // Returns false if disk write fails
     }
 
+    /**
+     * Checks whether SharedPreferences contains an entry for the given station ID.
+     *
+     * @param stationId station ID to check
+     * @return {@code true} if the station is stored as a favorite; {@code false} if the ID is null
+     *         or no entry exists
+     * @see IFavoriteStationsRepository#isFavorite(String)
+     */
     @Override
     public boolean isFavorite(String stationId) {
         if (stationId == null) {
@@ -86,6 +114,15 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
         return prefs.contains(stationId);
     }
 
+    /**
+     * Reads favorite entries and returns a map of station IDs to display aliases.
+     * JSON entries are parsed to retrieve the alias or station name; legacy plain-string
+     * entries are preserved as aliases.
+     *
+     * @return map of favorite station IDs to their display names
+     * @throws DataAccessException if a stored preference has an unsupported value type
+     * @see IFavoriteStationsRepository#getFavorites()
+     */
     @Override
     public Map<String, String> getFavorites() throws DataAccessException {
         Map<String, ?> allEntries = prefs.getAll();
@@ -121,6 +158,14 @@ public class FavoriteStationsRepository implements IFavoriteStationsRepository {
         return result;
     }
 
+    /**
+     * Reads all favorite entries and returns them as FavoriteStation objects. JSON records
+     * are parsed; legacy entries are converted into records with incomplete metadata.
+     *
+     * @return list of saved favorite station records
+     * @throws DataAccessException if a stored preference has an unsupported value type
+     * @see IFavoriteStationsRepository#getFavoriteStations()
+     */
     @Override
     public List<FavoriteStation> getFavoriteStations() throws DataAccessException {
         Map<String, ?> allEntries = prefs.getAll();

@@ -108,6 +108,11 @@ public class DetailsView extends AppCompatActivity {
         }
     }
 
+    /**
+     * Finishes this activity when the user presses the Up button in the action bar.
+     *
+     * @return {@code true} to indicate that the navigation event was handled
+     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();

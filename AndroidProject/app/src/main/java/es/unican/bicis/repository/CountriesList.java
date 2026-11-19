@@ -26,9 +26,10 @@ public class CountriesList implements ICountriesList {
     }
 
     /**
-     * Returns the countries stored in the local json resource
+     * Loads the bundled country list and returns it indexed by the CityBikes API country ID.
+     *
+     * @return map of country IDs to country data
      * @see ICountriesList#getMap()
-     * @return a map of country names, keyed by country ID as referenced in the API
      */
     @Override
     public Map<String, Country> getMap() {

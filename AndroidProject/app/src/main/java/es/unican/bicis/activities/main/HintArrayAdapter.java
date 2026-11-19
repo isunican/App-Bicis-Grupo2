@@ -58,10 +58,21 @@ public class HintArrayAdapter<T> extends BaseAdapter {
         this.labelOf = labelOf;
     }
 
+    /**
+     * Indicates whether the adapter has a placeholder item at the beginning.
+     *
+     * @return {@code true} if a hint was provided, {@code false} otherwise
+     */
     private boolean hasHint() {
         return hint != null;
     }
 
+    /**
+     * Retrieves an item from the backing list, accounting for the placeholder offset.
+     *
+     * @param position adapter position of the item
+     * @return the corresponding item from {@code items}
+     */
     private T itemAt(int position) {
         if (hasHint()) {
             position--;
@@ -69,6 +80,12 @@ public class HintArrayAdapter<T> extends BaseAdapter {
         return items.get(position);
     }
 
+    /**
+     * Returns the number of rows, including the hint row when one is configured.
+     *
+     * @return the number of adapter rows
+     * @see BaseAdapter#getCount()
+     */
     @Override
     public int getCount() {
         int count = items.size();
@@ -78,6 +95,13 @@ public class HintArrayAdapter<T> extends BaseAdapter {
         return count;
     }
 
+    /**
+     * Returns the item at the adapter position, excluding the hint row when present.
+     *
+     * @param position adapter position
+     * @return the corresponding item, or {@code null} for the hint row
+     * @see BaseAdapter#getItem(int)
+     */
     @Override
     public Object getItem(int position) {
         if (hasHint() && position == HINT_POSITION) {
@@ -86,22 +110,56 @@ public class HintArrayAdapter<T> extends BaseAdapter {
         return itemAt(position);
     }
 
+    /**
+     * Uses the adapter position as the item identifier.
+     *
+     * @param position adapter position
+     * @return the position as the item ID
+     * @see BaseAdapter#getItemId(int)
+     */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+    /**
+     * Creates or reuses the spinner's selected-item view, displaying the hint or item label.
+     *
+     * @param position adapter position
+     * @param convertView previously created view that may be reused, or {@code null}
+     * @param parent parent view
+     * @return the selected-item view
+     * @see BaseAdapter#getView(int, View, ViewGroup)
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         return render(position, convertView, parent, android.R.layout.simple_spinner_item);
     }
 
+    /**
+     * Creates or reuses a dropdown row, displaying the hint or item label.
+     *
+     * @param position adapter position
+     * @param convertView previously created dropdown view that may be reused, or {@code null}
+     * @param parent parent view
+     * @return the dropdown row view
+     * @see BaseAdapter#getDropDownView(int, View, ViewGroup)
+     */
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         return render(position, convertView, parent, android.R.layout.simple_spinner_dropdown_item);
     }
 
+    /**
+     * Reuses or inflates a spinner row and displays either the hint or the item's label.
+     *
+     * @param position adapter position to render
+     * @param convertView previously rendered view that may be reused, or {@code null}
+     * @param parent parent view used when inflating the row
+     * @param layoutId layout resource used for the row
+     * @return the rendered row view
+     */
     private View render(int position, @Nullable View convertView, @NonNull ViewGroup parent, int layoutId) {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(layoutId, parent, false);
@@ -115,6 +173,11 @@ public class HintArrayAdapter<T> extends BaseAdapter {
         return convertView;
     }
 
+    /**
+     * Creates the hint text with gray color and italic styling.
+     *
+     * @return styled hint text
+     */
     private CharSequence styledHint() {
         SpannableString styled = new SpannableString(hint);
         styled.setSpan(new StyleSpan(Typeface.ITALIC), 0, styled.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

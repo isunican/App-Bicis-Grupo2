@@ -5,7 +5,7 @@
     <string name="loadCorrect">Se han cargado %d redes</string>
     <string name="loadError">Ha habido un error cargando las redes</string>
     <string name="loadErrorLocal">Ha habido un error en la persistencia local de los datos</string>
-    <string name="info_text">Bicity</string>
+    <string name="info_text">Bicity versión %1$s</string>
     <string name="noDate">Sin fecha</string>
     <string name="countryHint">País</string>
     <string name="cityHint">Ciudad</string>
