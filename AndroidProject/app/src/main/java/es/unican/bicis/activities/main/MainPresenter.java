@@ -35,9 +35,13 @@ public class MainPresenter implements IMainContract.Presenter {
     private boolean delayLoad;
 
     /**
+     * Attaches the presenter to the view and initializes the initial country and city data.
+     * If there is no connection, initializes the selectors with empty lists and displays
+     * the connection error.
+     *
+     * @param view view controlled by this presenter
+     * @param context context used for application resources and services
      * @see IMainContract.Presenter#init(IMainContract.View, Context)
-     * @param view the associated view class object
-     * @param context a context used to access resources (e.g. the Application)
      */
     @Override
     public void init(IMainContract.View view, Context context) {
@@ -58,9 +62,13 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
-     * @see IMainContract.Presenter#onSearchClicked(Country, String) 
-     * @param country the selected country, or null if none was selected
-     * @param city the selected city, or null if none was selected
+     * Requests networks matching the selected country and city. If initial data loading
+     * was delayed due to a connection error, retries loading countries and cities first.
+     * Displays a connection error when the device is offline.
+     *
+     * @param country selected country, or {@code null} if no country is selected
+     * @param city selected city, or {@code null} if no city is selected
+     * @see IMainContract.Presenter#onSearchClicked(Country, String)
      */
     @Override
     public void onSearchClicked(Country country, String city) {
@@ -82,8 +90,10 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
+     * Opens the stations screen for the selected network.
+     *
+     * @param network selected network
      * @see IMainContract.Presenter#onNetworkClicked(Network)
-     * @param network the network that has been clicked
      */
     @Override
     public void onNetworkClicked(Network network) {
@@ -91,6 +101,8 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
+     * Requests the view to open the application's information screen.
+     *
      * @see IMainContract.Presenter#onMenuInfoClicked()
      */
     @Override
@@ -99,6 +111,10 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
+     * Checks connectivity and verifies that favorite stations can be read from local storage
+     * before requesting the view to open the favorites screen. Displays the corresponding
+     * error if connectivity or persistence is unavailable.
+     *
      * @see IMainContract.Presenter#onMenuFavoriteStationsClicked()
      */
     @Override
@@ -117,8 +133,10 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
+     * Opens the details screen for the selected network.
+     *
+     * @param network network whose details were requested
      * @see IMainContract.Presenter#onNetworkInfoClicked(Network)
-     * @param network the selected network
      */
     @Override
     public void onNetworkInfoClicked(Network network) {
@@ -126,8 +144,11 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
+     * Updates the city selector for the selected country and displays its flag.
+     * If no country is selected, requests cities from all countries and displays the globe.
+     *
+     * @param country selected country, or {@code null} for all countries
      * @see IMainContract.Presenter#onCountrySelected(Country)
-     * @param country the selected country, or null if none was selected
      */
     @Override
     public void onCountrySelected(Country country) {
@@ -152,6 +173,13 @@ public class MainPresenter implements IMainContract.Presenter {
 
         NetworksCallback callBack = new NetworksCallback() {
 
+            /**
+             * Handles the successful network-list response by sorting the networks, applying
+             * the selected country and city filters, and updating the list and result count.
+             *
+             * @param networks networks received from the repository
+             * @see NetworksCallback#onSuccess(List)
+             */
             @Override
             public void onSuccess(List<Network> networks) {
                 Collections.sort(networks, (n1, n2) -> Utils.compareNames(n1.getName(), n2.getName()));
@@ -175,6 +203,12 @@ public class MainPresenter implements IMainContract.Presenter {
                 }
             }
 
+            /**
+             * Notifies the view that the network-list request failed.
+             *
+             * @param e cause of the request failure
+             * @see NetworksCallback#onFailure(Throwable)
+             */
             @Override
             public void onFailure(Throwable e) {
                 view.showLoadError();
@@ -194,6 +228,13 @@ public class MainPresenter implements IMainContract.Presenter {
 
         NetworksCallback callBack = new NetworksCallback() {
 
+            /**
+             * Extracts the distinct city names from the returned networks, optionally restricting
+             * them to the selected country, and updates the city selector.
+             *
+             * @param networks networks received from the repository
+             * @see NetworksCallback#onSuccess(List)
+             */
             @Override
             public void onSuccess(List<Network> networks) {
                 if (countryIdAPI == null) {
@@ -203,6 +244,12 @@ public class MainPresenter implements IMainContract.Presenter {
                 }
             }
 
+            /**
+             * Ignores a failed city-list request because no error message is required for this operation.
+             *
+             * @param e cause of the request failure
+             * @see NetworksCallback#onFailure(Throwable)
+             */
             @Override
             public void onFailure(Throwable e) {
                 // No se requiere ninguna acción
@@ -220,11 +267,23 @@ public class MainPresenter implements IMainContract.Presenter {
 
         NetworksCallback callBack = new NetworksCallback() {
 
+            /**
+             * Extracts the distinct countries represented by the networks and updates the country selector.
+             *
+             * @param networks networks received from the repository
+             * @see NetworksCallback#onSuccess(List)
+             */
             @Override
             public void onSuccess(List<Network> networks) {
                 view.showCountries(extractCountries(networks));
             }
 
+            /**
+             * Ignores a failed country-list request because no error message is required for this operation.
+             *
+             * @param e cause of the request failure
+             * @see NetworksCallback#onFailure(Throwable)
+             */
             @Override
             public void onFailure(Throwable e) {
                 // No se requiere ninguna acción

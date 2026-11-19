@@ -7,6 +7,10 @@ import org.parceler.Parcel;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Additional information reported for a bike-sharing station, including electric-bike
+ * availability and whether the station provides electric bikes.
+ */
 @Parcel
 @Getter
 @Setter

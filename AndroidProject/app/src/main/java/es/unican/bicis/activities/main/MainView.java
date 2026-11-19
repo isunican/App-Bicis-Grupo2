@@ -51,10 +51,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     INetworksRepository repository;
 
     /**
-     * Activity first initialization method
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}. Note: Otherwise it is null.
+     * Creates the main screen, configures its toolbar and initializes the presenter.
+     *
+     * @param savedInstanceState previously saved activity state, or {@code null}
+     * @see AppCompatActivity#onCreate(Bundle)
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +73,11 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * This creates the menu that is shown in the action bar (the upper toolbar)
-     * @param menu The options menu in which you place your items.
+     * Inflates the options menu displayed in the main toolbar.
      *
-     * @return true because we are defining a new menu
+     * @param menu options menu to populate
+     * @return {@code true} when the menu has been created
+     * @see AppCompatActivity#onCreateOptionsMenu(Menu)
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -86,10 +87,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * This is called when an item in the action bar menu is selected.
-     * @param item The menu item that was selected.
+     * Handles toolbar menu selections by forwarding the information or favorites action
+     * to the presenter.
      *
-     * @return true if we have handled the selection
+     * @param item selected menu item
+     * @return {@code true} if the item was handled, otherwise delegates to the superclass
+     * @see AppCompatActivity#onOptionsItemSelected(MenuItem)
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -106,6 +109,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Initializes the listeners for network selection, country selection and search actions.
+     *
      * @see IMainContract.View#init()
      */
     @Override
@@ -130,6 +135,16 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // country spinner listener
         countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            /**
+             * Notifies the presenter when a country is selected in the country spinner.
+             *
+             * @param parent spinner containing the selected item
+             * @param view selected row view
+             * @param position selected item position
+             * @param id selected item identifier
+             * @see AdapterView.OnItemSelectedListener#onItemSelected(AdapterView, View, int, long)
+             */
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Country country = (Country) parent.getItemAtPosition(position);
@@ -138,6 +153,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
                 presenter.onCountrySelected(country);
             }
 
+            /**
+             * Does nothing when the country spinner has no selected item.
+             *
+             * @param parent spinner whose selection was cleared
+             * @see AdapterView.OnItemSelectedListener#onNothingSelected(AdapterView)
+             */
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // nothing to do if no country gets selected
@@ -147,8 +168,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Returns the repository injected into this activity for retrieving bike networks.
+     *
+     * @return repository used to access network data
      * @see IMainContract.View#getNetworksRepository()
-     * @return the repository to access the data
      */
     @Override
     public INetworksRepository getNetworksRepository() {
@@ -156,8 +179,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Displays the supplied networks in the list using the networks adapter.
+     *
+     * @param networks networks to display
      * @see IMainContract.View#showNetworks(List)
-     * @param networks the list of networks
      */
     @Override
     public void showNetworks(List<Network> networks) {
@@ -167,8 +192,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Populates the country spinner with the supplied countries and a hint row.
+     *
+     * @param countries countries available for selection
      * @see IMainContract.View#showCountries(List)
-     * @param countries the list of countries
      */
     @Override
     public void showCountries(List<Country> countries) {
@@ -178,6 +205,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Displays an alert informing the user that an internet connection is required.
+     *
      * @see IMainContract.View#showConnectionError()
      */
     @Override
@@ -191,8 +220,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Updates the result counter with the number of networks displayed.
+     *
+     * @param networks number of networks found
      * @see IMainContract.View#showLoadCorrect(int)
-     * @param networks the number of networks that were loaded
      */
     @Override
     public void showLoadCorrect(int networks) {
@@ -202,8 +233,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#showCountryFlag(String) 
-     * @param flag the emoji representing the country flag in the UNICODE character set
+     * Displays the flag emoji associated with the selected country.
+     *
+     * @param flag country flag emoji
+     * @see IMainContract.View#showCountryFlag(String)
      */
     @Override
     public void showCountryFlag(String flag) {
@@ -212,6 +245,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Displays an alert indicating that the network request failed.
+     *
      * @see IMainContract.View#showLoadError()
      */
     @Override
@@ -225,8 +260,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Starts the stations activity for the selected network.
+     *
+     * @param network network whose stations will be displayed
      * @see IMainContract.View#showStations(Network)
-     * @param network the network
      */
     @Override
     public void showStations(Network network) {
@@ -236,6 +273,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Starts the application's information activity.
+     *
      * @see IMainContract.View#showInfoActivity()
      */
     @Override
@@ -245,6 +284,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Starts the activity displaying the user's favorite stations.
+     *
      * @see IMainContract.View#showFavoriteStationsActivity()
      */
     @Override
@@ -254,8 +295,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Starts the details activity for the selected network.
+     *
+     * @param network network whose details will be displayed
      * @see IMainContract.View#showNetworkDetails(Network)
-     * @param network the network
      */
     @Override
     public void showNetworkDetails(Network network) {
@@ -265,8 +308,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Populates the city spinner with the supplied city names and a hint row.
+     *
+     * @param cities city names available for selection
      * @see IMainContract.View#showCities(List)
-     * @param cities the list of cities
      */
     @Override
     public void showCities(List<String> cities) {
@@ -276,6 +321,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Creates and returns the repository used to access locally stored favorite stations.
+     *
+     * @return repository for favorite-station persistence
      * @see IMainContract.View#getFavoriteStationsRepository()
      */
     @Override
@@ -284,6 +332,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
+     * Displays an alert indicating that locally stored favorite-station data could not be accessed.
+     *
      * @see IMainContract.View#showPersistenceError()
      */
     @Override

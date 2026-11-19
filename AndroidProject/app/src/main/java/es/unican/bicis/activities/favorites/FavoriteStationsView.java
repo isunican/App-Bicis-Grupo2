@@ -67,21 +67,44 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     /** Listener that keeps currentLocation updated */
     private final android.location.LocationListener locationListener =
             new android.location.LocationListener() {
+
+                /**
+                 * Stores the latest device location received from the location provider.
+                 *
+                 * @param location updated device location
+                 */
                 @Override
                 public void onLocationChanged(android.location.Location location) {
                     currentLocation = location;
                 }
 
+                /**
+                 * Starts location updates when the provider becomes enabled.
+                 *
+                 * @param provider location provider that was enabled
+                 */
                 @Override
                 public void onProviderEnabled(String provider) {
                     // No se requiere ninguna acción
                 }
 
+                /**
+                 * Stops location updates when the provider becomes disabled.
+                 *
+                 * @param provider location provider that was disabled
+                 */
                 @Override
                 public void onProviderDisabled(String provider) {
                     // No se requiere ninguna acción
                 }
 
+                /**
+                 * Handles a location-provider status change. No additional action is required.
+                 *
+                 * @param provider location provider whose status changed
+                 * @param status new provider status
+                 * @param extras additional status information
+                 */
                 @Override
                 public void onStatusChanged(String provider, int status, android.os.Bundle extras) {
                     // No se requiere ninguna acción
@@ -89,9 +112,10 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
             };
 
     /**
-     * Called when the activity is created. Instantiates the presenter and starts the
-     * initial business logic.
-     * @param savedInstanceState saved state of the activity, or null
+     * Creates the favorites screen, initializes its toolbar, location support and presenter.
+     *
+     * @param savedInstanceState previously saved activity state, or {@code null}
+     * @see AppCompatActivity#onCreate(Bundle)
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +128,8 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Initializes the toolbar and screen title.
+     *
      * @see IFavoriteStationsContract.View#init()
      */
     @Override
@@ -119,6 +145,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Creates and returns the repository used to access locally saved favorite stations.
+     *
+     * @return favorite-stations repository
      * @see IFavoriteStationsContract.View#getFavoriteStationsRepository()
      */
     @Override
@@ -127,6 +156,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays the saved favorite stations in the list and updates the empty-state display.
+     *
+     * @param favorites saved favorite stations to display
      * @see IFavoriteStationsContract.View#showFavoriteStations(List)
      */
     @Override
@@ -151,6 +183,8 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays a message indicating that favorite stations could not be read or saved.
+     *
      * @see IFavoriteStationsContract.View#showPersistenceError()
      */
     @Override
@@ -164,6 +198,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Returns the repository used to request bike-network information.
+     *
+     * @return networks repository
      * @see IFavoriteStationsContract.View#getNetworksRepository()
      */
     @Override
@@ -172,6 +209,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Updates the availability indicators for the saved stations.
+     *
+     * @param availabilities map of station IDs to their availability
      * @see IFavoriteStationsContract.View#showAvailabilities(Map)
      */
     @Override
@@ -182,6 +222,8 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays a message indicating that the network request failed.
+     *
      * @see IFavoriteStationsContract.View#showConnectionError()
      */
     @Override
@@ -190,8 +232,10 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
-     * Closes this screen when the back button of the action bar is pressed.
-     * @return true, since the navigation has been handled
+     * Finishes this activity when the Up button is pressed.
+     *
+     * @return {@code true} to indicate that the navigation action was handled
+     * @see AppCompatActivity#onSupportNavigateUp()
      */
     @Override
     public boolean onSupportNavigateUp() {
@@ -200,6 +244,10 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Returns the last known device coordinates when location access is available.
+     *
+     * @return array containing latitude and longitude in decimal degrees, or {@code null}
+     *         if location is unavailable
      * @see IFavoriteStationsContract.View#getUserLocation()
      */
     @Override
@@ -236,6 +284,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Checks whether the device currently has an active internet connection.
+     *
+     * @return {@code true} if connected, {@code false} otherwise
      * @see IFavoriteStationsContract.View#isOnline()
      */
     @Override
@@ -254,6 +305,10 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays the alternative stations found for the selected favorite station.
+     *
+     * @param favorite favorite station for which alternatives were searched
+     * @param alternatives list of alternatives to display
      * @see IFavoriteStationsContract.View#showAlternatives(FavoriteStation, List)
      */
     @Override
@@ -287,6 +342,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays a message indicating that alternative stations cannot be determined
+     * for the selected favorite.
+     *
      * @see IFavoriteStationsContract.View#showAlternativesNotPossible()
      */
     @Override
@@ -295,6 +353,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays a message indicating that alternative stations could not be loaded
+     * because of a connection error.
+     *
      * @see IFavoriteStationsContract.View#showAlternativesConnectionError()
      */
     @Override
@@ -303,6 +364,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays a message indicating that the network data required to find alternatives
+     * could not be retrieved or processed.
+     *
      * @see IFavoriteStationsContract.View#showAlternativesDataError()
      */
     @Override
@@ -311,6 +375,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
+     * Displays a message indicating that favorite-station data could not be accessed
+     * from local storage while searching for alternatives.
+     *
      * @see IFavoriteStationsContract.View#showAlternativesPersistenceError()
      */
     @Override
@@ -359,7 +426,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
-     * Starts listening to the location when the screen is visible.
+     * Starts location updates when the activity enters the foreground.
+     *
+     * @see AppCompatActivity#onResume()
      */
     @Override
     protected void onResume() {
@@ -368,7 +437,9 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
-     * Stops listening to the location when the screen is not visible.
+     * Stops location updates when the activity leaves the foreground.
+     *
+     * @see AppCompatActivity#onPause()
      */
     @Override
     protected void onPause() {
@@ -377,8 +448,12 @@ public class FavoriteStationsView extends AppCompatActivity implements IFavorite
     }
 
     /**
-     * Called when the user answers the location permission dialog. If a search was waiting,
-     * the alternatives window is opened (with or without the user's location).
+     * Handles the result of a location permission request and resumes location updates
+     * when permission is granted.
+     *
+     * @param requestCode request code associated with the permission request
+     * @param permissions permissions included in the request
+     * @param grantResults grant results corresponding to the requested permissions
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

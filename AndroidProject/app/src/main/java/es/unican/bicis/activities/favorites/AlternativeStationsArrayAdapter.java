@@ -52,15 +52,23 @@ public class AlternativeStationsArrayAdapter extends BaseAdapter {
         this.aliases = aliases;
     }
 
-    /** @return the number of alternative stations in the list */
+    /**
+     * Returns the number of alternative stations.
+     *
+     * @return number of alternatives
+     * @see BaseAdapter#getCount()
+     */
     @Override
     public int getCount() {
         return alternatives.size();
     }
 
     /**
-     * @param position position of the item in the list
-     * @return the alternative station at the given position
+     * Returns the alternative station at the specified position.
+     *
+     * @param position adapter position
+     * @return alternative station at that position
+     * @see BaseAdapter#getItem(int)
      */
     @Override
     public Object getItem(int position) {
@@ -68,8 +76,11 @@ public class AlternativeStationsArrayAdapter extends BaseAdapter {
     }
 
     /**
-     * @param position position of the item in the list
-     * @return the position itself, used as item identifier
+     * Uses the adapter position as the alternative-station item identifier.
+     *
+     * @param position adapter position
+     * @return position as item ID
+     * @see BaseAdapter#getItemId(int)
      */
     @Override
     public long getItemId(int position) {
