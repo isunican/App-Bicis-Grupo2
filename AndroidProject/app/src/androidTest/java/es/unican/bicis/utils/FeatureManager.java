@@ -64,25 +64,6 @@ public class FeatureManager {
      * @param option true to enable the setting, false to disable it
      */
     public static void setNetworking(boolean option) {
-        // airplane mode has no manager class for the sake of developers frustration
-        boolean airplaneEnabled = Settings.Global.getInt(InstrumentationRegistry
-                        .getInstrumentation().getTargetContext().getContentResolver(),
-                Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
-
-        // might as well run in airplane mode than deal with the non-standardized
-        // and frankly overcomplicated way of checking carrier data mode on android
-        if (!airplaneEnabled) {
-            String command = "cmd connectivity airplane-mode enable";
-
-            UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
-            try (ParcelFileDescriptor pfd = automation.executeShellCommand(command)) {
-                pfd.checkError();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        // then we set up the appropriate Wi-Fi setting
         WifiManager wifiManager = (WifiManager) InstrumentationRegistry
                 .getInstrumentation().getTargetContext().getSystemService(Context.WIFI_SERVICE);
         boolean wifiEnabled = wifiManager.isWifiEnabled();
@@ -142,6 +123,78 @@ public class FeatureManager {
 
                     if (capabilities != null) {
                         if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                            ready = true;
+                        } else {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    } else {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Auxiliary method to allow changing the airplane mode setting in the tested device
+     * @param option true to enable the setting, false to disable it
+     */
+    public static void setAirplaneMode(boolean option) {
+        // airplane mode has no manager class for the sake of developers frustration
+        boolean airplaneEnabled = Settings.Global.getInt(InstrumentationRegistry
+                        .getInstrumentation().getTargetContext().getContentResolver(),
+                Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+
+        // might as well run tests in airplane mode than deal with the non-standardized
+        // and frankly overcomplicated way of checking carrier data mode on android
+        if ((!airplaneEnabled && option) || (airplaneEnabled && !option)) {
+            String command;
+
+            if (option) {
+                command = "cmd connectivity airplane-mode enable";
+            } else {
+                command = "cmd connectivity airplane-mode disable";
+            }
+
+            UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+            try (ParcelFileDescriptor pfd = automation.executeShellCommand(command)) {
+                pfd.checkError();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            // wait for networking to be effectively available/unavailable
+            boolean ready = false;
+            while (!ready) {
+                ConnectivityManager connectivityManager = (ConnectivityManager) InstrumentationRegistry
+                        .getInstrumentation().getTargetContext()
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
+                Network activeNetwork = connectivityManager.getActiveNetwork();
+
+                if (option) {
+                    if (activeNetwork == null) {
+                        ready = true;
+                    } else {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                } else {
+                    NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
+
+                    if (capabilities != null) {
+                        if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                                && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
                             ready = true;
                         } else {
                             try {

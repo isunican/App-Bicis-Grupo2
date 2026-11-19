@@ -84,6 +84,7 @@ public class SuggestedStationsErrorUITest {
     @Before
     public void setup() {
         SuggestedStationsUITest.setLocalData();
+        FeatureManager.setAirplaneMode(true);
         FeatureManager.setGPS(true);
         FeatureManager.setNetworking(true);
         activityScenario = ActivityScenario.launch(MainView.class);

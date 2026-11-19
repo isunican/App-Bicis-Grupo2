@@ -26,6 +26,7 @@ import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -51,6 +52,11 @@ public class SuggestedStationsUITest {
 
     // manually manage the activity
     private ActivityScenario<MainView> activityScenario;
+
+    @BeforeClass
+    public static void setupClass() {
+        FeatureManager.setAirplaneMode(true);
+    }
 
     @Before
     public void setup() {
