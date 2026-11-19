@@ -41,7 +41,7 @@ public class FavoriteStationsRepositoryTest {
     @Before
     public void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
-        when(context.getSharedPreferences(eq(PREF_NAME), eq(Context.MODE_PRIVATE))).thenReturn(prefs);
+        when(context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)).thenReturn(prefs);
     }
 
     @After
@@ -144,9 +144,7 @@ public class FavoriteStationsRepositoryTest {
         storedData.put("sp-001", true);
         doReturn(storedData).when(prefs).getAll();
 
-        assertThrows(DataAccessException.class, () -> {
-            Map<String, String> favorites = repository.getFavorites();
-        });
+        assertThrows(DataAccessException.class, repository::getFavorites);
 
         verify(prefs, times(1)).getAll();
         verify(prefs, never()).edit();

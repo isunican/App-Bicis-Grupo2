@@ -137,12 +137,9 @@ public class FavoriteStationsPresenter implements IFavoriteStationsContract.Pres
 
         List<AlternativeStation> alternatives = new ArrayList<>();
         for (Station station : network.getStations()) {
-            if (station == origin) {
-                continue;
-            }
             Availability availability = Availability.bikesAvailability(station.getFreeBikes());
             boolean hasBikes = availability == Availability.HIGH || availability == Availability.LOW;
-            if (!hasBikes || station.getLatitude() == null || station.getLongitude() == null
+            if (station == origin || !hasBikes || station.getLatitude() == null || station.getLongitude() == null
                     || (station.getLatitude() == 0.0 && station.getLongitude() == 0.0)) {
                 continue;
             }

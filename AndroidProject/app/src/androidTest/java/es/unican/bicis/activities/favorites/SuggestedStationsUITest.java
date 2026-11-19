@@ -339,15 +339,15 @@ public class SuggestedStationsUITest {
      * as specified in the test plan for this user story.
      */
     protected static void setLocalData() {
-        String PREF_NAME = "favorite_stations_prefs";
+        String prefName = "favorite_stations_prefs";
 
         // clear the user data
         Context context = ApplicationProvider.getApplicationContext();
-        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
                 .edit().clear().commit();
 
         // add favorite stations to the user data
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
         FavoriteStation fav1 = new FavoriteStation("Fav_1", "redabundante",
@@ -371,15 +371,15 @@ public class SuggestedStationsUITest {
      * favorite stations data in order to test special edge cases.
      */
     private static void setLocalInvalidData() {
-        String PREF_NAME = "favorite_stations_prefs";
+        String prefName = "favorite_stations_prefs";
 
         // clear the user data
         Context context = ApplicationProvider.getApplicationContext();
-        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
                 .edit().clear().commit();
 
         // add invalid or corrupted favorite stations to the user data
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("Fav_1", true);
         editor.putBoolean("Fav_2", true);

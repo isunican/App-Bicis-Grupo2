@@ -8,7 +8,6 @@ import es.unican.bicis.model.Country;
 import es.unican.bicis.model.Network;
 import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
-import es.unican.bicis.repository.INetworksRepository;
 
 /**
  * The Presenter-View contract for the Main activity.

@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
 
 import org.junit.After;
 import org.junit.Before;
@@ -698,7 +699,7 @@ public class StationsPresenterTest {
         String networkId = "red-vacia-ebikes";
         when(view.getSelectedNetworkId()).thenReturn(networkId);
 
-        Network network = Mockito.spy(new Network());
+        Network network = spy(new Network());
         network.setStations(new ArrayList<>());
         when(network.providesEbikesInfo()).thenReturn(true);
 

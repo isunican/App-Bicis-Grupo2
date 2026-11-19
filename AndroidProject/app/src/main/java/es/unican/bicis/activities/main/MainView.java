@@ -36,7 +36,6 @@ import es.unican.bicis.repository.INetworksRepository;
 import es.unican.bicis.activities.favorites.FavoriteStationsView;
 import es.unican.bicis.repository.FavoriteStationsRepository;
 import es.unican.bicis.repository.IFavoriteStationsRepository;
-import es.unican.bicis.repository.INetworksRepository;
 
 /**
  * The main view of the application. It shows a list of bike sharing networks.
